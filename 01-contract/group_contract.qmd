@@ -109,58 +109,62 @@ Where will all agendas & minutes be kept?):
 
 ### Work Quality
 
-1. Project standards (What is a realistic level of quality for team code,
-collaborative writing, individual research, preparation of drafts, etc.?):
-
+1. Project standards (What is a realistic level of quality for team code, collaborative writing, individual research, preparation of drafts, etc.?):
+- Everyone would be writing the explanation for the parts they work on. At least 1 other member would check their writing quality once. And the whole group would sit down and read over the final product before submitting EACH section at least once. 
+- Everyone is responsible for individual research and preparation for the parts that they are assigned. They should be pro-active in asking other members for help, if needed. They should ask during meetings if possible or at least before the final meeting where we sit down to read over everything together. 
 
 2. Strategies to fulfill these standards:
-
+- Setting and using the meeting agenda
+- Setting specific deadline 
 
 ### Team Make-up
 
-1. Please list each team member’s skills as they can contribute to the
-team/project
-
+1. Please list each team member’s skills as they can contribute to the team/project
+- Kaori Hirano: R, applied regression method. 
+- James Xia: R
+- Alicia Nguyen: R, proofreading research papers. 
 
 ### Team Participation
 
 1. Strategies to ensure cooperation and equal distribution of tasks:
+- Check in with the group at the beginning of every meeting and before the final group meeting to submit our work
+- Keep track of the tasks each member has finished
+- Make sure to note if any task takes you longer than you thought to get help when needed 
 
-
-2. Strategies for encouraging/including ideas from all team members (team
-maintenance):
-
+2. Strategies for encouraging/including ideas from all team members (team maintenance):
+- Listen, note down and be supportive of every member's ideas 
+- Constructive criticism only
 
 3. Strategies for keeping on task (task maintenance):
-
+- We will keep a timeline/table keeping track of the deadlines for each member at the beginning of the Google Document. Each member would keep track of their own task and pay attention to other members' work progress. If a member is behind on their work, they will be reminded through Slack. 
 
 4. Preferences for leadership (informal, formal, individual, shared):
+- No leadership, informal group setting with shared and individual work as assigned. 
 
 
 ### Personal Accountability
 
-1. Expected individual attendance, punctuality, and participation at all team
-meetings:
+1. Expected individual attendance, punctuality, and participation at all team meetings:
+- Respect everyone's time. If you cannot be at the meeting, make sure to tell other members well in advance. A member should not be more than a few minutes late unless they have communicated in advance. 
 
-
-2. Expected level of responsibility for fulfilling team assignments, timelines,
-and deadlines:
-
+2. Expected level of responsibility for fulfilling team assignments, timelines, and deadlines:
+- Everyone is expected to finish their part of the assignment by the deadline without fail, unless they communicate in advance their difficulties. 
 
 3. Expected level of communication with other team members:
-
+- Must check Slack at least once a day or not take more than 2 days to respond to messages about work assigned. Everyone should not wait until the day of the deadline to respond. 
 
 4. Expected level of commitment to team decisions and tasks:
-
+- Everyone will have a equal share of task 
+- Everyone will be committed to team decision at every meeting, as much as possible. If they are absent, they should still communicate through message about their opinions. 
 
 ## Consequences for Failing to Follow Procedures and Fulfill Expectations
 
 1. Describe, as a group, you would handle infractions of any of the
 obligations of this team contract:
-
+- Set up a group meeting to handle infractions as soon as they arise. Then we will work as a group to determine the next step. 
 
 2. Describe what your team will do if the infractions continue:
-
+- We will reach out to the group instructors to help figure out the next steps and how to re-divide the work. 
 
 # Signatures
 
@@ -175,11 +179,9 @@ will suffer the consequences as stated in this contract.
 d. You understand that if you do not participate equitably in the project, you
 may not receive the same grade on the project as your group members.
 
-
-[Group Member 1] DATE [Date of Signature]
+Alicia Nguyen 6/16/2023
 
 [Group Member 2] DATE [Date of Signature]
 
 [Group Member 3] DATE [Date of Signature]
 
-[Group Member 4] DATE [Date of Signature]
