@@ -14,7 +14,7 @@ contract!
 
 :::
 
-```{r merge-conflict-completed}
+```{r merge-conflict-end}
 
 ```
 
