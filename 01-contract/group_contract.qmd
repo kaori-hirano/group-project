@@ -1,7 +1,7 @@
 ---
 title: "Group [4] Contract - LACOL S23 Final Project"
-author: "Alicia Nguyen"
-date: "The date"
+author: "Alicia Nguyen, Kaori Hirano, James Xia"
+date: "06/16/2023"
 format: pdf
 ---
 
