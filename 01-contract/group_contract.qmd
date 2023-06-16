@@ -14,7 +14,7 @@ contract!
 
 :::
 
-```{r merge-conflict-chunk}
+```{r merge-conflict}
 # delete this after merge conflict activity
 ```
 
