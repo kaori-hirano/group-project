@@ -1,0 +1,55 @@
+---
+title: "Data for Final Project: [INSERT TITLE HERE]"
+format: gfm
+execute: 
+  error: true
+  message: false
+  warning: false
+  eval: true
+---
+
+This document renders to a *Markdown* file (and in particular, the Github flavor
+of Markdown). On your computer, it may not look very nice, with minimal 
+formatting. Once rendered as such, staged, committed, and pushed to Github, 
+however it becomes visible as an html in your repo. In this document, you should
+briefly describe the datasets you are working with in your project
+**including their source, with links if applicable!**
+
+*You should delete this preamble once you update this file for the first time.*
+
+### Codebook
+
+Put the codebook for your data here. Include only variables used in your
+analysis. Below you will find one example of formatting a codebook
+so that it appears nicely on Github, but it is not the only way.
+Note that this .qmd file works like any other Quarto document you have worked with.
+You can import/load in data in R with something like `import_function(here::here("data/your_file_name.file_extension")`
+to help with creating a codebook. *Delete this paragraph when you update this 
+page with information relevant to your project. Replace the code in the chunk 
+with code relevant to your project*.
+
+```{r}
+#| echo: false
+#| output: asis
+library(tidyverse)
+
+# mpg is built-in ggplot2 data set
+mpg <- mpg
+
+codebook <- tibble(
+  Variables = paste0("`", names(mpg), "`"), # makes it code script when rendered
+  Description = c("manufacturer name",
+                  "model name",
+                  "engine displacement, in litres",
+                  "year of manufacture",
+                  "number of cylinders",
+                  "type of transmission",
+                  "the type of drive train, where f = front-wheel drive, 4 = 4wd",
+                  "city miles per gallon",
+                  "highway miles per gallon",
+                  "fuel type",
+                  "'type' of car"),
+  Type = map_chr(mpg, typeof))
+
+knitr::kable(codebook)
+```

@@ -1,0 +1,111 @@
+---
+title: "Presentation"
+author: "Names"
+format: 
+  revealjs:
+    embed-resources: true
+    theme: "default" 
+---
+
+# Intro to Slides with Quarto (Delete This Section for Final Presentation!)
+
+## New Slides {.smaller}
+
+- `#` in the text editor creates a *section* header slide, with text in the 
+centered in the middle of the slide
+- `##` in the text editor creates a *new slide*: the text next to the `##` 
+is the title of the slide
+- Note also (which you can only see in the `.qmd`) that the `{.smaller}`
+code next to a slide title makes the text of that slide smaller (compare the
+text size of this slide to the text size in the next slide)
+
+## Bulleted Lists 
+
+- You can use `-` in the text editor to make bulleted lists
+- If you want to have bullet points appear click-by-click, you can 
+use the **incremental** div:
+```
+:::{.incremental}
+- these bullet points
+- will appear click by click
+:::
+```
+
+## Slide with Columns 
+
+::::{.columns}
+
+:::{.column width=50%}
+Column 1
+:::
+
+:::{.column width=50%}
+Column 2
+:::
+
+
+::::
+
+## Bulleted Lists Click-By-Click Example
+
+:::{.incremental}
+- these bullet points
+- will appear click-by-click
+:::
+
+## Embedding R Code
+
+- Embedding R code works just like in regular Quarto, using R chunks
+
+```{r}
+#| echo: true
+mtcars
+```
+
+## Visualization
+
+```{r}
+#| echo: true
+library(tidyverse)
+ggplot(mtcars, aes(x = mpg, y = wt)) +
+  geom_point()
+```
+
+## Customization
+
+- You can change the default aesthetic of your slide show by 
+changing the *theme* by using the `theme` YAML option (you have to add it 
+in the `revealjs` section, beneath `embed-resources`)
+- See [here](https://quarto.org/docs/presentations/revealjs/themes.html) for 
+the themes you can use (and adapt - you can also make your own if
+you want, see the instructions in the linked page)
+- Theme names are put in "quotes"
+
+## Resources
+
+- You find Quarto revealjs documentation [here](https://quarto.org/docs/presentations/revealjs/)
+- Meghan Hall also has a [page](https://meghan.rbind.io/blog/quarto-slides/) 
+with useful tips
+
+# Presentation Template
+
+## Note
+
+- You do not have to use this format exactly!
+- Presentations should be roughly 7 minutes
+- Each group member should speak for an equal amount of time
+- You can separate sections with section slides but do not have to
+
+## Introduction to Topic and Motivation
+
+## Introduction to Data
+
+## Highlights from EDA 1
+
+## Highlights from EDA 2
+
+## Inference and Modeling 1
+
+## Inference and Modeling 2
+
+## Conclusions and Future Work

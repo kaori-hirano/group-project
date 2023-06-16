@@ -1,0 +1,187 @@
+---
+title: "Group [Replace with Group Number] Contract - LACOL S23 Final Project"
+author: "Your Names"
+date: "The date"
+format: pdf
+---
+
+:::{.callout-caution}
+
+## Merge Conflict Activity
+
+Remember to complete the merge conflict activity before working further on the
+contract!
+
+:::
+
+```{r merge-conflict-chunk}
+# delete this after merge conflict activity
+```
+
+
+# Instructions 
+
+**Please carefully read these instructions.**
+
+To prepare you for teamwork in the working world or a research
+environment, you will complete a collaborative final project with a team of your
+peers this semester. 
+
+Working in a group presents different challenges than working individually. 
+Different work styles can lead to disagreements, which can derail progress
+and affect engagement in the course. To help you with establishing ground rules
+regarding group work, your first assignment related to the project is the joint
+writing of a group contract. This assignment takes the form of a template that
+will guide you in developing a division of labor that all members can agree on.
+
+Your team contract template is divided into three major sections:
+
+1. Establishing team procedures
+2. Identifying expectations
+3. Specifying the consequences for failing to follow these
+procedures and fulfill these expectations
+
+Since the basic purpose of this team contract is to accelerate your
+team's development, to increase individual accountability for team tasks, and
+to reduce the possibility for team conflict, make your contract as specific as
+possible: 
+
+(a) specify each task as detailed as possible,
+(b) specify each step in a procedure or process as detailed as possible, 
+(c) specify the exact person(s) responsible for each specific task, and
+(d) specify the exact time and exact place for completion or submission of each
+task. The more precisely you describe your team expectations, roles, and 
+procedures, the greater chance you have for a successful team experience.
+
+Use the Team Contract template to discuss and finalize your team roles,
+procedures, and standards. Write your agreed upon responses in the spaces below.
+Once you are finished, each group member must add their own name at the 
+bottom of the contract as a signature. **Each group member must commit and push
+their own name. We will check!** This is your e-signature on this contract.
+
+
+Once you are finished, render the document and submit it to the course Canvas
+page. Once your team contract has been developed, your team is ready to begin
+work on collaborative assignments. 
+
+However, you may soon find that your team is not working as
+well as you had hoped. This is normal but needs to be attended to
+immediately. Perhaps your team is simply not following the established
+contract procedures or roles as strictly as you should be, or perhaps you
+need to change some of the procedures or roles as outlined in your contract.
+Call a team meeting immediately to discuss and resolve the challenges your
+team is facing; do not delay. Seek guidance from your instructor or TA to
+resolve any conflicts so that you will have the most positive team experience
+possible.
+
+## GROUP CONTRACT (LACOL-ML2023)
+
+Team Members:
+[Replace with name 1]
+[Replace with name 2]
+[Replace with name 3]
+[Replace with name 4]
+
+
+## Team Procedures
+
+1. Day, time, and Zoom link for regular team meetings:
+
+
+2. Preferred method of communication (e.g., e-mail, text, Slack, GroupMe,
+etc.) in order to inform each other of team meetings, announcement,
+updates, reminders, problems.
+
+
+3. Decision-making policy (by consensus? by majority vote?):
+
+
+4. Method for setting and following meeting agendas (Who will set each
+agenda? When? How will team members be notified/reminded? Who will
+be responsible for the team following the agenda during a team meeting?
+What will be done to keep the team on track during a meeting?):
+
+
+5. Method of record keeping (Who will be responsible for recording &
+disseminating minutes? How & when will the minutes be disseminated?
+Where will all agendas & minutes be kept?):
+
+
+## Team Expectations
+
+### Work Quality
+
+1. Project standards (What is a realistic level of quality for team code,
+collaborative writing, individual research, preparation of drafts, etc.?):
+
+
+2. Strategies to fulfill these standards:
+
+
+### Team Make-up
+
+1. Please list each team member’s skills as they can contribute to the
+team/project
+
+
+### Team Participation
+
+1. Strategies to ensure cooperation and equal distribution of tasks:
+
+
+2. Strategies for encouraging/including ideas from all team members (team
+maintenance):
+
+
+3. Strategies for keeping on task (task maintenance):
+
+
+4. Preferences for leadership (informal, formal, individual, shared):
+
+
+### Personal Accountability
+
+1. Expected individual attendance, punctuality, and participation at all team
+meetings:
+
+
+2. Expected level of responsibility for fulfilling team assignments, timelines,
+and deadlines:
+
+
+3. Expected level of communication with other team members:
+
+
+4. Expected level of commitment to team decisions and tasks:
+
+
+## Consequences for Failing to Follow Procedures and Fulfill Expectations
+
+1. Describe, as a group, you would handle infractions of any of the
+obligations of this team contract:
+
+
+2. Describe what your team will do if the infractions continue:
+
+
+# Signatures
+
+By adding your name and date you state that:
+
+a. You participated in formulating the standards, roles, and procedures as
+stated in this contract.
+b. You understand that you are obligated to abide by these terms and
+conditions.
+c. You understand that if you do not abide by these terms and conditions, you
+will suffer the consequences as stated in this contract.
+d. You understand that if you do not participate equitably in the project, you
+may not receive the same grade on the project as your group members.
+
+
+[Group Member 1] DATE [Date of Signature]
+
+[Group Member 2] DATE [Date of Signature]
+
+[Group Member 3] DATE [Date of Signature]
+
+[Group Member 4] DATE [Date of Signature]
