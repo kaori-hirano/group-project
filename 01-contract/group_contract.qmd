@@ -1,5 +1,5 @@
 ---
-title: "Group [4] Contract - LACOL S23 Final Project"
+title: "Group 4 Contract - LACOL S23 Final Project"
 author: "Alicia Nguyen, Kaori Hirano, James Xia"
 date: "06/16/2023"
 format: pdf
@@ -79,35 +79,31 @@ possible.
 ## GROUP CONTRACT (LACOL-ML2023)
 
 Team Members:
-[Replace with name 1]
-[Replace with name 2]
-[Replace with name 3]
-[Replace with name 4]
-
+James Xia
+Kaori Hirano
+Alicia Nguyen
 
 ## Team Procedures
 
 1. Day, time, and Zoom link for regular team meetings:
+- A recurring Zoom link: https://wlu.zoom.us/j/9328076493 
+- Tentative meeting time: Sunday at 6 PM
+- Probably would create a new When2meet poll to get a weekly meeting at the beginning of every week to make sure everyone can join. 
 
-
-2. Preferred method of communication (e.g., e-mail, text, Slack, GroupMe,
-etc.) in order to inform each other of team meetings, announcement,
-updates, reminders, problems.
-
+2. Preferred method of communication (e.g., e-mail, text, Slack, GroupMe, etc.) in order to inform each other of team meetings, announcement, updates, reminders, problems.
+- Preferred method of communication: mainly through Slack but for urgent messages, we can communicate through an iMessage group. 
 
 3. Decision-making policy (by consensus? by majority vote?):
+- By consensus/compromise. 
 
-
-4. Method for setting and following meeting agendas (Who will set each
-agenda? When? How will team members be notified/reminded? Who will
-be responsible for the team following the agenda during a team meeting?
-What will be done to keep the team on track during a meeting?):
-
+4. Method for setting and following meeting agendas (Who will set each agenda? When? How will team members be notified/reminded? Who will be responsible for the team following the agenda during a team meeting? What will be done to keep the team on track during a meeting?):
+- We will all decide the agenda of the following meeting at the end of a current meeting. The notes will be kept in the same Google Document where our meeting memos are. We will keep a timeline/table keeping track of the deadlines for each member at the beginning of the Google Document. Each member would keep track of their own task and pay attention to other members' work progress. If a member is behind on their work, they will be reminded through Slack. Every member should turn on notifications for Slack or check Slack at least once per day. 
+- The note-taker will be responsible for pushing the agenda and making sure everything is checked off within the desired timeframe.
 
 5. Method of record keeping (Who will be responsible for recording &
 disseminating minutes? How & when will the minutes be disseminated?
 Where will all agendas & minutes be kept?):
-
+- We will rotate the note-taker role. The note-taking responsibility will be designated at the beginning of every week. The notes will be stored in a shared Google Document, which will be created at the first meeting for project proposal drafting. 
 
 ## Team Expectations
 
