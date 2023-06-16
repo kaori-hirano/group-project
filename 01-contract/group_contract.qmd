@@ -1,6 +1,6 @@
 ---
 title: "Group [Replace with Group Number] Contract - LACOL S23 Final Project"
-author: "Your Names"
+author: "Alicia Nguyen"
 date: "The date"
 format: pdf
 ---
