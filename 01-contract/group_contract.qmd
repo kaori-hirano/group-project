@@ -15,12 +15,6 @@ contract!
 :::
 
 
-```{r merge-conflict end}
-
-```
-
-
-
 # Instructions 
 
 **Please carefully read these instructions.**
@@ -120,7 +114,7 @@ Where will all agendas & minutes be kept?):
 ### Team Make-up
 
 1. Please list each team member’s skills as they can contribute to the team/project
-- Kaori Hirano: R, applied regression method. 
+- Kaori Hirano: R, applied regression class 
 - James Xia: R
 - Alicia Nguyen: R, proofreading research papers. 
 
@@ -183,5 +177,5 @@ Alicia Nguyen 6/16/2023
 
 James Xia 6/16/2023
 
-[Group Member 3] DATE [Date of Signature]
+Kaori Hirano 6/16/2023
 
