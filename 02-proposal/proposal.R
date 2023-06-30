@@ -12,6 +12,20 @@ format: pdf
   # Research Question
   
   # Data for Question 1
+We will look at all predictor variables included in the data set, except for 
+the variables used to identify the data points - country_name, histname, year, 
+and our dependent variable v2x_corr. In other words, we would feed all these 
+predictors to help build our multiple linear regression model (and find out
+which top 3 or 5 predictors are most closely associated/correlated with higher
+corruption level. We would split the data into training and validation sets to 
+test whether our model is able to predict/estimate corruption level in nations 
+in the validation set. On another note, we could also do PCA to figure out
+which nations are most similar to one another in terms of all variales except
+country_name, histname, year, and our dependent variable v2x_corr. Then, we
+could cross-check with the variables in our multiple linear regression model
+to see if the variables in both approaches overlap. 
+
+
   
   
 ## Question 2
@@ -36,7 +50,7 @@ higher amounts of things that bring people together and lower rates of things th
 bring people apart or make meeting with other people difficult. 
 
 Alternately, we could explore predicting civil society participation instead of 
-the index. We could also explore if these predictors of civil society also predict 
+the index. We could also explore whether these predictors of civil society also predict 
 happiness, which is said to be one of the reasons for participation in civil society. 
 
 
