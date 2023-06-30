@@ -11,6 +11,39 @@ format: pdf
   
   # Research Question
   
+One of our research question is what are the key factors that most strongly 
+affect the political corruption index, and can we use these factors to predict
+the corruption index? Hypothesis 1: Higher levels of electoral democracy 
+(v2x_polyarchy), participatory democracy (v2x_partipdem), and liberal 
+democracy (v2x_libdem) will be negatively correlated with the political 
+corruption index. Hypothesis 2: Lower levels of civil society organization 
+repression (v2csreprss) and higher scores on the core civil society index 
+(v2xcs_ccsi) will be negatively correlated with the political corruption 
+index. Hypothesis 3: Higher levels of clean elections (v2xel_frefair) and 
+greater civil society participation (v2x_cspart) will be negatively 
+correlated with the political corruption index. Hypothesis 4: Freedom House 
+scores related to civil liberties (e_fh_cl), political rights (e_fh_pr), and 
+the rule of law (e_fh_rol) will be negatively correlated with the political 
+corruption index. To investigate the factors that have the greatest impact on
+the political corruption index, a multiple linear regression analysis will be
+conducted using a stepwise approach. The aim is to identify the 3-5 variables
+that exhibit the strongest association with the political corruption index.
+The dataset will be divided into a training set and a validation set to 
+assess the predictive capability of the developed model. By evaluating the 
+models performance on the validation set, it will be determined whether the
+selected factors can effectively predict the corruption index. This approach
+will enable a focused exploration of the key factors influencing political 
+corruption and provide insights into the potential for developing a reliable
+predictive model for corruption levels.
+
+By following these steps, we aim to identify the most influential factors 
+contributing to political corruption and develop a model that can predict 
+the corruption index based on these factors. The analysis will provide 
+insights into the relationship between various political, economic, and
+sociological variables and political corruption, contributing to a better
+understanding of the factors influencing corruption levels globally.
+
+
   # Data for Question 1
 We will look at all predictor variables included in the data set, except for 
 the variables used to identify the data points - country_name, histname, year, 
@@ -25,8 +58,6 @@ country_name, histname, year, and our dependent variable v2x_corr. Then, we
 could cross-check with the variables in our multiple linear regression model
 to see if the variables in both approaches overlap. 
 
-
-  
   
 ## Question 2
   
