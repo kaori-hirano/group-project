@@ -4,12 +4,10 @@ author: "Group 4"
 date: "6/29/23"
 format: pdf
 ---
-  
-### Project Proposal
 
 # Question 1
   
-  # Research Question
+## Research Question
   
 One of our research question is what are the key factors that most strongly 
 affect the political corruption index, and can we use these factors to predict
@@ -44,7 +42,7 @@ sociological variables and political corruption, contributing to a better
 understanding of the factors influencing corruption levels globally.
 
 
-  # Data for Question 1
+## Data for Question 1
 We will look at all predictor variables included in the data set, except for 
 the variables used to identify the data points - country_name, histname, year, 
 and our dependent variable v2x_corr. In other words, we would feed all these 
@@ -59,9 +57,9 @@ could cross-check with the variables in our multiple linear regression model
 to see if the variables in both approaches overlap. 
 
   
-## Question 2
+# Question 2
   
-  ### Research Question
+## Research Question
 Our second research question idea explores the relationship  between prosocial/
 social behaviors and civil society index. This question is of interest because
 it pulls together politics and measures of wellbeing to explore what effects 
@@ -82,14 +80,14 @@ rates of things that bring people apart or make meeting with other people
 difficult. 
 
 Alternately, if the idea above doesn't seem feasible, we could explore 
-predicting civil society participation instead of  
-the index. We could also explore whether these predictors of civil society also 
-predict happiness, which is said to be one of the reasons for participation in 
-civil society. Civil society participation could even be a more interesting question 
+predicting civil society participation instead of  the index. We could also
+explore whether these predictors of civil society also predict happiness, which 
+is said to be one of the reasons for participation in civil society. Civil
+society participation could even be a more interesting question 
 than predicting the index. 
 
 
-  # Data for Question 2
+## Data for Question 2
 Since our topic is about how civil society index be affected by prosocial 
 behaviors, we will use the variables listed above, which include: civil society
 repression effort scores, social support scores, freedom to make life choices, 
@@ -110,5 +108,3 @@ unsupervised methods could be conducted by either linear models and clustering,
 or if we focus on prediction/grouping, doing k-means clustering and hierarchical clustering. 
 This would allow us to explore the difference in k-means and hierarchical clustering
 to see how the prediction/results change. 
-
-  
