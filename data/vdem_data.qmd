@@ -1,11 +1,1 @@
-```{r load-packages}
-<<<<<<< HEAD
-if(!require(devtools)){
-install.packages("devtools")
-}
-devtools::install_github("vdeminstitute/vdemdata")
-```
-=======
-load("/cloud/project/data/vdemdata-master/data/vdem.RData")
-```
->>>>>>> 8ea60eb34c49c8bc751af409aec089a8edd5b70e
+

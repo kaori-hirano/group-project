@@ -11,7 +11,7 @@ execute:
 Player salary data was scraped from the MLS Players' Association [website](https://mlsplayers.org/resources/salary-guide).
 Player statistics were scraped from [https://fbref.com/](https://fbref.com/).
 
-All data is attributed to the 
+All data is attributed to the Varieties of Democracy (V-Dem) Project. https://doi.org/10.23696/vdemds20 and 
 
 ### Codebook
 
