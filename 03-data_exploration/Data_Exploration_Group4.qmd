@@ -11,14 +11,131 @@ editor:
     wrap: 72
 ---
 
-=======
 # Exploring the Data
-Answer the following questions:
+What is your outcome variable(s)? How well does it measure the outcome you are 
+interested in? How does it relate to your hypotheses? What are your key 
+explanatory variables? In addition, create a table of summary statistics for 
+the variables you are planning to use.
 
-What is your outcome variable(s)? How well does it measure the outcome you are interested in? How does it relate to your hypotheses?
+General Answer: Our outcome variable is 
+civil society participation, which is v2x_cspart in the code. 
 
-What are your key explanatory variables? In addition, create a table of summary 
-statistics for the variables you are planning to use.
+We will use the predictor variables listed above, which include: 
+civil society repression effort scores,  v2csreprss
+social support scores,  happiness
+freedom to make life choices,  happiness
+presence of war, e_civil_war
+presence of coups, e_pt_coup
+participation rate in civil society, v2x_partipdem
+generosity, happiness
+education, e_peaveduc
+and government corruption. v2x_corr
+
+## Merging data - James
+```{r load-data}
+library(readxl)
+wh_2023 <- read_excel("/cloud/project/data/wh_2023.xls")
+# View(wh_2023)
+
+load("/cloud/project/data/vdemdata-master/data/vdem.RData")
+
+# colnames(wh_2023)
+# colnames(vdem)
+```
+
+```{r data processing(merge)}
+need_vdem=c("country_name","year","v2csreprss",'e_civil_war',"e_pt_coup","v2x_partipdem","e_peaveduc","v2x_corr","v2x_cspart")
+vdem_use=vdem[,need_vdem]
+
+need_wh=c("Country name","year","Social support","Freedom to make life choices","Generosity")
+wh_use=wh_2023[,need_wh]
+
+colnames(wh_use)[1] <- "country_name"
+
+total=merge(vdem_use, wh_use, by = c("country_name", "year"),
+            all.x=TRUE,
+            all.y=TRUE) 
+```
+
+## Cleaning data - Alicia 
+- Count how many NA observations we have. If it is under %, we will omit the obs.
+or we could assign some values to them using given method.
+- Drop columns not needed
+- Rename the columns based on the code book
+
+- Histograms and box plots 
+- Create a table of summary statistics for the variables you are planning to use.
+
+```{r data-cleaning}
+
+library(tidyverse)
+
+# changing the NA entries with a median of that column
+summary(total)
+total_not_NA <- total %>% na.omit() 
+# Because we are missing too many observations when we drop NAs, we will assign
+# median of each column to the NA values instead
+
+# We might need a different method for e_civil_war 
+# because it is all binary 0 and 1
+# remove the column from the set of columns parsed in the mutate function below
+total$e_civil_war <- as.character(total$e_civil_war)
+total$e_pt_coup <- as.numeric(total$e_pt_coup)
+
+library(dplyr)
+library(tidyr)
+
+#replace missing values in each numeric column with median value of column
+new_total <- total %>% mutate(across(where(is.numeric),~replace_na(.,median(.,na.rm=TRUE))))
+
+# convert the e_civil_war and e_pt_coup columns to get summary()
+new_total$e_civil_war <- as.numeric(new_total$e_civil_war)
+
+# Get the summary of our combined data set
+summary_table <- summary(new_total)
+summary_table
+
+# Get the summary of the e_civil_war variable
+new_total %>% group_by(e_civil_war) %>% count()
+
+# Boxplots and Histograms
+# Draw boxplots for each column
+selected <- new_total %>% select(-c(country_name, e_civil_war))
+
+# Need to add labels to plots
+# Need to change axis scale
+lapply(selected, function(x) boxplot(x, main = colnames(selected)[which(colnames(selected) == names(x))]))
+
+# Draw histograms for each column
+# Need to add labels to plots
+# Need to change axis scale
+lapply(selected, function(x) hist(x, main = colnames(selected)[which(colnames(selected) == names(x))]))
+
+```
+#Replacing the outliers of a particular column with median
+
+vec1<-boxplot.stats(data$Dist_Taxi)$out;
+
+data$Dist_Taxi[data$Dist_Taxi %in% vec1]<-median(data$Dist_Taxi)
 
 
+## Code book - README.qmd - Kaori
+- Location must be specified
+
+## Data Visualization - Ephrata and Kaori 
+Question 1:  
+How well does it measure the outcome you are interested in? - Kaori
+
+Question 2: 
+What is our hypothesis? - Kaori 
+How do our variable choices relate to our hypotheses? (paraphrasing from the proposal) - Kaori 
+
+Visualization group 1: 
+- A correlation heat map - Kaori 
+
+
+Visualization group 2: 
+- Scatter plots civil society participation vs. each single predictor - Ephrata
+- Line graphs showing changes over time for each predictor vs. outcome - Ephrata
+- QQ Plot - Ephrata
 
