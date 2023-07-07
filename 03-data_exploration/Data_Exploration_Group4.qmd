@@ -127,22 +127,8 @@ lapply(selected, function(x) hist(x, main = colnames(selected)[which(colnames(se
 
 ## you'll probably want to include why you chose the ones you did 
 
-#vec1<-boxplot.stats(data$Dist_Taxi)$out;
-#data$Dist_Taxi[data$Dist_Taxi %in% vec1]<-median(data$Dist_Taxi)
-```
-
-```{r changing-names}
-# changes names to shorter and easier to type/remember forms
-cs <- new_total %>% rename(csrepress = v2csreprss, civil_war = e_civil_war, coup = e_pt_coup,
-                           edu = e_peaveduc, corr = v2x_corr, cspart = v2x_cspart, 
-                           cs_index = v2xcs_ccsi, social_support = 'Social support', 
-                           choices = 'Freedom to make life choices', gen = Generosity)
-
-cs <- cs %>% filter(year > 2011) # updates to match year for both datasets 
-# the full measures for happiness start in 2012, so all years before then are 
-# filtered out for the sake of analysis
-
-saveRDS(cs, file = "civil_society")
+vec1<-boxplot.stats(data$Dist_Taxi)$out;
+data$Dist_Taxi[data$Dist_Taxi %in% vec1]<-median(data$Dist_Taxi)
 ```
 
 ## Code book - README.qmd - Kaori
@@ -191,7 +177,22 @@ society organizations, and subnational elected bodies.
 
 
 - A correlation heat map - Kaori 
+```{r changing-names}
+# changes names to shorter and easier to type/remember forms
+cs <- new_total %>% rename(csrepress = v2csreprss, civil_war = e_civil_war, coup = e_pt_coup,
+                           edu = e_peaveduc, corr = v2x_corr, cspart = v2x_cspart, 
+                           cs_index = v2xcs_ccsi, social_support = 'Social support', 
+                           choices = 'Freedom to make life choices', gen = Generosity)
+
+cs <- cs %>% filter(year > 2011) # updates to match year for both datasets 
+# the full measures for happiness start in 2012, so all years before then are 
+# filtered out for the sake of analysis
+
+saveRDS(cs, file = "civil_society")
+```
+
 ```{r corr-heatmap, fig.width = 20, fig.height = 30}
+
 # plot of civil society participation by country and year
 gg <- ggplot(data = cs, aes(x = year, y = country_name, fill = cspart)) +
   geom_tile() + 
