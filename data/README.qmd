@@ -8,22 +8,15 @@ execute:
   eval: true
 ---
 
-This document renders to a *Markdown* file (and in particular, the Github flavor
-of Markdown). On your computer, it may not look very nice, with minimal 
-formatting. Once rendered as such, staged, committed, and pushed to Github, 
-however it becomes visible as an html in your repo. In this document, you should
-briefly describe the datasets you are working with in your project
-**including their source, with links if applicable!**
-
-*You should delete this preamble once you update this file for the first time.*
-
 ### Codebook
 
 Data is attributed to the Varieties of Democracy (V-Dem) Project (https://doi.org/10.23696/vdemds20)
-which provides a multidimensional perspective on democracy beyond elections
-and the Sustainable Development Solutions Network which aggregates data from the
-Gallup World Poll on happiness, GDP per capita, social support, healthy life
-expectancy, freedom, generosity, and corruption (https://worldhappiness.report/ed/2023/).
+which provides a multidimensional perspective on democracy beyond elections by 
+considering measures including electoral, participatory, egalitarian, deliberative,
+and liberal principles in data collection and the Sustainable Development
+Solutions Network which aggregates data from the Gallup World Poll on happiness,
+GDP per capita, social support, healthy life expectancy, freedom, generosity, 
+and corruption (https://worldhappiness.report/ed/2023/).
 Further information on the measures used in V-Dem specifically is found in the V-Dem
 codebook, found here: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3802627. 
 Measures for the happiness data were found in the 2023 statistical appendix, found here https://happiness-report.s3.amazonaws.com/2023/WHR+23_Statistical_Appendix.pdf. 
