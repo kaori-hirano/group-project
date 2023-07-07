@@ -110,14 +110,18 @@ lapply(selected, function(x) boxplot(x, main = colnames(selected)[which(colnames
 # Need to add labels to plots
 # Need to change axis scale
 lapply(selected, function(x) hist(x, main = colnames(selected)[which(colnames(selected) == names(x))]))
-
 ```
+
+```{r outlier-removal}
+
 #Replacing the outliers of a particular column with median
 
+## why are we removing outliers? and replacing them?
+## also, how are we choosing which ones to remove? 
+
 vec1<-boxplot.stats(data$Dist_Taxi)$out;
-
 data$Dist_Taxi[data$Dist_Taxi %in% vec1]<-median(data$Dist_Taxi)
-
+```
 
 ## Code book - README.qmd - Kaori
 - Location must be specified
@@ -125,10 +129,36 @@ data$Dist_Taxi[data$Dist_Taxi %in% vec1]<-median(data$Dist_Taxi)
 ## Data Visualization - Ephrata and Kaori 
 Question 1:  
 How well does it measure the outcome you are interested in? - Kaori
+We chose civil society participation as our outcome variable. We were originally
+going to use civil society index, but we were not able to find much information 
+regarding the actual measures considered, so we chose to use civil society participation
+instead. This is because civil society index may have already considered factors we
+are adding to the model, while civil society participation will tell us how many 
+people are actually participating in civil society, which is the public sphere between
+the private sphere and government. 
 
 Question 2: 
-What is our hypothesis? - Kaori 
+What is our hypothesis? 
+Our hypothesis is that countries with similar characteristics regarding supporting/
+not supporting civil society--such as the presences of war or good educational 
+systems--will have similar civil society participation rates. 
+
 How do our variable choices relate to our hypotheses? (paraphrasing from the proposal) - Kaori 
+Our choices of variables reflect our understanding of civil society and the factors
+that make it stronger or weaker. Things that bring people together, such as generosity, 
+and things that may bring people apart, such as corruption, we expect to have an 
+effect on participation in civil society, which is why they are included. Civil 
+society repression effort is included because we expect higher repression efforts 
+to have an effect on participation in general, likely negative. Social support we 
+expect to have a positive relationship with civil society participation because 
+people will be connected with each other, and the same applies to generosity, with
+the opposite logic applying to presence of war and coups. Civil society index is 
+included because we expect a stronger civil society to have a stronger participation 
+rate, as with schools because often are a large part of civil society. Finally, 
+government corruption is included because this may dissuade people from participating
+in civil society or weaken civil society by underfunding it making people less
+likely to engage in it. 
+
 
 Visualization group 1: 
 - A correlation heat map - Kaori 
