@@ -11,49 +11,6 @@ editor:
     wrap: 72
 ---
 
-# Project Proposal 
-
-## Research Question
-Our research question idea explores the relationship  between prosocial/
-social behaviors and civil society index. This question is of interest because
-it pulls together politics and measures of wellbeing to explore what effects 
-civil society, which is the area outside of business and government, such as 
-family and community. We want to explore how various measures of community 
-engagement and support, both positive and negative, predict measure civil
-society scores. This will allow us to practice both clustering and regression 
-modeling to answer this question. We will also be able to practice cleaning and 
-merging data. While we cannot say for certain what relationships we expect to 
-see, finding relationships between the democracy and happiness index datasets is
-an exciting possibility. Specific relationships we could see include a 
-potentially negative between civil society organization oppression, freedom to 
-make life choices, and wars/coups, a potentially positive relationship between 
-social support, participation  rate in civil society, generosity, education, 
-and maybe government corruption. We expect places with high civil society 
-indexes to have higher amounts of things that bring people together and lower 
-rates of things that bring people apart or make meeting with other people 
-difficult. 
-
-## Data
-Since our topic is about how civil society index be affected by prosocial 
-behaviors, we will use the variables listed above, which include: civil society
-repression effort scores, social support scores, freedom to make life choices, 
-presence of war, presence of coups, participation rate in civil society, generosity, 
-education, and government corruption. The data sets we will be using are vdem 
-(democracy) and wellness. Combining these variables allow us to look at 
-how civil society and connections between people exist from different lenses. 
-Combining data that is political and sociological in nature allows us to get a fuller
-perspectice and understanding of the relationship between different behaviors that 
-connect people, prosocial behaviors, and their relationship to civil society in 
-different countries. 
-
-In the first part of the data processing, we will determine which of the factors
-will be important/influentional/significant in predicting civil society index (or participation...). 
-After choosing the significant factors, both supervised and 
-unsupervised methods could be conducted by either linear models and clustering,
-or if we focus on prediction/grouping, doing k-means clustering and hierarchical 
-clustering. This would allow us to explore the difference in k-means and 
-hierarchical clustering to see how the prediction/results change. 
-
 # Exploring the Data
 Answer the following questions:
 
@@ -62,17 +19,22 @@ interested in? How does it relate to your hypotheses? What are your key
 explanatory variables? In addition, create a table of summary statistics for 
 the variables you are planning to use.
 
-## Merging data
+## Merging data - James
 ```{r load-data}
 
 load("/cloud/project/data/vdemdata-master/data/vdem.RData")
 
+# Merge data by country and year/time
+
 ```
 
-## Cleaning data 
+## Cleaning data - Alicia 
 - Count how many NA observations we have. If it is under %, we will omit the obs.
 or we could assign some values to them using given method.
 - Deal with country name changes 
+- Drop obs or columns not needed 
+Create a table of summary statistics for the variables you are planning to use.
+
 
 Our dependent variable is civil society participation. We will use the predictor 
 variables listed above, which include: civil society repression effort scores, 
@@ -80,6 +42,12 @@ social support scores, freedom to make life choices, presence of war,
 presence of coups, participation rate in civil society, generosity, education, 
 and government corruption. 
 
+## Code book - README.qmd - Kaori
+- Location must be specified
 
+## Data Visualization - Ephrata
+How well does it measure the outcome you are interested in? How does it relate 
+to your hypotheses? What are your key explanatory variables? 
+- 
 
 
