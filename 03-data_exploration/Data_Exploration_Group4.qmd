@@ -37,30 +37,89 @@ and government corruption. v2x_corr
 ```{r load-data}
 library(readxl)
 wh_2023 <- read_excel("/cloud/project/data/wh_2023.xls")
-#View(wh_2023)
+# View(wh_2023)
+
 load("/cloud/project/data/vdemdata-master/data/vdem.RData")
-# Merge data by country and year/time
-colnames(wh_2023)
-colnames(vdem)
+
+# colnames(wh_2023)
+# colnames(vdem)
 ```
 
 ```{r data processing(merge)}
 need_vdem=c("country_name","year","v2csreprss",'e_civil_war',"e_pt_coup","v2x_partipdem","e_peaveduc","v2x_corr","v2x_cspart")
 vdem_use=vdem[,need_vdem]
+
 need_wh=c("Country name","year","Social support","Freedom to make life choices","Generosity")
 wh_use=wh_2023[,need_wh]
+
 colnames(wh_use)[1] <- "country_name"
-total=merge(vdem_use, wh_use, by = c("country_name", "year"),all.x=TRUE,all.y=TRUE) 
+
+total=merge(vdem_use, wh_use, by = c("country_name", "year"),
+            all.x=TRUE,
+            all.y=TRUE) 
 ```
 
 ## Cleaning data - Alicia 
 - Count how many NA observations we have. If it is under %, we will omit the obs.
 or we could assign some values to them using given method.
-- Deal with country name changes - optional
-- Drop obs or columns not needed 
+- Drop columns not needed
+- Rename the columns based on the code book
 
 - Histograms and box plots 
 - Create a table of summary statistics for the variables you are planning to use.
+
+```{r data-cleaning}
+
+library(tidyverse)
+
+# changing the NA entries with a median of that column
+summary(total)
+total_not_NA <- total %>% na.omit() 
+# Because we are missing too many observations when we drop NAs, we will assign
+# median of each column to the NA values instead
+
+# We might need a different method for e_civil_war 
+# because it is all binary 0 and 1
+# remove the column from the set of columns parsed in the mutate function below
+total$e_civil_war <- as.character(total$e_civil_war)
+total$e_pt_coup <- as.numeric(total$e_pt_coup)
+
+library(dplyr)
+library(tidyr)
+
+#replace missing values in each numeric column with median value of column
+new_total <- total %>% mutate(across(where(is.numeric),~replace_na(.,median(.,na.rm=TRUE))))
+
+# convert the e_civil_war and e_pt_coup columns to get summary()
+new_total$e_civil_war <- as.numeric(new_total$e_civil_war)
+
+# Get the summary of our combined data set
+summary_table <- summary(new_total)
+summary_table
+
+# Get the summary of the e_civil_war variable
+new_total %>% group_by(e_civil_war) %>% count()
+
+# Boxplots and Histograms
+# Draw boxplots for each column
+selected <- new_total %>% select(-c(country_name, e_civil_war))
+
+# Need to add labels to plots
+# Need to change axis scale
+lapply(selected, function(x) boxplot(x, main = colnames(selected)[which(colnames(selected) == names(x))]))
+
+# Draw histograms for each column
+# Need to add labels to plots
+# Need to change axis scale
+lapply(selected, function(x) hist(x, main = colnames(selected)[which(colnames(selected) == names(x))]))
+
+```
+#Replacing the outliers of a particular column with median
+
+vec1<-boxplot.stats(data$Dist_Taxi)$out;
+
+data$Dist_Taxi[data$Dist_Taxi %in% vec1]<-median(data$Dist_Taxi)
+
 
 ## Code book - README.qmd - Kaori
 - Location must be specified
