@@ -60,6 +60,3 @@ Visualization group 2:
 - Scatter plots civil society participation vs. each single predictor - Ephrata
 - Line graphs showing changes over time for each predictor vs. outcome - Ephrata
 - QQ Plot - Ephrata
-
-
-
