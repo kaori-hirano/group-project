@@ -1,0 +1,6 @@
+```{r process the data}
+library(vdemdata)
+a=load("/cloud/project/data/vdemdata-master/data/vdem.RData")
+summary(a)
+
+```
