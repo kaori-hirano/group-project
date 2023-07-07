@@ -1,0 +1,12 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.README.html
+.README.Rmd
+.Rproj
+
+src/*.o
+src/*.so
+
+/**/.DS_Store

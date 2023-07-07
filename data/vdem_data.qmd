@@ -1,11 +1,7 @@
 ```{r load-packages}
-# load package
-library("devtools")
-#install_github("vdeminstitute/vdemdata")
 
-
-library(vdemdata)
-# load data in environment
-
-data(vdem)
+a=load("/cloud/project/data/vdemdata-master/data/vdem.RData")
+summary(a)
 ```
+>>>>>>> 8ea60eb34c49c8bc751af409aec089a8edd5b70e
+>>>>>>> 9d3b677d97da5e14be26428de515fb60d26fe1dd

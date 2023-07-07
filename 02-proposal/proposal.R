@@ -11,7 +11,7 @@ format: pdf
   
   # Research Question
   
-One of our research question is what are the key factors that most strongly 
+One of our research questions is what are the key factors that most strongly 
 affect the political corruption index, and can we use these factors to predict
 the corruption index? Hypothesis 1: Higher levels of electoral democracy 
 (v2x_polyarchy), participatory democracy (v2x_partipdem), and liberal 
@@ -81,34 +81,18 @@ indexes to have higher amounts of things that bring people together and lower
 rates of things that bring people apart or make meeting with other people 
 difficult. 
 
-Alternately, if the idea above doesn't seem feasible, we could explore 
-predicting civil society participation instead of  
+Alternately, we could explore predicting civil society participation instead of 
 the index. We could also explore whether these predictors of civil society also 
 predict happiness, which is said to be one of the reasons for participation in 
-civil society. Civil society participation could even be a more interesting question 
-than predicting the index. 
+civil society. 
 
 
   # Data for Question 2
 Since our topic is about how civil society index be affected by prosocial 
-behaviors, we will use the variables listed above, which include: civil society
-repression effort scores, social support scores, freedom to make life choices, 
-presence of war, presence of coups, participation rate in civil society, generosity, 
-education, and government corruption. The data sets we will be using are vdem 
-(democracy) and wellness. Combining these variables allow us to look at 
-how civil society and connections between people exist from different lenses. 
-Combining data that is political and sociological in nature allows us to get a fuller
-perspectice and understanding of the relationship between different behaviors that 
-connect people, prosocial behaviors, and their relationship to civil society in 
-different countries. 
-
-
-In the first part of the data processing, we will determine which of the factors
-will be important/influentional/significant in predicting civil society index (or participation...). 
-After choosing the siginificant factors, both supervised and 
-unsupervised methods could be conducted by either linear models and clustering,
-or if we focus on prediction/grouping, doing k-means clustering and hierarchical clustering. 
-This would allow us to explore the difference in k-means and hierarchical clustering
-to see how the prediction/results change. 
+behaviors, we are going to use all the Freedom House scores and democracy, 
+elections and participation indexes. In the first part of the data processing, 
+we might see the importance of each scores and indexes among their corresponding
+categories. After choosing the siginificant factors, both supervised and 
+unsupervised training will be conducted by linear model and clustering. 
 
   
