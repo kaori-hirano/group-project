@@ -11,3 +11,15 @@ editor:
     wrap: 72
 ---
 
+=======
+# Exploring the Data
+Answer the following questions:
+
+What is your outcome variable(s)? How well does it measure the outcome you are 
+interested in? How does it relate to your hypotheses?
+
+What are your key explanatory variables? In addition, create a table of summary 
+statistics for the variables you are planning to use.
+
+
+
