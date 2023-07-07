@@ -1,6 +1,32 @@
+<<<<<<< HEAD
 ```{r process the data}
 library(vdemdata)
 a=load("/cloud/project/data/vdemdata-master/data/vdem.RData")
 summary(a)
 
 ```
+=======
+---
+title: "Data Exploration"
+author: "Group 4"
+date: "7/6/2023"
+format: pdf
+execute: 
+  warning: false
+  message: false
+editor: 
+  markdown: 
+    wrap: 72
+---
+
+# Exploring the Data
+Answer the following questions:
+
+What is your outcome variable(s)? How well does it measure the outcome you are 
+interested in? How does it relate to your hypotheses?
+
+What are your key explanatory variables? In addition, create a table of summary 
+statistics for the variables you are planning to use.
+
+
+>>>>>>> 42f66bc75e801845634806ecf30a37ad052fc256
