@@ -1,6 +1,6 @@
 ```{r load-packages}
-# load package
-library(vdemdata)
-# load data in environment
-data("vdem")
+if(!require(devtools)){
+install.packages("devtools")
+}
+devtools::install_github("vdeminstitute/vdemdata")
 ```

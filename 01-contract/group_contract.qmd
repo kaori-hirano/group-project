@@ -5,14 +5,13 @@ date: "06/16/2023"
 format: pdf
 ---
 
-:::{.callout-caution}
 
 ## Merge Conflict Activity
 
 Remember to complete the merge conflict activity before working further on the
 contract!
 
-:::
+
 
 
 # Instructions 
