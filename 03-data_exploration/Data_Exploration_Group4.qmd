@@ -75,6 +75,12 @@ or we could assign some values to them using given method.
 - Histograms and box plots 
 - Create a table of summary statistics for the variables you are planning to use.
 
+### these questions need to be answered
+What data cleaning did you have to do?
+How did you wrangle the data?
+Are you deciding to exclude any observations? If so, why?
+Did you have to create any new variables from existing variables? If so, how and why?
+
 ```{r data-cleaning}
 # changing the NA entries with a median of that column
 summary(total)
@@ -184,15 +190,16 @@ participation which considers suffrage, direct democracy, engagement with civil
 society organizations, and subnational elected bodies.
 
 
-Visualization group 1: 
 - A correlation heat map - Kaori 
-```{r corr-heatmap}
+```{r corr-heatmap, fig.width = 20, fig.height = 30}
+# plot of civil society participation by country and year
 gg <- ggplot(data = cs, aes(x = year, y = country_name, fill = cspart)) +
   geom_tile() + 
   labs(title = "Civil Society Participation by Country Over Year", x = 'Year',
        y = 'Country', fill = 'Civil Society Participation Index') +
-  theme(axis.text.y = element_text(face="bold", color="black",  size=5, angle = 45, hjust = 1)) #+ 
-  options(repr.plot.width = 15, repr.plot.height = 30)
+  theme(axis.text.y = element_text(face="bold", color="black",  size=5, angle = 45, hjust = 1)) +
+  theme(legend.position = 'bottom')
+  #options(repr.plot.width = 15, repr.plot.height = 50)
 
 gg
 ```
