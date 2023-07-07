@@ -16,6 +16,7 @@ library(dplyr)
 library(tidyr)
 library(readxl)
 library(tidyverse)
+library(reshape2)
 ```
 
 # Exploring the Data
@@ -133,11 +134,14 @@ cs <- new_total %>% rename(csrepress = v2csreprss, civil_war = e_civil_war, coup
                            cs_index = v2xcs_ccsi, social_support = 'Social support', 
                            choices = 'Freedom to make life choices', gen = Generosity)
 
+cs <- cs %>% filter(year > 2011) # updates to match year for both datasets 
+# because happiness is starts in 2012
+
 saveRDS(cs, file = "civil_society")
 ```
 
 ## Code book - README.qmd - Kaori
-- Location must be specified
+- updated in the data folder and this folder
 
 ## Data Visualization - Ephrata and Kaori 
 Question 1:  
@@ -184,8 +188,24 @@ society organizations, and subnational elected bodies.
 
 Visualization group 1: 
 - A correlation heat map - Kaori 
-Hey Ephrata would you mind doing this if you have enough time? the codebook
-is a lot more work than I anticipated
+```{r corr-heatmap}
+# creating correlation matrix
+corr_mat <- round(cor(data),2)
+
+# reduce the size of correlation matrix
+melted_corr_mat <- melt(corr_mat)
+head(melted_corr_mat)
+
+# plotting the correlation heatmap
+library(ggplot2)
+ggplot(data = melted_corr_mat, aes(x=Var1, y=Var2,
+								fill=value)) +
+geom_tile() +
+geom_text(aes(Var2, Var1, label = value),
+		color = "black", size = 4)
+
+
+```
 
 
 Visualization group 2: 
