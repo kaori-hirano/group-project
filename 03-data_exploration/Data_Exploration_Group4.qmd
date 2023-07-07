@@ -10,6 +10,13 @@ editor:
   markdown: 
     wrap: 72
 ---
+```{r libraries}
+# loads all needed libraries
+library(dplyr)
+library(tidyr)
+library(readxl)
+library(tidyverse)
+```
 
 # Exploring the Data
 What is your outcome variable(s)? How well does it measure the outcome you are 
@@ -33,7 +40,6 @@ and government corruption. v2x_corr
 
 ## Merging data - James
 ```{r load-data}
-library(readxl)
 wh_2023 <- read_excel("/cloud/project/data/wh_2023.xls")
 # View(wh_2023)
 
@@ -44,7 +50,9 @@ load("/cloud/project/data/vdemdata-master/data/vdem.RData")
 ```
 
 ```{r data processing(merge)}
-need_vdem=c("country_name","year","v2csreprss",'e_civil_war',"e_pt_coup","v2x_partipdem","e_peaveduc","v2x_corr","v2x_cspart")
+need_vdem=c("country_name","year","v2csreprss",'e_civil_war',"e_pt_coup",
+"v2x_partipdem","e_peaveduc","v2x_corr","v2x_cspart","v2xcs_ccsi")
+
 vdem_use=vdem[,need_vdem]
 
 need_wh=c("Country name","year","Social support","Freedom to make life choices","Generosity")
@@ -67,9 +75,6 @@ or we could assign some values to them using given method.
 - Create a table of summary statistics for the variables you are planning to use.
 
 ```{r data-cleaning}
-
-library(tidyverse)
-
 # changing the NA entries with a median of that column
 summary(total)
 total_not_NA <- total %>% na.omit() 
@@ -81,9 +86,6 @@ total_not_NA <- total %>% na.omit()
 # remove the column from the set of columns parsed in the mutate function below
 total$e_civil_war <- as.character(total$e_civil_war)
 total$e_pt_coup <- as.numeric(total$e_pt_coup)
-
-library(dplyr)
-library(tidyr)
 
 #replace missing values in each numeric column with median value of column
 new_total <- total %>% mutate(across(where(is.numeric),~replace_na(.,median(.,na.rm=TRUE))))
@@ -116,11 +118,22 @@ lapply(selected, function(x) hist(x, main = colnames(selected)[which(colnames(se
 
 #Replacing the outliers of a particular column with median
 
-## why are we removing outliers? and replacing them?
-## also, how are we choosing which ones to remove? 
+## why are we removing all outliers?
+## and how are we choosing which ones to remove? 
+## you'll probably want to include why you chose the ones you did 
 
 vec1<-boxplot.stats(data$Dist_Taxi)$out;
 data$Dist_Taxi[data$Dist_Taxi %in% vec1]<-median(data$Dist_Taxi)
+```
+
+```{r changing-names}
+# changes names to shorter and easier to type/remember forms
+cs <- new_total %>% rename(csrepress = v2csreprss, civil_war = e_civil_war, coup = e_pt_coup,
+                           edu = e_peaveduc, corr = v2x_corr, cspart = v2x_cspart, 
+                           cs_index = v2xcs_ccsi, social_support = 'Social support', 
+                           choices = 'Freedom to make life choices', gen = Generosity)
+
+saveRDS(cs, file = "civil_society")
 ```
 
 ## Code book - README.qmd - Kaori
@@ -135,7 +148,8 @@ regarding the actual measures considered, so we chose to use civil society parti
 instead. This is because civil society index may have already considered factors we
 are adding to the model, while civil society participation will tell us how many 
 people are actually participating in civil society, which is the public sphere between
-the private sphere and government. 
+the private sphere and government, which can include professional organizations, 
+charities, labor unions, and spiritual groups. 
 
 Question 2: 
 What is our hypothesis? 
@@ -149,19 +163,29 @@ that make it stronger or weaker. Things that bring people together, such as gene
 and things that may bring people apart, such as corruption, we expect to have an 
 effect on participation in civil society, which is why they are included. Civil 
 society repression effort is included because we expect higher repression efforts 
-to have an effect on participation in general, likely negative. Social support we 
+to have an effect on participation in general, likely negative. This is considered
+in the civil society index, but will be used in preliminary analysis for better 
+understanding and exploration of the topic. Social support we 
 expect to have a positive relationship with civil society participation because 
 people will be connected with each other, and the same applies to generosity, with
 the opposite logic applying to presence of war and coups. Civil society index is 
 included because we expect a stronger civil society to have a stronger participation 
-rate, as with schools because often are a large part of civil society. Finally, 
-government corruption is included because this may dissuade people from participating
-in civil society or weaken civil society by underfunding it making people less
-likely to engage in it. 
+rate, as with education because schools and teaching organizations often are a 
+large part of civil society. The civil society index takes into account the entry/exit
+of civil society organizations (CSOs), the repression of civil society, 
+and the participatory environment, which is the types and amount of CSOs available. 
+Government corruption is included because 
+this may dissuade people from participating in civil society or weaken civil
+society by underfunding it making people less likely to engage in it. Finally, 
+participation in democracy is used because it measures the active level of citizen
+participation which considers suffrage, direct democracy, engagement with civil 
+society organizations, and subnational elected bodies.
 
 
 Visualization group 1: 
 - A correlation heat map - Kaori 
+Hey Ephrata would you mind doing this if you have enough time? the codebook
+is a lot more work than I anticipated
 
 
 Visualization group 2: 
