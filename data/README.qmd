@@ -1,5 +1,5 @@
 ---
-title: "Data for Final Project: [INSERT TITLE HERE]"
+title: "Data for Final Project: Predicting Civil Society"
 format: gfm
 execute: 
   error: true
@@ -28,6 +28,15 @@ to help with creating a codebook. *Delete this paragraph when you update this
 page with information relevant to your project. Replace the code in the chunk 
 with code relevant to your project*.
 
+Data is attributed to the Varieties of Democracy (V-Dem) Project (https://doi.org/10.23696/vdemds20) and the Sustainable Development Solutions Network which aggregates data from the Gallup World Poll on happiness, GDP per capita, social support, healthy life expectancy, freedom, generosity, and corruption (https://worldhappiness.report/ed/2023/)
+
+`import_function(here::here("data/your_file_name.file_extension")`
+
+civil society repression effort scores, social support
+scores, freedom to make life choices, presence of war, presence of coups, participation rate
+in civil society, generosity, education, and government corruption. The data sets we will be
+using are vdem (democracy) and wellness
+
 ```{r}
 #| echo: false
 #| output: asis
@@ -38,7 +47,7 @@ mpg <- mpg
 
 codebook <- tibble(
   Variables = paste0("`", names(mpg), "`"), # makes it code script when rendered
-  Description = c("manufacturer name",
+  Description = c("jfkdsl",
                   "model name",
                   "engine displacement, in litres",
                   "year of manufacture",
