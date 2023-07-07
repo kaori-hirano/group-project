@@ -193,3 +193,131 @@ Visualization group 2:
 - Line graphs showing changes over time for each predictor vs. outcome - Ephrata
 - QQ Plot - Ephrata
 
+```{r Scatter plot}
+# Scatter plot of civil society participation vs. civil society repression effort
+ggplot(cs, aes(x = csrepress, y = cspart)) +
+  geom_point() +
+  labs(x = "Civil Society Repression Effort", y = "Civil Society Participation") +
+  ggtitle("Civil Society Participation vs. Civil Society Repression Effort")
+
+# Scatter plot of civil society participation vs. social support
+ggplot(cs, aes(x = social_support, y = cspart)) +
+  geom_point() +
+  labs(x = "Social Support", y = "Civil Society Participation") +
+  ggtitle("Civil Society Participation vs. Social Support")
+
+# Scatter plot of civil society participation vs. freedom to make life choices
+ggplot(cs, aes(x = choices, y = cspart)) +
+  geom_point() +
+  labs(x = "Freedom to Make Life Choices", y = "Civil Society Participation") +
+  ggtitle("Civil Society Participation vs. Freedom to Make Life Choices")
+
+# Scatter plot of civil society participation vs. presence of war
+ggplot(cs, aes(x = civil_war, y = cspart)) +
+  geom_point() +
+  labs(x = "Presence of War", y = "Civil Society Participation") +
+  ggtitle("Civil Society Participation vs. Presence of War")
+
+# Scatter plot of civil society participation vs. presence of coups
+ggplot(cs, aes(x = coup, y = cspart)) +
+  geom_point() +
+  labs(x = "Presence of Coups", y = "Civil Society Participation") +
+  ggtitle("Civil Society Participation vs. Presence of Coups")
+
+# Scatter plot of civil society participation vs. participation rate in civil society
+ggplot(cs, aes(x = v2x_partipdem, y = cspart)) +
+  geom_point() +
+  labs(x = "Participation Rate in Civil Society", y = "Civil Society Participation") +
+  ggtitle("Civil Society Participation vs. Participation Rate in Civil Society")
+
+# Scatter plot of civil society participation vs. generosity
+ggplot(cs, aes(x = gen, y = cspart)) +
+  geom_point() +
+  labs(x = "Generosity", y = "Civil Society Participation") +
+  ggtitle("Civil Society Participation vs. Generosity")
+
+# Scatter plot of civil society participation vs. education
+ggplot(cs, aes(x = edu, y = cspart)) +
+  geom_point() +
+  labs(x = "Education", y = "Civil Society Participation") +
+  ggtitle("Civil Society Participation vs. Education")
+
+# Scatter plot of civil society participation vs. government corruption
+ggplot(cs, aes(x = corr, y = cspart)) +
+  geom_point() +
+  labs(x = "Government Corruption", y = "Civil Society Participation") +
+  ggtitle("Civil Society Participation vs. Government Corruption")
+
+```
+```{r Line graph}
+# Line graph of civil society participation over time
+ggplot(cs, aes(x = year, y = cspart)) +
+  geom_line() +
+  labs(x = "Year", y = "Civil Society Participation") +
+  ggtitle("Changes in Civil Society Participation over Time")
+
+# Line graph of civil society repression effort over time
+ggplot(cs, aes(x = year, y = csrepress)) +
+  geom_line() +
+  labs(x = "Year", y = "Civil Society Repression Effort") +
+  ggtitle("Changes in Civil Society Repression Effort over Time")
+
+# Line graph of social support over time
+ggplot(cs, aes(x = year, y = social_support)) +
+  geom_line() +
+  labs(x = "Year", y = "Social Support") +
+  ggtitle("Changes in Social Support over Time")
+
+# Line graph of freedom to make life choices over time
+ggplot(cs, aes(x = year, y = choices)) +
+  geom_line() +
+  labs(x = "Year", y = "Freedom to Make Life Choices") +
+  ggtitle("Changes in Freedom to Make Life Choices over Time")
+
+# Line graph of presence of war over time
+ggplot(cs, aes(x = year, y = civil_war)) +
+  geom_line() +
+  labs(x = "Year", y = "Presence of War") +
+  ggtitle("Changes in Presence of War over Time")
+
+# Line graph of presence of coups over time
+ggplot(cs, aes(x = year, y = coup)) +
+  geom_line() +
+  labs(x = "Year", y = "Presence of Coups") +
+  ggtitle("Changes in Presence of Coups over Time")
+
+# Line graph of participation rate in civil society over time
+ggplot(cs, aes(x = year, y = v2x_partipdem)) +
+  geom_line() +
+  labs(x = "Year", y = "Participation Rate in Civil Society") +
+  ggtitle("Changes in Participation Rate in Civil Society over Time")
+
+# Line graph of generosity over time
+ggplot(cs, aes(x = year, y = gen)) +
+  geom_line() +
+  labs(x = "Year", y = "Generosity") +
+  ggtitle("Changes in Generosity over Time")
+
+# Line graph of education over time
+ggplot(cs, aes(x = year, y = edu)) +
+  geom_line() +
+  labs(x = "Year", y = "Education") +
+  ggtitle("Changes in Education over Time")
+
+# Line graph of government corruption over time
+ggplot(cs, aes(x = year, y = corr)) +
+  geom_line() +
+  labs(x = "Year", y = "Government Corruption") +
+  ggtitle("Changes in Government Corruption over Time")
+
+
+
+```
+
+
+```{r QQ plot}
+# QQ plot of civil society participation
+qqnorm(cs$cspart, main = "QQ Plot of Civil Society Participation")
+qqline(cs$cspart)
+
+```
