@@ -1,7 +1,11 @@
+<<<<<<< HEAD
 ```{r load-packages}
 
+library(vdemdata)
 a=load("/cloud/project/data/vdemdata-master/data/vdem.RData")
 summary(a)
 ```
 >>>>>>> 8ea60eb34c49c8bc751af409aec089a8edd5b70e
 >>>>>>> 9d3b677d97da5e14be26428de515fb60d26fe1dd
+=======
+>>>>>>> dc14e3d70a5c05b996d335ac2c42eee4d564c1b1
