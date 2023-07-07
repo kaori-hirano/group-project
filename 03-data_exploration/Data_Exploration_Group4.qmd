@@ -1,11 +1,3 @@
-<<<<<<< HEAD
-```{r process the data}
-library(vdemdata)
-a=load("/cloud/project/data/vdemdata-master/data/vdem.RData")
-summary(a)
-
-```
-=======
 ---
 title: "Data Exploration"
 author: "Group 4"
@@ -19,49 +11,6 @@ editor:
     wrap: 72
 ---
 
-# Project Proposal 
-
-## Research Question
-Our research question idea explores the relationship  between prosocial/
-social behaviors and civil society index. This question is of interest because
-it pulls together politics and measures of wellbeing to explore what effects 
-civil society, which is the area outside of business and government, such as 
-family and community. We want to explore how various measures of community 
-engagement and support, both positive and negative, predict measure civil
-society scores. This will allow us to practice both clustering and regression 
-modeling to answer this question. We will also be able to practice cleaning and 
-merging data. While we cannot say for certain what relationships we expect to 
-see, finding relationships between the democracy and happiness index datasets is
-an exciting possibility. Specific relationships we could see include a 
-potentially negative between civil society organization oppression, freedom to 
-make life choices, and wars/coups, a potentially positive relationship between 
-social support, participation  rate in civil society, generosity, education, 
-and maybe government corruption. We expect places with high civil society 
-indexes to have higher amounts of things that bring people together and lower 
-rates of things that bring people apart or make meeting with other people 
-difficult. 
-
-## Data
-Since our topic is about how civil society index be affected by prosocial 
-behaviors, we will use the variables listed above, which include: civil society
-repression effort scores, social support scores, freedom to make life choices, 
-presence of war, presence of coups, participation rate in civil society, generosity, 
-education, and government corruption. The data sets we will be using are vdem 
-(democracy) and wellness. Combining these variables allow us to look at 
-how civil society and connections between people exist from different lenses. 
-Combining data that is political and sociological in nature allows us to get a fuller
-perspectice and understanding of the relationship between different behaviors that 
-connect people, prosocial behaviors, and their relationship to civil society in 
-different countries. 
-
-In the first part of the data processing, we will determine which of the factors
-will be important/influentional/significant in predicting civil society index (or participation...). 
-After choosing the significant factors, both supervised and 
-unsupervised methods could be conducted by either linear models and clustering,
-or if we focus on prediction/grouping, doing k-means clustering and hierarchical 
-clustering. This would allow us to explore the difference in k-means and 
-hierarchical clustering to see how the prediction/results change. 
-
 # Exploring the Data
 Answer the following questions:
 
@@ -70,25 +19,68 @@ interested in? How does it relate to your hypotheses? What are your key
 explanatory variables? In addition, create a table of summary statistics for 
 the variables you are planning to use.
 
-## Merging data
+General Answer: Our dependent variable is 
+civil society participation. v2x_cspart
+
+We will use the predictor variables listed above, which include: 
+civil society repression effort scores,  v2csreprss
+social support scores,  happiness
+freedom to make life choices,  happiness
+presence of war, e_civil_war
+presence of coups, e_pt_coup
+participation rate in civil society, v2x_partipdem
+generosity, happiness
+education, e_peaveduc
+and government corruption. v2x_corr
+
+## Merging data - James
 ```{r load-data}
-
+library(readxl)
+wh_2023 <- read_excel("/cloud/project/data/wh_2023.xls")
+#View(wh_2023)
 load("/cloud/project/data/vdemdata-master/data/vdem.RData")
-
+# Merge data by country and year/time
+colnames(wh_2023)
+colnames(vdem)
 ```
 
-## Cleaning data 
+```{r data processing(merge)}
+need_vdem=c("country_name","year","v2csreprss",'e_civil_war',"e_pt_coup","v2x_partipdem","e_peaveduc","v2x_corr","v2x_cspart")
+vdem_use=vdem[,need_vdem]
+need_wh=c("Country name","year","Social support","Freedom to make life choices","Generosity")
+wh_use=wh_2023[,need_wh]
+colnames(wh_use)[1] <- "country_name"
+total=merge(vdem_use, wh_use, by = c("country_name", "year"),all.x=TRUE,all.y=TRUE) 
+```
+
+## Cleaning data - Alicia 
 - Count how many NA observations we have. If it is under %, we will omit the obs.
 or we could assign some values to them using given method.
-- Deal with country name changes 
+- Deal with country name changes - optional
+- Drop obs or columns not needed 
 
-Our dependent variable is civil society participation. We will use the predictor 
-variables listed above, which include: civil society repression effort scores, 
-social support scores, freedom to make life choices, presence of war, 
-presence of coups, participation rate in civil society, generosity, education, 
-and government corruption. 
+- Histograms and box plots 
+- Create a table of summary statistics for the variables you are planning to use.
 
+## Code book - README.qmd - Kaori
+- Location must be specified
 
+## Data Visualization - Ephrata and Kaori 
+Question 1:  
+How well does it measure the outcome you are interested in? - Kaori
 
+Question 2: 
+What is our hypothesis? - Kaori 
+How do our variable choices relate to our hypotheses? (paraphrasing from the proposal) - Kaori 
 
+Visualization group 1: 
+- A correlation heat map - Kaori 
+
+<<<<<<< HEAD
 >>>>>>> 42f66bc75e801845634806ecf30a37ad052fc256
+=======
+Visualization group 2: 
+- Scatter plots civil society participation vs. each single predictor - Ephrata
+- Line graphs showing changes over time for each predictor vs. outcome - Ephrata
+- QQ Plot - Ephrata
+>>>>>>> 9973f8fb6b863809cff280ca64f138b9de20584f
