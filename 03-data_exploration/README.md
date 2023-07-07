@@ -11,7 +11,7 @@ execute:
 Player salary data was scraped from the MLS Players' Association [website](https://mlsplayers.org/resources/salary-guide).
 Player statistics were scraped from [https://fbref.com/](https://fbref.com/).
 
-All data is attributed to the Varieties of Democracy (V-Dem) Project. https://doi.org/10.23696/vdemds20 and 
+Data is attributed to the Varieties of Democracy (V-Dem) Project (https://doi.org/10.23696/vdemds20) and the Sustainable Development Solutions Network which aggregates data from the Gallup World Poll on happiness, GDP per capita, social support, healthy life expectancy, freedom, generosity, and corruption (https://worldhappiness.report/ed/2023/)
 
 ### Codebook
 
