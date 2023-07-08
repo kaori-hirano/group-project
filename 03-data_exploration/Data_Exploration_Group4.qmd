@@ -67,89 +67,124 @@ total=merge(vdem_use, wh_use, by = c("country_name", "year"),
 ```
 
 ## Cleaning data - Alicia 
-- Count how many NA observations we have. If it is under %, we will omit the obs.
-or we could assign some values to them using given method.
-- Drop columns not needed
-- Rename the columns based on the code book
 
-- Histograms and box plots 
-- Create a table of summary statistics for the variables you are planning to use.
+### Background on the new data set
+Because there were too many NA values in each of the column of the data frame,
+in order to ensure the machine learning approaches run properly, we need to 
+either omit these values or assign a certain mean/median or mode value to 
+replace the missing values here. We tried to omit the NA values first but that 
+would leave us with only 73 out of over 27000 obs. So I used the median as the
+replacement value for the NAs in each of the columns in the data set. 
 
-### these questions need to be answered
-What data cleaning did you have to do?
-How did you wrangle the data?
-Are you deciding to exclude any observations? If so, why?
-Did you have to create any new variables from existing variables? If so, how and why?
+The exception variable is the e_civil_war, which is binary data. The data is 
+also skewed with the majority of obs 0 or NA. It is thus better to use the
+median or mode instead of mean. However, this might still not be the best way to
+deal with missing value. Our other options are to not use this variable in the
+model or use mice() package to deal with missing values. 
+
+We choose only data from 2012 onward for our analyses. Also, when we do data visualizations, we see that there are a lot of outliers in certain columns. 
+We will therefore use bestNormalize() to clean the data in these columns. 
+
+We did not have to make any new variables. We only have to merge the two data 
+sets as executed above. 
 
 ```{r data-cleaning}
+
+# Select the time range from 2012 (inclusive) and later only 
+total_2012 <- total[total$year > 2011,]
+head(total_2012) 
+
 # changing the NA entries with a median of that column
-summary(total)
-total_not_NA <- total %>% na.omit() 
+summary(total_2012)
+total_not_NA <- total_2012 %>% na.omit() 
 # Because we are missing too many observations when we drop NAs, we will assign
 # median of each column to the NA values instead
 
 # We might need a different method for e_civil_war 
 # because it is all binary 0 and 1
-# remove the column from the set of columns parsed in the mutate function below
-total$e_civil_war <- as.character(total$e_civil_war)
-total$e_pt_coup <- as.numeric(total$e_pt_coup)
+# and it is skewed data 
+
+# Get the summary of the e_civil_war variable
+total_2012 %>% group_by(e_civil_war) %>% count()
 
 #replace missing values in each numeric column with median value of column
-new_total <- total %>% mutate(across(where(is.numeric),~replace_na(.,median(.,na.rm=TRUE))))
-
-# convert the e_civil_war and e_pt_coup columns to get summary()
-new_total$e_civil_war <- as.numeric(new_total$e_civil_war)
+new_total <- total_2012 %>% mutate(across(where(is.numeric),~replace_na(.,median(.,na.rm=TRUE))))
 
 # Get the summary of our combined data set
 summary_table <- summary(new_total)
 summary_table
 
-# Get the summary of the e_civil_war variable
-new_total %>% group_by(e_civil_war) %>% count()
-
 # Boxplots and Histograms
 # Draw boxplots for each column
-selected <- new_total %>% select(-c(country_name, e_civil_war))
 
-# Need to add labels to plots
-# Need to change axis scale
-lapply(selected, function(x) boxplot(x, main = colnames(selected)[which(colnames(selected) == names(x))]))
+# Choose only appropriate columns to draw boxplots and histograms 
+# Certain columns will be normalized to be used in regression models later
+selected <- new_total %>% select(-c(year, country_name, e_civil_war))
 
+for (column in colnames(selected)) {
+  boxplot(selected[,column], xlab = column)
+}
+
+```
+
+``` {r histograms}
 # Draw histograms for each column
-# Need to add labels to plots
-# Need to change axis scale
-lapply(selected, function(x) hist(x, main = colnames(selected)[which(colnames(selected) == names(x))]))
+for (column in colnames(selected)) {
+  hist(selected[,column], xlab = column, main = paste("Histogram of ", column))
+}
+
 ```
 
 ```{r outlier-removal}
 
-#Replacing the outliers of a particular column with median
+# Normalize the data that are skewed  
 
-## you'll probably want to include why you chose the ones you did 
+install.packages("bestNormalize")
+library("bestNormalize")
 
-vec1<-boxplot.stats(data$Dist_Taxi)$out;
-data$Dist_Taxi[data$Dist_Taxi %in% vec1]<-median(data$Dist_Taxi)
+# # Normalize the data
+# We will try this again with the mice() package too 
+
+# v2c_BN <- bestNormalize(new_total$v2csreprss, r = 1, k = 5)
+# new_total$v2csreprss <- v2c_BN$x.t
+# 
+# # Check the data to see if it is normalized
+# hist(new_total$v2csreprss)
+# 
+# colnames(new_total)
+# 
+# # Repeat for other columns
+# ecivil_BN <- bestNormalize(new_total$e_civil_war, r = 1, k = 5)
+# new_total$e_civil_war <- ecivil_BN$x.t
+# 
+# ecoup_BN <- bestNormalize(new_total$e_pt_coup, r = 1, k = 5)
+# new_total$e_pt_coup <- ecoup_BN$x.t
+# 
+# v2x_BN <- bestNormalize(new_total$v2x_partipdem, r = 1, k = 5)
+# new_total$v2x_partipdem <- v2x_BN$x.t
+# 
+# epea_BN <- bestNormalize(new_total$e_peaveduc, r = 1, k = 5)
+# new_total$e_peaveduc <- epea_BN$x.t
+# 
+# v2xcorr_BN <- bestNormalize(new_total$v2x_corr, r = 1, k = 5)
+# new_total$v2x_corr <- v2x_corr$x.t
+
 ```
 
 ## Code book - README.qmd - Kaori
-- updated in the data folder and this folder
+- Updated in the data folder and this folder
 
 ## Data Visualization - Ephrata and Kaori 
 ### How well does it measure the outcome you are interested in? - Kaori
 
 We chose civil society participation as our outcome variable. We were originally
 going to use civil society index, but we were not able to find much information 
-regarding the actual measures considered, so we chose to use civil society participation
-instead. This is because civil society index may have already considered factors we
-are adding to the model, while civil society participation will tell us how many 
-people are actually participating in civil society, which is the public sphere between
-the private sphere and government, which can include professional organizations, 
-charities, labor unions, and spiritual groups. 
+regarding the actual measures considered, so we chose to use civil society participation instead. This is because civil society index may have already considered factors we are adding to the model, while civil society participation will tell us how many people are actually participating in civil society, which 
+is the public sphere between the private sphere and government, which can include professional organizations, charities, labor unions, and spiritual groups. 
 
 ### What is our hypothesis? - Kaori
-Our hypothesis is that countries with similar characteristics regarding supporting/
-not supporting civil society--such as the presences of war or good educational 
-systems--will have similar civil society participation rates. 
+Our hypothesis is that countries with similar characteristics regarding 
+supporting/ not supporting civil society - such as the presences of war or good educational systems - will have similar civil society participation rates. 
 
 ### How do our variable choices relate to our hypotheses? - Kaori 
 Our choices of variables reflect our understanding of civil society and the factors
