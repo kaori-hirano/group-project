@@ -8,14 +8,15 @@ If the models require hyperparameters (tuning parameters) discuss how you plan
 to go about tuning the model.
 
 1) Lasso Regression: We are using lasso regression to choose the best predictors. 
-This will allow our clustering method to be more effective by only using the most
-influential predictors. Our tuning parameters will be chosen by using cross validation
-on the (insert tuning parameters here). 
+This will allow our clustering method to be more effective by only using the 
+most influential predictors. Our tuning parameters will be chosen by using cross
+validation on the (insert tuning parameters here). 
 
-2) K-means clustering: This will allow us to see the relationships between clusters
-of countries with similar characteristics. Being able to understand the cluster 
-centers for each variable will provide us with information regarding what is important
-in each cluster, highlighting what the key differences between them are. 
+2) K-means clustering: This will allow us to see the relationships between 
+clusters of countries with similar characteristics. Being able to understand the 
+cluster centers for each variable will provide us with information regarding 
+what is important in each cluster, highlighting what the key differences 
+between them are. 
 
 ## Application
 Fit the two models you have presented in the previous section. If this process
@@ -71,11 +72,34 @@ lasso_mod <- glmnet(x, y, lambda = bestlam_l)
 (coef_l <-coef(lasso_mod))
 ```
 
-```{r k-means}
+```{r tree-method}
 
+cv_carseats <- cv.tree(tree_carseats_train, FUN = prune.misclass)
+names(cv_carseats)
+cv_carseats
 
 ```
 
+```{r plot-cv-results-baseR}
+par(mfrow = c(1, 2))
+plot(cv_carseats$size, cv_carseats$dev, type = "b")
+plot(cv_carseats$k, cv_carseats$dev, type = "b")
+```
+
+```{r pruning}
+prune_carseats <- prune.misclass(tree_carseats_train, best = 9)
+plot(prune_carseats)
+text(prune_carseats, pretty = 0)
+
+plot_tree(prune_carseats)
+```
+
+```{r check-MSE}
+tree_pred_tuned <- predict(prune_carseats, Carseats_test,
+    type = "class")
+table(tree_pred_tuned, Carseats_test$High)
+(97 + 58) / 200
+```
 
 ## Visualizing
 Depending on the direction of your project produce at least one visualization that
