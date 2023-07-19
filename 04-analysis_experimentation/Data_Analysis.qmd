@@ -22,11 +22,15 @@ between them are.
 Fit the two models you have presented in the previous section. If this process
 involves tuning parameters, include the process of tuning the model.
 ```{r libraries, echo=FALSE}
+#| warning: false
+#| message: false
 # do they need to be able to see this? 
 suppressPackageStartupMessages(library(glmnet)) # for ridge, LASSO
 suppressPackageStartupMessages(library(tidyverse))
 library(patchwork) # for plot arrangement
 library(tree) # for simple decision trees
+library(ggdendro) # for plotting decision trees using ggplot
+library(randomForest) # for random forests
 ```
 
 ```{r data}
@@ -78,35 +82,110 @@ newx = x[test, ])
 lasso_mod <- glmnet(x, y, lambda = bestlam_l)
 (coef_l <-coef(lasso_mod))
 ```
+```{r plot-tree, echo=FALSE}
+format_tree_labels <- function(labels, levels) {
+  sapply(labels, \(x) if(grepl(":", x)) clean_col(x, levels) else clean_lt(x))
+} 
+
+# replace letter positions with actual level labels
+clean_col <- function(x, levels){
+  # split the label into label and levels
+  x <- str_split_1(x, ":")
+  # make new temp objects for the two components
+  var <- x[1]
+  levs_ids <- x[2]
+  # get levels for correct variable
+  levs <- levels[[var]]
+  # get level ids for *relevant* levels
+  levs_ids <- str_split_1(levs_ids, "") 
+  levs_ids <- sapply(levs_ids, \(x) which(letters == x))
+  # cut down levs to only the required levels
+  levs <- levs[levs_ids]
+  # paste everything together and return (immplicitly)
+  paste0(var, ": ", paste0(levs, collapse = ", "))
+}
+
+# space out labels that include only "<"
+clean_lt <- function(x){
+  # split on <, then recombine with spaces before and after <
+  x <- str_split_1(x, "<")
+  paste0(x, collapse = " < ")
+}
+
+plot_tree <- function(model){
+  require(ggdendro)
+  # extract necessary information from tree object so that it is ggplotable
+  tree_data <- dendro_data(model)
+  # create a data frame with the split *values* which dendro_data() doesn't extract
+  frame <- model$frame %>%
+    rownames_to_column(var = "split") %>%
+    mutate(splits = as.data.frame(splits)) %>% 
+    unnest(cols = c(splits)) %>% 
+    filter(var != "<leaf>") %>% 
+    select(cutleft)
+  
+  # add the splits information in, which dendro_data() misses
+  tree_data$labels <- tree_data$labels %>% 
+    bind_cols(frame) %>% 
+    mutate(label = paste0(as.character(label), cutleft),
+           label = format_tree_labels(label, attr(model, "xlevels")))
+      
+  ggplot(segment(tree_data)) +
+    geom_segment(aes(x = x, y = y, xend = xend, yend = yend)) +
+    geom_text(data = label(tree_data), 
+              aes(x = x, y = y, label = label), vjust = -0.5, size = 3) +
+    geom_text(data = leaf_label(tree_data), 
+              aes(x = x, y = y, label = label), vjust = 1.5, size = 2) +
+    theme_dendro()
+}
+
+plot_tree(tree_carseats)
+```
 
 ```{r tree-method}
 tree_train <- tree(cspart ~ . -year -country_name, cs,
     subset = train)
-cv_train <- cv.tree(tree_train, FUN = prune.misclass)
-names(cv_train)
-cv_train
+plot(tree_train)
+text(tree_train, pretty = 0)
+cv_train <- cv.tree(tree_train)
+
+# plots to see if pruning will be effective
+ggplot(mapping = aes(x = cv_train$size, 
+                     y = cv_train$dev)) +
+  geom_point() +
+  geom_line() +
+  labs(x = "Tree Size (Terminal Nodes)", y = "Deviance",
+       title = "Cross-Validating Regression Tree") +
+  theme_classic()
+
+# uses 4 because that's where it levels off on the graph
+prune_train <- prune.tree(tree_train, best = 4)
+
+plot_tree(prune_train)
 ```
 
 ```{r plot-cv-results-baseR}
 par(mfrow = c(1, 2))
-plot(cv_carseats$size, cv_carseats$dev, type = "b")
-plot(cv_carseats$k, cv_carseats$dev, type = "b")
-```
-
-```{r pruning}
-prune_carseats <- prune.misclass(tree_carseats_train, best = 9)
-plot(prune_carseats)
-text(prune_carseats, pretty = 0)
-
-plot_tree(prune_carseats)
+plot(cv_train$size, cv_train$dev, type = "b")
+plot(cv_train$k, cv_train$dev, type = "b")
 ```
 
 ```{r check-MSE}
-tree_pred_tuned <- predict(prune_carseats, Carseats_test,
-    type = "class")
-table(tree_pred_tuned, Carseats_test$High)
-(97 + 58) / 200
+tree_pred_tuned <- predict(prune_train, cs[test,],
+    type = "vector")
+y_test <- y[test]
+# gets mse
+mse <- mean((tree_pred_tuned - y_test)^2)
+sqrt(mse)
+# plotting predicted by actual
+ggplot(mapping = aes(x = tree_pred_tuned, y = y_test)) +
+  geom_point(shape = 1) +
+  geom_abline(intercept = 0, slope = 1) +
+  labs(x = "Predicted Outcome",
+       y = "Actual Outcome") +
+  theme_classic()
 ```
+The test set MSE associated with the regression tree is $0.015$. The square root of the MSE is therefore around $.125$, indicating that this model leads to test predictions that are (on average) within approximately $12.5%$ of the true median participation amount.
 
 ## Visualizing
 Depending on the direction of your project produce at least one visualization that
@@ -119,6 +198,15 @@ predictive questions: compares model fit between the two methods
 # I think we do the k means cluster output graph
 # then idk a linear model or something with the regression output? or one that shows
 # which variables are important--correlation plot? I'm not sure...
+```{r comparing-model}
+ggplot(mapping = aes(x = tree_pred_tuned, y = lasso_pred)) +
+  geom_point(shape = 1) +
+  geom_abline(intercept = 0, slope = 1) +
+  labs(x = "Predicted Outcome",
+       y = "Actual Outcome") +
+  theme_classic()
+```
+
 
 ## Discussion
 In one to two paragraphs, discuss what you have learned from your initial modeling attempts.
