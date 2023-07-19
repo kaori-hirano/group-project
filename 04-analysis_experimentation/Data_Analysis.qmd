@@ -26,58 +26,65 @@ involves tuning parameters, include the process of tuning the model.
 suppressPackageStartupMessages(library(glmnet)) # for ridge, LASSO
 suppressPackageStartupMessages(library(tidyverse))
 library(patchwork) # for plot arrangement
+library(tree) # for simple decision trees
 ```
 
 ```{r data}
 # import the data here
 cs_full <- readRDS("/cloud/project/data/civil_society.rds")
-# get only 2019
+# get only 2019 and remove civil war and coup because there are none in 2019
 cs <- cs_full %>% subset(year == 2019)
+cs <- cs %>% select(-one_of("civil_war", "coup"))
 
 # 70, 30 test train split
 set.seed(145)
-sample1 <- sample(c(TRUE, FALSE), nrow(cs), replace=TRUE, prob=c(0.7,0.3))
-train <- d[sample1, ]
-test <- d[!sample1, ]
+train <- sample(c(TRUE, FALSE), nrow(cs),
+     replace = TRUE, prob=c(.7,.3))
+test <- (!train)
+val <- test
 ```
 
 ```{r ridge-regression}
 # create x and y for glmnet
-x <- model.matrix(form, data = mls22_nona)[, -1]
-y <- mls22_nona$base_salary_log
+x <- model.matrix(cspart ~ csrepress+v2x_partipdem+edu+corr+cs_index+social_support+
+                    choices+gen, data = cs)[, -1]
+y <- cs$cspart
 # do cross validation
-cv_r <- cv.glmnet(x[cv,], y[cv], alpha = 0, lambda = 10^seq(10, -2, length = 100))
+cv_r <- cv.glmnet(x[train,], y[train], alpha = 0, lambda = 10^seq(10, -2, length = 100))
 # saving optimal lambda
 bestlam_r <- cv_r$lambda.min
 # calculating MSE
 ridge_pred <- predict(cv_r, s = bestlam_r,
 newx = x[test, ])
-ridge_mse <- mean((ridge_pred - y[test])^2)
+(ridge_mse <- mean((ridge_pred - y[test])^2))
+# find how to fit ridge model and import here
+ridge_mod <- glmnet(x, y, alpha = 0, lambda = bestlam_r)
+(coef_r <-coef(ridge_mod))
 ```
 
 ```{r lasso-regression}
 # set seed
 set.seed(18)
 # do cross validation
-cv_l <- cv.glmnet(x[cv,], y[cv], alpha = 1,
+cv_l <- cv.glmnet(x[train,], y[train], alpha = 1,
 lambda = 10^seq(10, -2, length = 100))
 # saving optimal lambda
 bestlam_l <- cv_l$lambda.min
 # calculating MSE
 lasso_pred <- predict(cv_l, s = bestlam_l,
 newx = x[test, ])
-lasso_mse <- mean((lasso_pred - y[test])^2)
+(lasso_mse <- mean((lasso_pred - y[test])^2))
 # coefficients that matter
 lasso_mod <- glmnet(x, y, lambda = bestlam_l)
 (coef_l <-coef(lasso_mod))
 ```
 
 ```{r tree-method}
-
-cv_carseats <- cv.tree(tree_carseats_train, FUN = prune.misclass)
-names(cv_carseats)
-cv_carseats
-
+tree_train <- tree(cspart ~ . -year -country_name, cs,
+    subset = train)
+cv_train <- cv.tree(tree_train, FUN = prune.misclass)
+names(cv_train)
+cv_train
 ```
 
 ```{r plot-cv-results-baseR}
