@@ -20,13 +20,16 @@ in each cluster, highlighting what the key differences between them are.
 ## Application
 Fit the two models you have presented in the previous section. If this process
 involves tuning parameters, include the process of tuning the model.
-```{r libraries}
+```{r libraries, echo=FALSE}
+# do they need to be able to see this? 
 suppressPackageStartupMessages(library(glmnet)) # for ridge, LASSO
 suppressPackageStartupMessages(library(tidyverse))
 library(patchwork) # for plot arrangement
 ```
+
 ```{r data}
 # import the data here
+# get only 2019
 
 # 70, 30 test train split
 set.seed(145)
@@ -70,7 +73,7 @@ mean((ridge_pred - y_val)^2)
 ```
 
 
-```{r lasso}
+```{r lasso-regression}
 set.seed(18)
 lasso_mod <- glmnet(x[train, ], y[train], alpha = 1,
     lambda = grid)
