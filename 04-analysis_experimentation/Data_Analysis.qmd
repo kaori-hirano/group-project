@@ -39,59 +39,34 @@ test <- d[!sample1, ]
 ```
 
 ```{r ridge-regression}
-set.seed(18)
-
-# sets up matrix
-x <- model.matrix(cspart ~ country_name + year + csrepress + civil_war + coup + edu +
-                  corr + cs_index + social_support + choices + gen + v2x_partipdem, 
-                  cs)[, -1] # could I use a dot here? 
-y <- cs$cspart
-
-# fits ridge 
-grid <- 10^seq(10, -2, length = 100)
-ridge_mod <- cv.glmnet(x, y, alpha = 0, lambda = grid)
-
-#train <- sample(1:nrow(x), nrow(x) / 2)
-#val <- (-train)
-y_val <- y[test] # it said val prior to edits
-
-# fit ridge on train
-ridge_mod <- glmnet(x[train, ], y[train], alpha = 0,
-    lambda = grid, thresh = 1e-12)
-ridge_pred <- predict(ridge_mod, s = 4, newx = x[test, ])
-
-# get best l
-cv_out <- cv.glmnet(x[train, ], y[train], alpha = 0)
-
-bestlam <- cv_out$lambda.min
-bestlam
-
-# get mse
-ridge_pred <- predict(ridge_mod, s = bestlam,
-    newx = x[test, ])
-mean((ridge_pred - y_val)^2)
+# create x and y for glmnet
+x <- model.matrix(form, data = mls22_nona)[, -1]
+y <- mls22_nona$base_salary_log
+# do cross validation
+cv_r <- cv.glmnet(x[cv,], y[cv], alpha = 0, lambda = 10^seq(10, -2, length = 100))
+# saving optimal lambda
+bestlam_r <- cv_r$lambda.min
+# calculating MSE
+ridge_pred <- predict(cv_r, s = bestlam_r,
+newx = x[test, ])
+ridge_mse <- mean((ridge_pred - y[test])^2)
 ```
 
-
 ```{r lasso-regression}
+# set seed
 set.seed(18)
-lasso_mod <- glmnet(x[train, ], y[train], alpha = 1,
-    lambda = grid)
-
-# get l
-cv_out_lasso <- cv.glmnet(x[train, ], y[train], alpha = 1)
-bestlaml <- cv_out_lasso$lambda.min
-bestlaml
-
-# gets MSE
-lasso_pred <- predict(lasso_mod, s = bestlaml,
-    newx = x[test, ])
-mean((lasso_pred - y_val)^2)
-
-#prints coefficients
-out <- glmnet(x, y, alpha = 1, lambda = grid)
-(lasso_coef <- predict(out, type = 'coefficient', s = bestlaml))
-lasso_coef
+# do cross validation
+cv_l <- cv.glmnet(x[cv,], y[cv], alpha = 1,
+lambda = 10^seq(10, -2, length = 100))
+# saving optimal lambda
+bestlam_l <- cv_l$lambda.min
+# calculating MSE
+lasso_pred <- predict(cv_l, s = bestlam_l,
+newx = x[test, ])
+lasso_mse <- mean((lasso_pred - y[test])^2)
+# coefficients that matter
+lasso_mod <- glmnet(x, y, lambda = bestlam_l)
+(coef_l <-coef(lasso_mod))
 ```
 
 ```{r k-means}
