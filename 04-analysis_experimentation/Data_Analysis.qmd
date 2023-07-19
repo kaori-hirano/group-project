@@ -30,7 +30,7 @@ suppressPackageStartupMessages(library(tidyverse))
 library(patchwork) # for plot arrangement
 library(tree) # for simple decision trees
 library(ggdendro) # for plotting decision trees using ggplot
-library(randomForest) # for random forests
+suppressPackageStartupMessages(library(randomForest)) # for random forests
 ```
 
 ```{r data}
