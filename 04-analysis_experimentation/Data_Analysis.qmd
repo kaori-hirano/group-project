@@ -1,0 +1,110 @@
+# Analysis Experimentation
+
+## Methods Overview
+Choose 2 methods that we have talked about and use them to model the outcome 
+you are interested in. Present the mathematical intuition behind the method 
+and define the model in the context of your data and your research question.
+If the models require hyperparameters (tuning parameters) discuss how you plan 
+to go about tuning the model.
+
+1) Lasso Regression: We are using lasso regression to choose the best predictors. 
+This will allow our clustering method to be more effective by only using the most
+influential predictors. Our tuning parameters will be chosen by using cross validation
+on the (insert tuning parameters here). 
+
+2) K-means clustering: This will allow us to see the relationships between clusters
+of countries with similar characteristics. Being able to understand the cluster 
+centers for each variable will provide us with information regarding what is important
+in each cluster, highlighting what the key differences between them are. 
+
+## Application
+Fit the two models you have presented in the previous section. If this process
+involves tuning parameters, include the process of tuning the model.
+```{r libraries}
+suppressPackageStartupMessages(library(glmnet)) # for ridge, LASSO
+suppressPackageStartupMessages(library(tidyverse))
+library(patchwork) # for plot arrangement
+```
+
+```{r train-test-split}
+set.seed(145)
+sample1 <- sample(c(TRUE, FALSE), nrow(cs), replace=TRUE, prob=c(0.7,0.3))
+train <- d[sample1, ]
+test <- d[!sample1, ]
+```
+
+```{r ridge-regression}
+set.seed(18)
+
+# sets up matrix
+x <- model.matrix(cspart ~ country_name + year + csrepress + civil_war + coup + edu +
+                  corr + cs_index + social_support + choices + gen + v2x_partipdem, 
+                  cs)[, -1] # could I use a dot here? 
+y <- cs$cspart
+
+# fits ridge 
+grid <- 10^seq(10, -2, length = 100)
+ridge_mod <- cv.glmnet(x, y, alpha = 0, lambda = grid)
+
+#train <- sample(1:nrow(x), nrow(x) / 2)
+#val <- (-train)
+y_val <- y[test] # it said val prior to edits
+
+# fit ridge on train
+ridge_mod <- glmnet(x[train, ], y[train], alpha = 0,
+    lambda = grid, thresh = 1e-12)
+ridge_pred <- predict(ridge_mod, s = 4, newx = x[test, ])
+
+# get best l
+cv_out <- cv.glmnet(x[train, ], y[train], alpha = 0)
+
+bestlam <- cv_out$lambda.min
+bestlam
+
+# get mse
+ridge_pred <- predict(ridge_mod, s = bestlam,
+    newx = x[test, ])
+mean((ridge_pred - y_val)^2)
+```
+
+
+```{r lasso}
+set.seed(18)
+lasso_mod <- glmnet(x[train, ], y[train], alpha = 1,
+    lambda = grid)
+
+# get l
+cv_out_lasso <- cv.glmnet(x[train, ], y[train], alpha = 1)
+bestlaml <- cv_out_lasso$lambda.min
+bestlaml
+
+# gets MSE
+lasso_pred <- predict(lasso_mod, s = bestlaml,
+    newx = x[test, ])
+mean((lasso_pred - y_val)^2)
+
+#prints coefficients
+out <- glmnet(x, y, alpha = 1, lambda = grid)
+(lasso_coef <- predict(out, type = 'coefficient', s = bestlaml))
+lasso_coef
+```
+
+```{r k-means}
+
+
+```
+
+
+## Visualizing
+Depending on the direction of your project produce at least one visualization that
+
+predictive questions: compares model fit between the two methods
+inferential questions: compares the way in which the two models help you
+understand the relationship between your outcome and your explanatory variable of 
+interest.
+
+# I think we do the k means cluster output graph
+# then idk a linear model or something with the regression output?
+
+## Discussion
+In one to two paragraphs, discuss what you have learned from your initial modeling attempts.
