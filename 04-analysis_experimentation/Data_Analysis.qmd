@@ -7,7 +7,7 @@ and define the model in the context of your data and your research question.
 If the models require hyperparameters (tuning parameters) discuss how you plan 
 to go about tuning the model.
 
-1) Lasso Regression: We are using lasso regression to choose the best predictors. 
+1) Ridge & Lasso Regression: We are using lasso regression to choose the best predictors. 
 This will allow our clustering method to be more effective by only using the 
 most influential predictors. Our tuning parameters will be chosen by using cross
 validation on the (insert tuning parameters here). 
@@ -183,7 +183,8 @@ ggplot(mapping = aes(x = tree_pred_tuned, y = y_test)) +
   geom_abline(intercept = 0, slope = 1) +
   labs(x = "Predicted Outcome",
        y = "Actual Outcome") +
-  theme_classic()
+  theme_classic() +
+  geom_jitter()
 ```
 The test set MSE associated with the regression tree is $0.015$. The square root of the MSE is therefore around $.125$, indicating that this model leads to test predictions that are (on average) within approximately $12.5%$ of the true median participation amount.
 
@@ -206,7 +207,8 @@ ggplot(mapping = aes(x = tree_pred_tuned, y = lasso_pred)) +
        y = "Actual Outcome") +
   theme_classic()
 ```
-
+# we can have a table! and that counts!
+# model on y, mse on x, can literally make it into a bar graph bruh
 
 ## Discussion
 In one to two paragraphs, discuss what you have learned from your initial modeling attempts.
