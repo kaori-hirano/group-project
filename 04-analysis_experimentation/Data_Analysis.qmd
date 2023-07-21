@@ -1,4 +1,9 @@
-# Analysis Experimentation
+---
+title: "Data Analysis"
+author: "Group 4: Kaori Hirano, Alicia Nguyen, James Xia"
+date: "07/20/20"
+format: pdf
+---
 
 ## Methods Overview
 Choose 2 methods that we have talked about and use them to model the outcome 
@@ -12,15 +17,9 @@ This will allow our clustering method to be more effective by only using the
 most influential predictors. Our tuning parameters will be chosen by using cross
 validation on the (insert tuning parameters here). 
 
-2) K-means clustering: This will allow us to see the relationships between 
-clusters of countries with similar characteristics. Being able to understand the 
-cluster centers for each variable will provide us with information regarding 
-what is important in each cluster, highlighting what the key differences 
-between them are. 
+2) Single Decision Tree: This method will identify the most important predictors in a different way than ridge and lasso regression will. It will also help us see the relationships between the predictors as the tree continues to go down, which provides us with a different understanding of the relationship between the outcome variable and the predictors. The number of terminal nodes will be chosen by cross validation with the number of nodes that has the lowest error to be chosen as the number of nodes for the pruned tree.  
 
 ## Application
-Fit the two models you have presented in the previous section. If this process
-involves tuning parameters, include the process of tuning the model.
 ```{r libraries, echo=FALSE}
 #| warning: false
 #| message: false
@@ -204,24 +203,8 @@ predictive questions: compares model fit between the two methods
 ## understand the relationship between your outcome and your explanatory variable of 
 ## interest.
 
-# I think we do the k means cluster output graph
-# then idk a linear model or something with the regression output? or one that shows
-# which variables are important--correlation plot? I'm not sure...
 ```{r comparing-model}
-ggplot(mapping = aes(x = tree_pred_tuned, y = lasso_pred)) +
-  geom_point(shape = 1) +
-  geom_abline(intercept = 0, slope = 1) +
-  labs(x = "Predicted Outcome",
-       y = "Actual Outcome") +
-  theme_classic() + 
-  geom_jitter()
 
-ggplot(cs, aes(x = social_support, y = cspart)) +
-  geom_point() + 
-  geom_jitter() + 
-  geom_smooth()
-
-coef_r
 ```
 # we can have a table! and that counts!
 # model on y, mse on x, can literally make it into a bar graph bruh
@@ -241,7 +224,6 @@ r2 <- function(predicted, y) {
 ```
 
 ## Discussion
-In one to two paragraphs, discuss what you have learned from your initial modeling attempts.
 
 From our regression models, we learned the most important predictors when predicting civil society participation. Both of these models used 5 fold cross validation, which is how a lambda of .01 was chosen. From lasso, the most important predictors were civil society index, social support index, and participation in democracy. Participation in democracy and civil society index both had a positive relationship with civil society participation, with coefficients of .391 and .474 respectively. Social support index had a negative relationship with civil society participation, with a coefficient of -.24, meaning that as the national average of a response to whether or not people felt like they had someone to rely on increased, the participation in civil society decreased. From the ridge mod, the order of predictors from most to least important in predictive ability was: civil society index (.472), participation in democracy (.459), social support (-.377), then generosity (.047), the feeling of freedom to make important life choices (.028), and the corruption index (-.022) followed by education (.0001) and civil society repression (-.005). The most influential predictors from both the lasso and ridge regression models were the same. The MSE for lasso and ridge regression were .010 for lasso and .009 for ridge, indicating that the models have similar error rates, which is expected considering their results. 
 
