@@ -24,13 +24,13 @@ involves tuning parameters, include the process of tuning the model.
 ```{r libraries, echo=FALSE}
 #| warning: false
 #| message: false
-# do they need to be able to see this? 
 suppressPackageStartupMessages(library(glmnet)) # for ridge, LASSO
 suppressPackageStartupMessages(library(tidyverse))
 library(patchwork) # for plot arrangement
 library(tree) # for simple decision trees
 library(ggdendro) # for plotting decision trees using ggplot
 suppressPackageStartupMessages(library(randomForest)) # for random forests
+suppressPackageStartupMessages(library(patchwork))
 ```
 
 ```{r data}
@@ -50,6 +50,7 @@ val <- test
 
 ```{r ridge-regression}
 # create x and y for glmnet
+set.seed(129)
 x <- model.matrix(cspart ~ csrepress+v2x_partipdem+edu+corr+cs_index+social_support+
                     choices+gen, data = cs)[, -1]
 y <- cs$cspart
@@ -138,19 +139,18 @@ plot_tree <- function(model){
               aes(x = x, y = y, label = label), vjust = 1.5, size = 2) +
     theme_dendro()
 }
-
-plot_tree(tree_carseats)
 ```
 
 ```{r tree-method}
+set.seed(247)
 tree_train <- tree(cspart ~ . -year -country_name, cs,
     subset = train)
-plot(tree_train)
+unpruned <- plot(tree_train)
 text(tree_train, pretty = 0)
 cv_train <- cv.tree(tree_train)
 
 # plots to see if pruning will be effective
-ggplot(mapping = aes(x = cv_train$size, 
+cv <- ggplot(mapping = aes(x = cv_train$size, 
                      y = cv_train$dev)) +
   geom_point() +
   geom_line() +
@@ -160,8 +160,11 @@ ggplot(mapping = aes(x = cv_train$size,
 
 # uses 4 because that's where it levels off on the graph
 prune_train <- prune.tree(tree_train, best = 4)
+pruned <- plot_tree(prune_train)
 
-plot_tree(prune_train)
+# plots the unpruned, cv results, and pruned trees
+# not working for me...
+(unpruned / cv ) + pruned
 ```
 
 ```{r plot-cv-results-baseR}
@@ -174,9 +177,14 @@ plot(cv_train$k, cv_train$dev, type = "b")
 tree_pred_tuned <- predict(prune_train, cs[test,],
     type = "vector")
 y_test <- y[test]
-# gets mse
+# gets mse for pruned
 mse <- mean((tree_pred_tuned - y_test)^2)
 sqrt(mse)
+# gets mse for unpruned
+tree_pred <- predict(tree_train, cs[test,],
+    type = "vector")
+mse_unpruned <- mean((tree_pred - y_test)^2)
+sqrt(mse_unpruned)
 # plotting predicted by actual
 ggplot(mapping = aes(x = tree_pred_tuned, y = y_test)) +
   geom_point(shape = 1) +
@@ -205,10 +213,39 @@ ggplot(mapping = aes(x = tree_pred_tuned, y = lasso_pred)) +
   geom_abline(intercept = 0, slope = 1) +
   labs(x = "Predicted Outcome",
        y = "Actual Outcome") +
-  theme_classic()
+  theme_classic() + 
+  geom_jitter()
+
+ggplot(cs, aes(x = social_support, y = cspart)) +
+  geom_point() + 
+  geom_jitter() + 
+  geom_smooth()
+
+coef_r
 ```
 # we can have a table! and that counts!
 # model on y, mse on x, can literally make it into a bar graph bruh
+```{r r-squared}
+r2 <- function(predicted, y) {
+  #find SST and SSE
+  sst <- sum((y - mean(y))^2)
+  sse <- sum((predicted - y)^2)
+  #find R-Squared
+  rsq <- 1 - sse/sst
+  rsq
+}
+(r2(tree_pred_tuned, y_test))
+(r2(tree_pred, y_test))
+(r2(lasso_pred, y[test]))
+(r2(ridge_pred, y[test]))
+```
 
 ## Discussion
 In one to two paragraphs, discuss what you have learned from your initial modeling attempts.
+
+From our regression models, we learned the most important predictors when predicting civil society participation. Both of these models used 5 fold cross validation, which is how a lambda of .01 was chosen. From lasso, the most important predictors were civil society index, social support index, and participation in democracy. Participation in democracy and civil society index both had a positive relationship with civil society participation, with coefficients of .391 and .474 respectively. Social support index had a negative relationship with civil society participation, with a coefficient of -.24, meaning that as the national average of a response to whether or not people felt like they had someone to rely on increased, the participation in civil society decreased. From the ridge mod, the order of predictors from most to least important in predictive ability was: civil society index (.472), participation in democracy (.459), social support (-.377), then generosity (.047), the feeling of freedom to make important life choices (.028), and the corruption index (-.022) followed by education (.0001) and civil society repression (-.005). The most influential predictors from both the lasso and ridge regression models were the same. The MSE for lasso and ridge regression were .010 for lasso and .009 for ridge, indicating that the models have similar error rates, which is expected considering their results. 
+
+From the decision tree, civil society index and participation in democracy appear to be the most important predictors in determining civil society participation in 2019. Civil society index scoring less than .46 is the initial node, followed by democracy participation lower than .096 and civil society participation below .865. This is the tree results after pruning which found that the nodes below civil society participation below .865 were cut from the model,    
+ACTUALLY I THINK OUR PRUNING MADE IT WORSE--CHECK OUT THE MSE
+
+These initial modelling attempts tell us that the most important predictors of civil society participation in 2019 are civil society index and participation in democracy, which were seen across all three models, and social support, which was iddentified as an important predictor by 2 of the models. The model that did the best was ridge regression, with an MSE of .009, followed by lasso regression, MSE .010, then the unpruned tree, MSE .013, and pruned tree, MSE .015. When looking at predicitive ability, lasso and ridge regression had the highest R2 values with about 86% of the change in civil society participation being explained by the models, while the pruned tree explained 66.9% and the unpruned tree explained 71.2%
