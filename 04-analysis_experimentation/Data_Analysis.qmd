@@ -33,7 +33,7 @@ suppressPackageStartupMessages(library(patchwork))
 ```
 
 ```{r data}
-# import the data here
+#| warning: false 
 cs_full <- readRDS("/cloud/project/data/civil_society_factor")
 # get only 2019 and remove civil war and coup because there are none in 2019
 cs <- cs_full %>% subset(year == 2019)
@@ -162,26 +162,13 @@ prune_train <- prune.tree(tree_train, best = 8)
 plot_tree(prune_train)
 
 ```
-
-```{r plot-cv-results-baseR}
-# we have 2 cv plots--choose which one we want
-par(mfrow = c(1, 2))
-plot(cv_train$size, cv_train$dev, type = "b")
-plot(cv_train$k, cv_train$dev, type = "b")
-```
-
 ```{r check-MSE}
 tree_pred_tuned <- predict(prune_train, cs[test,],
     type = "vector")
 y_test <- y[test]
-# gets mse for pruned
+# gets mse for pruned (which is same as full tree)
 mse <- mean((tree_pred_tuned - y_test)^2)
 sqrt(mse)
-# gets mse for unpruned
-tree_pred <- predict(tree_train, cs[test,],
-    type = "vector")
-mse_unpruned <- mean((tree_pred - y_test)^2)
-sqrt(mse_unpruned)
 # plotting predicted by actual
 ggplot(mapping = aes(x = tree_pred_tuned, y = y_test)) +
   geom_point(shape = 1) +
@@ -207,6 +194,7 @@ predictive questions: compares model fit between the two methods
 # we can have a table! and that counts!
 # model on y, mse on x, can literally make it into a bar graph bruh
 ```{r r-squared}
+# function giving us R2
 r2 <- function(predicted, y) {
   #find SST and SSE
   sst <- sum((y - mean(y))^2)
@@ -215,8 +203,8 @@ r2 <- function(predicted, y) {
   rsq <- 1 - sse/sst
   rsq
 }
+# R2 for tree, lasso, and ridge
 (r2(tree_pred_tuned, y_test))
-(r2(tree_pred, y_test))
 (r2(lasso_pred, y[test]))
 (r2(ridge_pred, y[test]))
 ```
