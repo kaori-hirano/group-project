@@ -52,7 +52,7 @@ load("/cloud/project/data/vdemdata-master/data/vdem.RData")
 
 ```{r data processing(merge)}
 need_vdem=c("country_name","year","v2csreprss",'e_civil_war',"e_pt_coup",
-"v2x_partipdem","e_peaveduc","v2x_corr","v2x_cspart","v2xcs_ccsi")
+"v2x_partipdem","e_peaveduc","v2x_corr","v2x_cspart","v2xcs_ccsi", 'e_regionpol')
 
 vdem_use=vdem[,need_vdem]
 
@@ -138,8 +138,6 @@ for (column in colnames(selected)) {
 ```{r outlier-removal}
 
 # Normalize the data that are skewed  
-
-install.packages("bestNormalize")
 library("bestNormalize")
 
 # # Normalize the data
@@ -217,13 +215,14 @@ society organizations, and subnational elected bodies.
 cs <- new_total %>% rename(csrepress = v2csreprss, civil_war = e_civil_war, coup = e_pt_coup,
                            edu = e_peaveduc, corr = v2x_corr, cspart = v2x_cspart, 
                            cs_index = v2xcs_ccsi, social_support = 'Social support', 
-                           choices = 'Freedom to make life choices', gen = Generosity)
+                           choices = 'Freedom to make life choices', gen = Generosity,
+                           region = e_regionpol)
 
 cs <- cs %>% filter(year > 2011) # updates to match year for both datasets 
 # the full measures for happiness start in 2012, so all years before then are 
 # filtered out for the sake of analysis
-
-saveRDS(cs, file = "civil_society")
+?saveRDS
+saveRDS(cs, file = "civil_society_new")
 ```
 
 ```{r corr-heatmap, fig.width = 20, fig.height = 30}

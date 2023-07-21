@@ -51,7 +51,7 @@ val <- test
 # create x and y for glmnet
 set.seed(129)
 x <- model.matrix(cspart ~ csrepress+v2x_partipdem+edu+corr+cs_index+social_support+
-                    choices+gen, data = cs)[, -1]
+                    choices+gen+region, data = cs)[, -1]
 y <- cs$cspart
 # do cross validation
 cv_r <- cv.glmnet(x[train,], y[train], alpha = 0, lambda = 10^seq(10, -2, length = 100))
@@ -144,12 +144,12 @@ plot_tree <- function(model){
 set.seed(247)
 tree_train <- tree(cspart ~ . -year -country_name, cs,
     subset = train)
-unpruned <- plot(tree_train)
+plot(tree_train)
 text(tree_train, pretty = 0)
 cv_train <- cv.tree(tree_train)
 
 # plots to see if pruning will be effective
-cv <- ggplot(mapping = aes(x = cv_train$size, 
+ggplot(mapping = aes(x = cv_train$size, 
                      y = cv_train$dev)) +
   geom_point() +
   geom_line() +
@@ -158,12 +158,9 @@ cv <- ggplot(mapping = aes(x = cv_train$size,
   theme_classic()
 
 # uses 4 because that's where it levels off on the graph
-prune_train <- prune.tree(tree_train, best = 4)
-pruned <- plot_tree(prune_train)
+prune_train <- prune.tree(tree_train, best = 8)
+plot_tree(prune_train)
 
-# plots the unpruned, cv results, and pruned trees
-# not working for me...
-(unpruned / cv ) + pruned
 ```
 
 ```{r plot-cv-results-baseR}
