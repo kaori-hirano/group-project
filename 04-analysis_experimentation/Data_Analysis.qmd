@@ -39,15 +39,17 @@ cs_full <- readRDS("/cloud/project/data/civil_society_factor")
 cs <- cs_full %>% subset(year == 2019)
 cs <- cs %>% select(-one_of("civil_war", "coup"))
 
-cs$region <- relevel(cs$region, ref = 5)
-group_by(cs, region) %>% summarize(m = mean(cspart))
-
 # 70, 30 test train split
 set.seed(145)
 train <- sample(c(TRUE, FALSE), nrow(cs),
      replace = TRUE, prob=c(.7,.3))
 test <- (!train)
 val <- test
+```
+```{r choosing-base-level}
+# looks for region with most observations to set as base level
+table(cs$region)
+cs$region <- relevel(cs$region, ref = 4)
 ```
 
 ```{r ridge-regression}
