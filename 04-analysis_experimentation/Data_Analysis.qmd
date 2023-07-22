@@ -39,6 +39,9 @@ cs_full <- readRDS("/cloud/project/data/civil_society_factor")
 cs <- cs_full %>% subset(year == 2019)
 cs <- cs %>% select(-one_of("civil_war", "coup"))
 
+cs$region <- relevel(cs$region, ref = 5)
+group_by(cs, region) %>% summarize(m = mean(cspart))
+
 # 70, 30 test train split
 set.seed(145)
 train <- sample(c(TRUE, FALSE), nrow(cs),
@@ -144,8 +147,7 @@ plot_tree <- function(model){
 set.seed(247)
 tree_train <- tree(cspart ~ . -year -country_name, cs,
     subset = train)
-plot(tree_train)
-text(tree_train, pretty = 0)
+plot_tree(tree_train) + labs(title = 'Original Tree Plot')
 cv_train <- cv.tree(tree_train)
 
 # plots to see if pruning will be effective
@@ -159,8 +161,8 @@ ggplot(mapping = aes(x = cv_train$size,
 
 # uses 4 because that's where it levels off on the graph
 prune_train <- prune.tree(tree_train, best = 8)
-plot_tree(prune_train)
-
+plot_tree(prune_train) + 
+  labs(title = "Pruned Tree Plot")
 ```
 ```{r check-MSE}
 tree_pred_tuned <- predict(prune_train, cs[test,],
@@ -174,7 +176,8 @@ ggplot(mapping = aes(x = tree_pred_tuned, y = y_test)) +
   geom_point(shape = 1) +
   geom_abline(intercept = 0, slope = 1) +
   labs(x = "Predicted Outcome",
-       y = "Actual Outcome") +
+       y = "Actual Outcome",
+       title = 'Tree Plot Predicted vs Actual') +
   theme_classic() +
   geom_jitter()
 ```
@@ -220,11 +223,10 @@ r2 <- function(predicted, y) {
 
 ## Discussion
 
-From our regression models, we learned the most important predictors when predicting civil society participation. Both of these models used 10 (CHECK) fold cross validation, which is how a lambda of .01 was chosen. From lasso, the most important predictors were civil society index, social support index, and participation in democracy. Participation in democracy and civil society index both had a positive relationship with civil society participation, with coefficients of .391 and .474 respectively. Social support index had a negative relationship with civil society participation, with a coefficient of -.24, meaning that as the national average of a response to whether or not people felt like they had someone to rely on increased, the participation in civil society decreased. From the ridge mod, the order of predictors from most to least important in predictive ability was: civil society index (.472), participation in democracy (.459), social support (-.377), then generosity (.047), the feeling of freedom to make important life choices (.028), and the corruption index (-.022) followed by education (.0001) and civil society repression (-.005). The most influential predictors from both the lasso and ridge regression models were the same. The MSE for lasso and ridge regression were .010 for lasso and .009 for ridge, indicating that the models have similar error rates, which is expected considering their results. 
+From our regression models, we learned the most important predictors when predicting civil society participation. Both of these models used 10 (CHECK) fold cross validation, which is how a lambda of .01 was chosen. From lasso, the most important predictors were civil society index, social support index, and participation in democracy. Participation in democracy and civil society index both had a positive relationship with civil society participation, with coefficients of .391 and .474 respectively. Social support index had a negative relationship with civil society participation, with a coefficient of -.24, meaning that as the national average of a response to whether or not people felt like they had someone to rely on increased, the participation in civil society decreased. From the ridge mod, the order of predictors from most to least important in predictive ability was: civil society index (.472), participation in democracy (.459), social support (-.377), then generosity (.047), the feeling of freedom to make important life choices (.028), and the corruption index (-.022) followed by education (.0001) and civil society repression (-.005). The most influential predictors from both the lasso and ridge regression models were the same. The MSE for lasso and ridge regression were .010 for lasso and .009 for ridge, indicating that the models have similar error rates, which is expected considering their results. Note that region 5, which is Western Europe and North America, was chosen as the main reference level because it has the highest level of civil society participation 
 
-From the decision tree, civil society index and participation in democracy appear to be the most important predictors in determining civil society participation in 2019. Civil society index scoring less than .46 is the initial node, followed by democracy participation lower than .096 and civil society participation below .865. This is the tree results after pruning which found that the nodes below civil society participation below .865 were cut from the model,    
-ACTUALLY I THINK OUR PRUNING MADE IT WORSE--CHECK OUT THE MSE
+From the decision tree, we are able to see a breakdown of the most important predictors in civil society participation in 2019. The most important predictors, in order of the tree, are cs index below .389, participation in democracy less than .0745, participation in democracy under .454, followed by participation in democracy below .165, civil society index of less than .6615, and participation in democracy below .588, with regions 1,2, 3,7, and 9 being the final nodes in the tree. The most important predictors according to the tree model are civil society index, participation in democracy, and region the county is located in/around.  
 
-These initial modelling attempts tell us that the most important predictors of civil society participation in 2019 are civil society index and participation in democracy, which were seen across all three models, and social support, which was identified as an important predictor by 2 of the models. The model that did the best was ridge regression, with an MSE of .0090, followed by lasso regression, MSE .0095, then the tree with an MSE of .0108.
+These initial modelling attempts tell us that the most important predictors of civil society participation in 2019 are civil society index, region, and participation in democracy, which were seen across all three models, and social support and corruption index, which was identified as an important predictor by 2 of the models. The model that did the best was ridge regression, with an MSE of .0087, followed by lasso regression, MSE .0087, then the tree with an MSE of .0093. 
 
-When looking at predicitive ability, lasso and ridge regression had the highest R2 values with about 86% of the change in civil society participation being explained by the models (ridge = 86.3%, lasso = 85.6%), while the decision tree explained 83.7%. All of these methods had very similar MSEs and R2s, with the lasso and ridge regression models slightly outperforming the tree method on both of the metrics. 
+When looking at predicitive ability, lasso and ridge regression had the highest R2 values with about 86% of the change in civil society participation being explained by the models (ridge = 86.8%, lasso = 86.7%), while the decision tree explained 85.8%. All of these methods had very similar MSEs and R2s, with the lasso and ridge regression models slightly outperforming the tree method on both of the metrics. 
