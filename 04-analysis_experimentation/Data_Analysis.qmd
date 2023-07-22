@@ -190,6 +190,15 @@ predictive questions: compares model fit between the two methods
 
 ```{r comparing-model}
 
+name=c("tree","lasso","ridge")
+value=c((r2(tree_pred_tuned, y_test)),
+            (r2(lasso_pred, y[test])),
+            (r2(ridge_pred, y[test])))
+compare_data=tibble(name, value)
+ggplot(compare_data, aes(x=name, y=value))+
+  geom_col()+
+  scale_y_continuous(trans = my_trans( from=-1))
+
 ```
 # we can have a table! and that counts!
 # model on y, mse on x, can literally make it into a bar graph bruh
