@@ -37,8 +37,8 @@ cs <- cs_full %>% subset(year == 2019)
 # 70, 30 test train split
 set.seed(145)
 sample1 <- sample(c(TRUE, FALSE), nrow(cs), replace=TRUE, prob=c(0.7,0.3))
-train <- d[sample1, ]
-test <- d[!sample1, ]
+train <- cs[sample1, ]
+test <- cs[!sample1, ]
 ```
 
 ```{r ridge-regression}
@@ -88,7 +88,7 @@ plot(cv_carseats$k, cv_carseats$dev, type = "b")
 
 ```{r pruning}
 prune_carseats <- prune.misclass(tree_carseats_train, best = 9)
-plot(prune_carseats)
+plot(prune_carseats, main = "Tree Plot")
 text(prune_carseats, pretty = 0)
 
 plot_tree(prune_carseats)
@@ -106,12 +106,12 @@ Depending on the direction of your project produce at least one visualization th
 
 predictive questions: compares model fit between the two methods
 ## inferential questions: compares the way in which the two models help you
-## understand the relationship between your outcome and your explanatory variable of 
-## interest.
+## understand the relationship between your outcome and your explanatory 
+## variable of interest.
 
 # I think we do the k means cluster output graph
-# then idk a linear model or something with the regression output? or one that shows
-# which variables are important--correlation plot? I'm not sure...
+# then idk a linear model or something with the regression output? or one that 
+# shows which variables are important--correlation plot? I'm not sure...
 
 ## Discussion
 In one to two paragraphs, discuss what you have learned from your initial modeling attempts.
