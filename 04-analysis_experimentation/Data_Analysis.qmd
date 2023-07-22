@@ -193,6 +193,21 @@ predictive questions: compares model fit between the two methods
 
 ```{r comparing-model}
 
+name=c("tree","lasso","ridge")
+mse_all=c(mse, lasso_mse, ridge_mse)
+value=c((r2(tree_pred_tuned, y_test)),
+            (r2(lasso_pred, y[test])),
+            (r2(ridge_pred, y[test])))
+compare_data=tibble(name,mse_all,value)
+p1=ggplot(compare_data, aes(x=name, y=value))+
+  geom_col()+
+  coord_cartesian(ylim=c(0.85,0.875))+
+  labs(x="models",y="R2",title = "Comparing R-squared of all models")
+p2=ggplot(compare_data, aes(x=name, y=mse_all))+
+  geom_col()+
+  coord_cartesian(ylim=c(0.0080,0.0095))+
+  labs(x="models",y="mse",title = "Comparing MSE of all models")
+p1+p2
 ```
 # we can have a table! and that counts!
 # model on y, mse on x, can literally make it into a bar graph bruh
