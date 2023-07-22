@@ -163,7 +163,6 @@ ggplot(mapping = aes(x = cv_train$size,
 prune_train <- prune.tree(tree_train, best = 8)
 plot_tree(prune_train) + 
   labs(title = "Pruned Tree Plot")
-
 ```
 ```{r check-MSE}
 tree_pred_tuned <- predict(prune_train, cs[test,],
@@ -177,7 +176,8 @@ ggplot(mapping = aes(x = tree_pred_tuned, y = y_test)) +
   geom_point(shape = 1) +
   geom_abline(intercept = 0, slope = 1) +
   labs(x = "Predicted Outcome",
-       y = "Actual Outcome") +
+       y = "Actual Outcome",
+       title = 'Tree Plot Predicted vs Actual') +
   theme_classic() +
   geom_jitter()
 ```
