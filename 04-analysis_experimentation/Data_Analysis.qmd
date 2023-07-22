@@ -4,17 +4,9 @@ author: "Group 4: Kaori Hirano, Alicia Nguyen, James Xia"
 date: "07/20/23"
 format: pdf
 ---
-
 ## Methods Overview
-Choose 2 methods that we have talked about and use them to model the outcome 
-you are interested in. Present the mathematical intuition behind the method 
-and define the model in the context of your data and your research question.
-If the models require hyperparameters (tuning parameters) discuss how you plan 
-to go about tuning the model.
-
-1) Ridge & Lasso Regression: We are using lasso and ridge regression to choose the best predictors. This will allow our clustering method to be more effective by only using the most influential predictors. Our tuning parameters will be chosen by using cross validation on the lambda. 
-
-2) Single Decision Tree: This method will identify the most important predictors in a different way than ridge and lasso regression will. It will also help us see the relationships between the predictors as the tree continues to go down, which provides us with a different understanding of the relationship between the outcome variable and the predictors. The number of terminal nodes will be chosen by cross validation with the number of nodes that has the lowest error to be chosen as the number of nodes for the pruned tree.  
+1) Ridge & Lasso Regression: We are using lasso and ridge regression to choose the best predictors. Lasso will eliminate non-influential variables, while ridge will shrink them to a smaller value. These models will allow us to compare the influence of different variables on the outcome. Our tuning parameters will be chosen by using cross validation on the lambda. 
+2) Single Decision Tree: This method will identify the most important predictors in a different way than ridge and lasso regression will by showing us a clearer ranking and relationship between variables. Variables at the top will be more important and the path of nodes a decision takes will show different relationships between variables at different values. The number of terminal nodes will be chosen by cross validation.  
 
 ## Application
 ```{r libraries, echo=FALSE}
@@ -28,28 +20,22 @@ library(ggdendro) # for plotting decision trees using ggplot
 suppressPackageStartupMessages(library(randomForest)) # for random forests
 suppressPackageStartupMessages(library(patchwork))
 ```
-
 ```{r data}
 #| warning: false 
 cs_full <- readRDS("/cloud/project/data/civil_society_factor")
 # get only 2019 and remove civil war and coup because there are none in 2019
-cs <- cs_full %>% subset(year == 2019)
-cs <- cs %>% select(-one_of("civil_war", "coup"))
-cs <- drop_na(cs)
+cs <- cs_full %>% subset(year == 2019) %>% select(-one_of("civil_war", "coup")) %>% drop_na()
 # 70, 30 test train split
 set.seed(145)
-train <- sample(c(TRUE, FALSE), nrow(cs),
-     replace = TRUE, prob=c(.7,.3))
+train <- sample(c(TRUE, FALSE), nrow(cs), replace = TRUE, prob=c(.7,.3))
 test <- (!train)
 val <- test
 ```
-
 ```{r choosing-base-level}
-# looks for region with most observations to set as base level
-table(cs$region)
+# looks for region with most observations to set as base level table(cs$region)
 cs$region <- relevel(cs$region, ref = 4)
+#Sub Saharan Africa, was used as the baseline because it has the most observations. 
 ```
-
 ```{r ridge-regression}
 # create x and y for glmnet
 set.seed(129)
@@ -68,9 +54,7 @@ ridge_mse <- mean((ridge_pred - y[test])^2)
 ridge_mod <- glmnet(x, y, alpha = 0, lambda = bestlam_r)
 coef_r <-coef(ridge_mod)
 ```
-
 ```{r lasso-regression}
-# set seed
 set.seed(18)
 # do cross validation
 cv_l <- cv.glmnet(x[train,], y[train], alpha = 1,
@@ -142,25 +126,15 @@ plot_tree <- function(model){
     theme_dendro()
 }
 ```
-
 ```{r tree-method}
 set.seed(247) # makes tree with training data
 tree_train <- tree(cspart ~ . -year -country_name, cs,
     subset = train)
 cv_train <- cv.tree(tree_train)
-# plots to see if pruning will be effective
-cv_tree <- ggplot(mapping = aes(x = cv_train$size, 
-                     y = cv_train$dev)) +
-  geom_point() +
-  geom_line() +
-  labs(x = "Tree Size (Terminal Nodes)", y = "Deviance",
-       title = "Cross-Validating Regression Tree") +
-  theme_classic()
 # uses 8 because that's where it levels off on the graph
 prune_train <- prune.tree(tree_train, best = 8)
-prune_tree <- plot_tree(prune_train) + 
+plot_tree(prune_train) + 
   labs(title = "Pruned Tree Plot")
-cv_tree + prune_tree
 ```
 ```{r check-MSE}
 #| warning: false
@@ -172,68 +146,43 @@ mse <- mean((tree_pred_tuned - y_test)^2)
 ```
 
 ## Visualizing
-
-## inferential questions: compares the way in which the two models help you
-## understand the relationship between your outcome and your explanatory variable of 
-## interest.
-
 ```{r comparing-models}
 #| warning: false
 # putting together data of predicted, actual, and model type
-pred_all <- c(lasso_pred, ridge_pred, tree_pred_tuned)
-tree <- rep("Tree Model", length(tree_pred_tuned))
-lasso <- rep("Lasso", length(lasso_pred))
-ridge <- rep("Ridge Model", length(ridge_pred))
-labels_all <- c(lasso, ridge, tree)
 dataplot <- data.frame(true_value = c(y[test], y[test], y[test]))
-dataplot$model_type <- labels_all
-dataplot$predictions <- pred_all
-
+dataplot$model_type <- c(rep("Lasso", length(lasso_pred)), rep("Ridge Model", 
+            length(ridge_pred)), rep("Tree Model", length(tree_pred_tuned)))
+dataplot$predictions <- c(lasso_pred, ridge_pred, tree_pred_tuned)
 #plotting predicted vs actual by model type
 compare <- ggplot(dataplot, aes(x = predictions, y = true_value, color = model_type)) +
-  geom_point() +
-  geom_abline(intercept = 0, slope = 1) +
-  labs(x = "Predicted Outcome",
-       y = "Actual Outcome",
+  geom_point() + geom_abline(intercept = 0, slope = 1) +
+  labs(x = "Predicted Outcome", y = "Actual Outcome",
        title = 'Comparison of Model Type by Predicted vs Actual', 
-       color = 'Model Type') +
-  theme_classic() 
-
+       color = 'Model Type') + theme_classic() 
 # function giving us R2
 r2 <- function(predicted, y) {
   #find SST and SSE
   sst <- sum((y - mean(y))^2)
   sse <- sum((predicted - y)^2)
   #find R-Squared
-  rsq <- 1 - sse/sst
-  rsq
-}
-# R2 for tree, lasso, and ridge
-treer <- r2(tree_pred_tuned, y[test])
-lassor <- r2(lasso_pred, y[test])
-ridger <- r2(ridge_pred, y[test])
-
+  rsq <- 1 - sse/sst }
 # setting up values for graph
 name=c("tree","lasso","ridge")
 mse_all=c(mse, lasso_mse, ridge_mse)
-value=c(treer, lassor, ridger)
+value=c(r2(tree_pred_tuned, y[test]), r2(lasso_pred, y[test]), r2(ridge_pred, y[test]))
 compare_data=tibble(name,mse_all,value)
 p1=ggplot(compare_data, aes(x=name, y=value))+
-  geom_col()+
-  coord_cartesian(ylim=c(0.85,0.875))+
-  labs(x="Model",y="R2",title = "Comparing R-squared")
+  geom_col()+ coord_cartesian(ylim=c(0.85,0.875))+
+  labs(x="Model",y="R2",title = "Comparing R2")
 p2=ggplot(compare_data, aes(x=name, y=mse_all))+
-  geom_col()+
-  coord_cartesian(ylim=c(0.0080,0.0095))+
+  geom_col()+ coord_cartesian(ylim=c(0.0080,0.0095))+
   labs(x="Model",y="MSE",title = "Comparing MSE")
 compare / (p1+p2)
 ```
+These bar graphs help visualize the differences in MSE and R2 between models. The scatterplot shows the differences in predicted vs actual values by model by the distance to the line. 
+
 ## Discussion
+    From our regression models, we learned the most important predictors when predicting civil society participation. Both of these models used 10 fold cross validation, which is how a lambda of .01 was chosen for each. From lasso, the most important predictors were civil society index, social support index, and participation in democracy, as well as regions 1, 2, 3, and 9. Participation in democracy and civil society index both had a positive relationship with civil society participation, with coefficients of .328 and .488 respectively. Social support index had a negative relationship with civil society participation, with a coefficient of -.162, so as the national average of a whether people felt like they had someone to rely on increased, the participation in civil society decreased. There were also negative coefficients of regions 1, 2, 3, and 9. From the ridge model, the most influential predictors included participation in democracy, civil society index, social support, and regions 1, 2, 3, and 9. Regions 6, 8, and 10, as well as generosity and corruption were less influential, while the remaining predictors were nearly negligible. Between lasso and ridge, the same most important predictors were selected.
+   From the decision tree, we are able to see a breakdown of the most important predictors in civil society participation in 2019. The number of nodes as 8 was chosen by cross validation. The most important predictors according to the tree model are civil society index, participation in democracy, and after that region the county is located in/around, specifically being in regions 1,2,3,7, and 9. 
+   These initial modelling attempts tell us that the most important predictors of civil society participation in 2019 are civil society index, region, and participation in democracy, which were seen across all three models, and social support which was also selected as important in the regression models only. The model that did the best was ridge regression, with an MSE of .0089, followed by lasso regression, MSE .0090, then the tree with an MSE of .0093. Lasso and ridge regression had the highest R2 values with about 86% of the change in civil society participation being explained by the models (ridge = 86.8%, lasso = 86.7%), while the decision tree explained 85.8%. All of these methods had very similar MSEs and R2s, with the lasso and ridge regression models slightly outperforming the tree method on both of the metrics. These findings mostly fit with our hypothesis in that we expected regional variation and civil society index to have an influential relationship with civil society participation, while we were suprised by how important participation in democracy was and that social support had a negative relationship. 
 
-From our regression models, we learned the most important predictors when predicting civil society participation. Both of these models used 10 (CHECK) fold cross validation, which is how a lambda of .01 was chosen. From lasso, the most important predictors were civil society index, social support index, and participation in democracy, as well as regions 1, 2, 3, and 9. Participation in democracy and civil society index both had a positive relationship with civil society participation, with coefficients of .328 and .488 respectively. Social support index had a negative relationship with civil society participation, with a coefficient of -.162, meaning that as the national average of a response to whether or not people felt like they had someone to rely on increased, the participation in civil society decreased. There were also negative coefficients of regions 1, 2, 3, and 9. From the ridge model, the order of predictors from most to least important in predictive ability was: civil society index (.405), participation in democracy (.372), social support (-.218), regions 9 (-.112), 2 (-.092), 1 (-.074), 3 (-.047), and  then generosity (.018), the feeling of freedom to make important life choices (.028), and the corruption index (-.022) followed by , civil society repression (.010), region 7 (-.006), education (-.004), and region 5 (-.0004). The most influential predictors from both the lasso and ridge regression models were the same. The MSE for lasso and ridge regression were .010 for lasso and .009 for ridge, indicating that the models have similar error rates, which is expected considering their results. Note that region 5, which is Western Europe and North America, was chosen as the main reference level because it has the highest level of civil society participation 
-
-From the decision tree, we are able to see a breakdown of the most important predictors in civil society participation in 2019. The most important predictors, in order of the tree, are cs index below .389, participation in democracy less than .0745, participation in democracy under .454, followed by participation in democracy below .165, civil society index of less than .6615, and participation in democracy below .588, with regions 1, 2, 3, 7, and 9 being the final nodes in the tree. The most important predictors according to the tree model are civil society index, participation in democracy, and region the county is located in/around.  
-
-These initial modelling attempts tell us that the most important predictors of civil society participation in 2019 are civil society index, region, and participation in democracy, which were seen across all three models, and social support and corruption index, which was identified as an important predictor by 2 of the models. The model that did the best was ridge regression, with an MSE of .0087, followed by lasso regression, MSE .0087, then the tree with an MSE of .0093. 
-
-When looking at predictive ability, lasso and ridge regression had the highest R2 values with about 86% of the change in civil society participation being explained by the models (ridge = 86.8%, lasso = 86.7%), while the decision tree explained 85.8%. All of these methods had very similar MSEs and R2s, with the lasso and ridge regression models slightly outperforming the tree method on both of the metrics. 
