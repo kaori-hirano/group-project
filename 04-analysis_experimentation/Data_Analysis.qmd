@@ -172,7 +172,6 @@ tree_pred_tuned <- predict(prune_train, cs[test,],
 y_test <- y[test]
 # gets mse for pruned (which is same as full tree)
 mse <- mean((tree_pred_tuned - y_test)^2)
-sqrt(mse)
 # plotting predicted by actual
 ggplot(mapping = aes(x = tree_pred_tuned, y = y_test)) +
   geom_point(shape = 1) +
@@ -183,7 +182,6 @@ ggplot(mapping = aes(x = tree_pred_tuned, y = y_test)) +
   theme_classic() +
   geom_jitter()
 ```
-The test set MSE associated with the regression tree is $0.015$. The square root of the MSE is therefore around $.125$, indicating that this model leads to test predictions that are (on average) within approximately $12.5%$ of the true median participation amount.
 
 ## Visualizing
 Depending on the direction of your project produce at least one visualization that
