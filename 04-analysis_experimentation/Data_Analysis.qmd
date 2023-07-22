@@ -12,10 +12,7 @@ and define the model in the context of your data and your research question.
 If the models require hyperparameters (tuning parameters) discuss how you plan 
 to go about tuning the model.
 
-1) Ridge & Lasso Regression: We are using lasso regression to choose the best predictors. 
-This will allow our clustering method to be more effective by only using the 
-most influential predictors. Our tuning parameters will be chosen by using cross
-validation on the (insert tuning parameters here). 
+1) Ridge & Lasso Regression: We are using lasso and ridge regression to choose the best predictors. This will allow our clustering method to be more effective by only using the most influential predictors. Our tuning parameters will be chosen by using cross validation on the lambda. 
 
 2) Single Decision Tree: This method will identify the most important predictors in a different way than ridge and lasso regression will. It will also help us see the relationships between the predictors as the tree continues to go down, which provides us with a different understanding of the relationship between the outcome variable and the predictors. The number of terminal nodes will be chosen by cross validation with the number of nodes that has the lowest error to be chosen as the number of nodes for the pruned tree.  
 
@@ -192,25 +189,6 @@ predictive questions: compares model fit between the two methods
 ## interest.
 
 ```{r comparing-model}
-
-name=c("tree","lasso","ridge")
-mse_all=c(mse, lasso_mse, ridge_mse)
-value=c((r2(tree_pred_tuned, y_test)),
-            (r2(lasso_pred, y[test])),
-            (r2(ridge_pred, y[test])))
-compare_data=tibble(name,mse_all,value)
-p1=ggplot(compare_data, aes(x=name, y=value))+
-  geom_col()+
-  coord_cartesian(ylim=c(0.85,0.875))+
-  labs(x="models",y="R2",title = "Comparing R-squared of all models")
-p2=ggplot(compare_data, aes(x=name, y=mse_all))+
-  geom_col()+
-  coord_cartesian(ylim=c(0.0080,0.0095))+
-  labs(x="models",y="mse",title = "Comparing MSE of all models")
-p1+p2
-```
-# we can have a table! and that counts!
-# model on y, mse on x, can literally make it into a bar graph bruh
 ```{r r-squared}
 # function giving us R2
 r2 <- function(predicted, y) {
@@ -222,10 +200,26 @@ r2 <- function(predicted, y) {
   rsq
 }
 # R2 for tree, lasso, and ridge
-(r2(tree_pred_tuned, y_test))
-(r2(lasso_pred, y[test]))
-(r2(ridge_pred, y[test]))
+treer <- r2(tree_pred_tuned, y_test)
+lassor <- r2(lasso_pred, y[test])
+ridger <- r2(ridge_pred, y[test])
+# setting up values for graph
+name=c("tree","lasso","ridge")
+mse_all=c(mse, lasso_mse, ridge_mse)
+value=c(treer, lassor, ridger)
+compare_data=tibble(name,mse_all,value)
+p1=ggplot(compare_data, aes(x=name, y=value))+
+  geom_col()+
+  coord_cartesian(ylim=c(0.85,0.875))+
+  labs(x="Model",y="R2",title = "Comparing R-squared of all models")
+p2=ggplot(compare_data, aes(x=name, y=mse_all))+
+  geom_col()+
+  coord_cartesian(ylim=c(0.0080,0.0095))+
+  labs(x="Model",y="MSE",title = "Comparing MSE of all models")
+p1+p2
 ```
+# we can have a table! and that counts!
+# model on y, mse on x, can literally make it into a bar graph bruh
 
 ## Discussion
 
@@ -235,4 +229,4 @@ From the decision tree, we are able to see a breakdown of the most important pre
 
 These initial modelling attempts tell us that the most important predictors of civil society participation in 2019 are civil society index, region, and participation in democracy, which were seen across all three models, and social support and corruption index, which was identified as an important predictor by 2 of the models. The model that did the best was ridge regression, with an MSE of .0087, followed by lasso regression, MSE .0087, then the tree with an MSE of .0093. 
 
-When looking at predicitive ability, lasso and ridge regression had the highest R2 values with about 86% of the change in civil society participation being explained by the models (ridge = 86.8%, lasso = 86.7%), while the decision tree explained 85.8%. All of these methods had very similar MSEs and R2s, with the lasso and ridge regression models slightly outperforming the tree method on both of the metrics. 
+When looking at predictive ability, lasso and ridge regression had the highest R2 values with about 86% of the change in civil society participation being explained by the models (ridge = 86.8%, lasso = 86.7%), while the decision tree explained 85.8%. All of these methods had very similar MSEs and R2s, with the lasso and ridge regression models slightly outperforming the tree method on both of the metrics. 
