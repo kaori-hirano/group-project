@@ -3,6 +3,11 @@ title: "Extended Outline"
 author: "Group 4: Kaori Hirano, Alicia Nguyen, James Xia"
 date: "07/23/23"
 format: pdf
+execute: 
+  error: true
+  message: false
+  warning: false
+  eval: true
 ---
 ```{r load-packages, echo = FALSE}
 library(readr)
@@ -13,6 +18,8 @@ suppressPackageStartupMessages(library(glmnet)) # for ridge, LASSO
 suppressPackageStartupMessages(library(randomForest))
 suppressPackageStartupMessages(library(caret))
 library(Matrix)
+library(broom)
+library(tibble)
 ```
 
 # Introduction and Data
@@ -20,17 +27,19 @@ The introduction provides motivation and context for your research. Describe you
 
 Then identify the source of the data, when and how it was collected, the cases, a general description of relevant variables. You should describe any data wrangling that you have done, any variables you have changed from the original data set, the data tidying you had to do, and what variables you plan to include in any models you will do, and why.
 
-we'll want to mention why we are using 2019 here or in methods
+note: we'll want to mention why we are using 2019 here or in methods
 
 # Methodology
 The methodology section should include visualizations and summary statistics relevant to your research question. You should also justify the choice of method(s) used to answer your research question.
 
-notes: when editing data, we should rename the region levels to the actual regions they represent. also, if we add more variables from happiness as suggested, we'll need to update the codebook
+note: when editing data, we should rename the region levels to the actual regions they represent. also, if we add more variables from happiness as suggested, we'll need to update the codebook
+
 ```{r data}
 #| warning: false 
 cs_full <- readRDS("/cloud/project/data/civil_society_factor")
 # get only 2019 and remove civil war and coup because there are none in 2019
-cs <- cs_full %>% subset(year == 2019) %>% select(-one_of("civil_war", "coup")) %>% drop_na()
+cs <- cs_full %>% subset(year == 2019) %>% select(-one_of("civil_war", "coup"))
+                  %>% drop_na()
 
 # looks for region with most observations to set as base level table(cs$region)
 cs$region <- relevel(cs$region, ref = 4)
@@ -83,6 +92,11 @@ ridge_mod <- glmnet(x, y, alpha = 0, lambda = bestlam_r)
 
 # saves coefficients
 coef_r <-coef(ridge_mod)
+
+# prints important coefficients as a table
+ridge_feature_estimate <- ridge_mod %>% tidy() %>%
+  select(term, estimate)
+print(ridge_feature_estimate)
 ```
 
 ```{r lasso-regression}
@@ -106,6 +120,11 @@ lasso_mod <- glmnet(x, y, lambda = bestlam_l)
 
 # saves coefficients
 coef_l <-coef(lasso_mod)
+
+# prints important coefficients as a table
+lasso_feature_estimate <- lasso_mod %>% tidy() %>%
+  select(term, estimate)
+print(lasso_feature_estimate)
 ```
 
 ```{r plot-tree, echo=FALSE}
@@ -167,29 +186,37 @@ plot_tree <- function(model){
 ```
 
 ```{r tree-method}
-#| warning: false
-# sets 
+# sets set for reproducibility
 set.seed(247) 
+
+# creates tree on training data
 tree_train <- tree(cspart ~ . -year -country_name, cs,
     subset = train)
+
+# cross validation of tree
 cv_train <- cv.tree(tree_train)
-# uses 8 because that's where it levels off on the graph
+
+# pruning to 8 nodes per CV results
 prune_train <- prune.tree(tree_train, best = 8)
+
+# plots pruned tree
 plot_tree(prune_train) + 
   labs(title = "Pruned Tree Plot")
 
+# gets predictions and test values for mse
 tree_pred_tuned <- predict(prune_train, cs[test,],
     type = "vector")
 y_test <- y[test]
-# gets mse for pruned (which is same as full tree)
+
+# gets mse for pruned tree
 mse <- mean((tree_pred_tuned - y_test)^2)
 ```
 
 ```{r random-forests}
-# sets seed
+# sets seed for reproducibility
 set.seed(286)
 
-# sets training parameters
+# sets cv parameters
 train_control <- trainControl(method="cv", number = 5)
 
 # gets grid for mtry
@@ -206,19 +233,19 @@ best_forest <- train(cspart ~ . -year -country_name, data = cs[train,],
 y_test <- y[test]
 
 # predictions for test set with optimal mtry of 8
-rf_sci <- randomForest(cspart ~ . -year -country_name, data = cs[train,], 
+rf_cs <- randomForest(cspart ~ . -year -country_name, data = cs[train,], 
                        mtry = 8, importance = TRUE)
-yhat_rf <- predict(rf_sci, newdata = cs[test,])
+yhat_rf <- predict(rf_cs, newdata = cs[test,])
 
 # calculates MSE
 rf_mse <- mean((yhat_rf - y_test)^2)
 
 # importances
-importances_sci <- importance(rf_sci) %>% 
+importances_cs <- importance(rf_cs) %>% 
   as_tibble(rownames = "Variable")
 
 # plot 1
-p1_rf <- importances_sci %>% 
+p1_rf <- importances_cs %>% 
   arrange(`%IncMSE`) %>% 
   mutate(Variable = factor(Variable, levels = Variable)) %>% 
   ggplot(aes(x = `%IncMSE`, y = Variable)) +
@@ -227,7 +254,7 @@ p1_rf <- importances_sci %>%
   theme_classic()
 
 # plot 2
-p2_rf <- importances_sci %>% 
+p2_rf <- importances_cs %>% 
   arrange(IncNodePurity) %>% 
   mutate(Variable = factor(Variable, levels = Variable)) %>% 
   ggplot(aes(x = IncNodePurity, y = Variable)) +
@@ -237,6 +264,19 @@ p2_rf <- importances_sci %>%
 
 # side by side
 p1_rf + p2_rf
+
+# prints table of most important variables
+# feature names minus year, country, cspart
+rf_feature_names <- colnames(cs[,c(3:6, 8:12)])
+
+# importance scores
+rf_importance_scores <- rf_cs$importance[, 1]
+
+# combine feature names and importance scores
+rf_feature_importance <- tibble(Feature = rf_feature_names, '% Increase MSE' = rf_importance_scores)
+
+# Print the result
+print(rf_feature_importance)
 ```
 
 ## Visualizing
