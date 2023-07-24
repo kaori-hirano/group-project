@@ -20,25 +20,45 @@ The introduction provides motivation and context for your research. Describe you
 
 Then identify the source of the data, when and how it was collected, the cases, a general description of relevant variables. You should describe any data wrangling that you have done, any variables you have changed from the original data set, the data tidying you had to do, and what variables you plan to include in any models you will do, and why.
 
-we'll wnat to mention why we are using 2019 here
+we'll want to mention why we are using 2019 here or in methods
 
 # Methodology
 The methodology section should include visualizations and summary statistics relevant to your research question. You should also justify the choice of method(s) used to answer your research question.
+
+notes: when editing data, we should rename the region levels to the actual regions they represent. also, if we add more variables from happiness as suggested, we'll need to update the codebook
+```{r data}
+#| warning: false 
+cs_full <- readRDS("/cloud/project/data/civil_society_factor")
+# get only 2019 and remove civil war and coup because there are none in 2019
+cs <- cs_full %>% subset(year == 2019) %>% select(-one_of("civil_war", "coup")) %>% drop_na()
+
+# looks for region with most observations to set as base level table(cs$region)
+cs$region <- relevel(cs$region, ref = 4)
+#Sub Saharan Africa, was used as the baseline because it has the most observations
+# need to say why most observations is best as base/ref
+
+
+```
 
 # Results
 Showcase how you arrived at answers to your research question using the techniques we have learned in class (and beyond, if you’re feeling adventurous).
 
 Provide only the main results from your analysis. As a reminder, the goal is not to do an exhaustive data analysis (calculate every possible statistic and perform every possible procedure for all variables). Rather, you should demonstrate that you are proficient at asking meaningful questions and answering them using data, that you are skilled in interpreting and presenting results, and that you can accomplish these tasks using R. More is not always better.
-```{r choosing-base-level, echo=FALSE}
-# looks for region with most observations to set as base level table(cs$region)
-cs$region <- relevel(cs$region, ref = 4)
-#Sub Saharan Africa, was used as the baseline because it has the most observations
+# what does 'main results' mean? like don't include the output? or how we got there? or only the important output?
+
+```{r test-train-split}
+# 70, 30 test train split
+set.seed(145)
+train <- sample(c(TRUE, FALSE), nrow(cs), replace = TRUE, prob=c(.7,.3))
+test <- (!train)
+val <- test
 ```
+
 ```{r matrix-creation}
 # create x and y for glmnet
 set.seed(129)
-x <- model.matrix(cspart ~ csrepress+v2x_partipdem+edu+corr+cs_index+social_support+
-                    choices+gen+region, data = cs)[, -1]
+x <- model.matrix(cspart ~ csrepress+v2x_partipdem+edu+corr+cs_index+
+                    social_support+choices+gen+region, data = cs)[, -1]
 y <- cs$cspart
 ```
 
@@ -47,7 +67,8 @@ y <- cs$cspart
 set.seed(129)
 
 # cross validation for best l
-cv_r <- cv.glmnet(x[train,], y[train], alpha = 0, lambda = 10^seq(10, -2, length = 100))
+cv_r <- cv.glmnet(x[train,], y[train], alpha = 0, 
+                  lambda = 10^seq(10, -2, length = 100))
 
 # saving optimal lambda
 bestlam_r <- cv_r$lambda.min
@@ -224,11 +245,13 @@ p1_rf + p2_rf
 # putting together data of predicted, actual, and model type
 dataplot <- data.frame(true_value = c(y[test], y[test], y[test], y[test]))
 dataplot$model_type <- c(rep("Lasso", length(lasso_pred)), rep("Ridge Model", 
-            length(ridge_pred)), rep("Tree Model", length(tree_pred_tuned)), rep('Random Forests', length(yhat_rf)))
+            length(ridge_pred)), rep("Tree Model", length(tree_pred_tuned)), 
+            rep('Random Forests', length(yhat_rf)))
 dataplot$predictions <- c(lasso_pred, ridge_pred, tree_pred_tuned, yhat_rf)
 
 #plotting predicted vs actual by model type
-compare <- ggplot(dataplot, aes(x = predictions, y = true_value, color = model_type)) +
+compare <- ggplot(dataplot, aes(y = predictions, x = true_value,
+                                color = model_type)) +
   geom_point(shape = 1) + geom_abline(intercept = 0, slope = 1) +
   labs(x = "Predicted Outcome", y = "Actual Outcome",
        title = 'Comparison of Model Type by Predicted vs Actual', 
@@ -246,7 +269,8 @@ r2 <- function(predicted, y) {
 # setting up values for graph
 name=c("Tree","Random Forest", "LASSO","Ridge")
 mse_all=c(mse, rf_mse, lasso_mse, ridge_mse)
-value=c(r2(tree_pred_tuned, y[test]), r2(yhat_rf, y[test]), r2(lasso_pred, y[test]), r2(ridge_pred, y[test]))
+value=c(r2(tree_pred_tuned, y[test]), r2(yhat_rf, y[test]), 
+        r2(lasso_pred, y[test]), r2(ridge_pred, y[test]))
 
 # putting into table
 compare_data=tibble(name,mse_all,value)
@@ -265,6 +289,16 @@ p2=ggplot(compare_data, aes(x=name, y=mse_all))+
 compare / (p1+p2)
 ```
 
+```{r data-vis}
+# need to find a way to represent the relationships we are interested in. 
+# i'm not really sure how we do that...
+# ohhh we can do all of the importance plots of predictors showing the ones that are most important by model
+
+# plots 
+
+# plots the %incMSE for random forests which is most important variables
+p1_rf 
+```
 # Discussion
 ## This section is a conclusion and discussion. This will require a summary of what you have learned about your research question along with statistical and methodological arguments supporting your conclusions. You should critique your own methods and provide suggestions for improving your analysis and future work.
 Our research question regarded predictors of civil society participation. We hypothesized that countries with similar characteristics regarding social cohesion--such as region, presence of war, social support, and civil society index--will have similar civil society participation rates. The results of our data analysis partially supported our hypothesis, with the most important predictors identified being civil society index, region, and participation in democracy, which were seen across all three models, and social support which was found by two of the models run, LASSO and ridge regression. However, social support was shown to have a negative effect on civil society participation in 2019, which we did not expect. 
@@ -287,4 +321,4 @@ The training data we used certainly limited our conclusions and predictions. Our
 
 Also include a brief paragraph on what you would do differently if you were able to start over with the project.
 
-If we were to start over with this project, we would take more time to develop our questions and analysis of the data. Going into the project, we did not have a strong understanding of the data we were working with. This  made formulating our question difficult. Doing some data exploration to learn about the realtionships between explanatory variables would have helped in formulating a question. From there, being more intentional about the data we used from the beginning would have been different, as well. In our data analysis phase, we ended up making a lot of decisions about data cleaning and data wrangling, even some about the basics of the project itself, that should have been made earlier. Choosing to focus on one year instead of multiple was a decision we do not regret, but coming to this choice at the beginning of the project would have greatly changed our data exploration and cleaning phases, as we had to approach them from a different perspective and basically redo them to do data analysis. Furthermore, learning more about the predictors themselves is a change we would make. We did not assess for covariance or any other sort of relationship between predictors. We also did not realize that some predictors we chose for our model would simply be NA for all observations, leading us to remove it later on. In summary, if we were to do this project again, we would do a more in-depth exploration of the data itself, think more carefully about the feasibility of our research question, then be more intentional about the data explortation and visualization we do. 
+If we were to start over with this project, we would take more time to develop our questions and analysis of the data. Going into the project, we did not have a strong understanding of the data we were working with. This  made formulating our question difficult. Doing some data exploration to learn about the realtionships between explanatory variables would have helped in formulating a question. From there, being more intentional about the data we used from the beginning would have been different, as well. In our data analysis phase, we ended up making a lot of decisions about data cleaning and data wrangling, even some about the basics of the project itself, that should have been made earlier. Choosing to focus on one year instead of multiple was a decision we do not regret, but coming to this choice at the beginning of the project would have greatly changed our data exploration and cleaning phases, as we had to approach them from a different perspective and basically redo them to do data analysis. Furthermore, learning more about the predictors themselves is a change we would make. We did not assess for covariance or any other sort of relationship between predictors. We also did not realize that some predictors we chose for our model would simply be NA for all observations, leading us to remove it later on. Additionally, the late inclusion or dropping of predictors, which proved to be tedious, would have been avoided had we taken more time to fully explore the data in the beginning. In summary, if we were to do this project again, we would do a more in-depth exploration of the data itself, think more carefully about the feasibility of our research question, then be more intentional about the data explortation and visualization we do. 
