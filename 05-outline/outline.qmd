@@ -1,0 +1,6 @@
+---
+title: "Extended Outline"
+author: "Group 4: Kaori Hirano, Alicia Nguyen, James Xia"
+date: "07/23/23"
+format: pdf
+---
