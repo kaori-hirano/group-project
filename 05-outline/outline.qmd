@@ -337,13 +337,13 @@ compare / (p1+p2)
 # plots 
 
 # plots the %incMSE for random forests which is most important variables
-p1_rf 
+p1_rf + p2_rf
 ```
 # Discussion
 ## This section is a conclusion and discussion. This will require a summary of what you have learned about your research question along with statistical and methodological arguments supporting your conclusions. You should critique your own methods and provide suggestions for improving your analysis and future work.
 Our research question regarded predictors of civil society participation. We hypothesized that countries with similar characteristics regarding social cohesion--such as region, presence of war, social support, and civil society index--will have similar civil society participation rates. The results of our data analysis partially supported our hypothesis, with the most important predictors identified being civil society index, region, and participation in democracy, which were seen across all three models, and social support which was found by two of the models run, LASSO and ridge regression. However, social support was shown to have a negative effect on civil society participation in 2019, which we did not expect. 
 
-Participation in democracy was the most important predictor identified by all three models, 
+Civil society participation and participation in democracy were the top two predictors in all models, with region and social support being identified as top predictors by some of the models. 
 
 
 Based on these results, in future works we would work to expand beyond 2019. This severely limited the generalizability of our results due to the smaller number of observations and because it removed any patterns that may have been present over time. 
