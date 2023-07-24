@@ -46,9 +46,18 @@ cs$region <- relevel(cs$region, ref = 4)
 #Sub Saharan Africa, was used as the baseline because it has the most observations
 # need to say why most observations is best as base/ref
 
-
+# recodes region to be the region it represents rather than a num
+levels(cs$region) <- c('SubSaharanAfrica',
+                    'EasternEurope_PostSovietUnion', 
+                    'LatinAmerica',
+                    'NorthAfrica_MiddleEast',
+                    'WesternEurope_NorthAmerica',
+                    'EasternAsia',
+                    'SouthEasternAsia',
+                    'SouthernAsia',
+                    'ThePacific',
+                    'TheCarribean')
 ```
-
 # Results
 Showcase how you arrived at answers to your research question using the techniques we have learned in class (and beyond, if you’re feeling adventurous).
 
