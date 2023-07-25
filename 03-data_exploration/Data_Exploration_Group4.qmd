@@ -222,7 +222,7 @@ cs <- cs %>% filter(year > 2011) # updates to match year for both datasets
 # the full measures for happiness start in 2012, so all years before then are 
 # filtered out for the sake of analysis
 cs$region <- as.factor(cs$region)
-saveRDS(cs, file = "civil_society_factor")
+saveRDS(cs, file = "civil_society_final")
 ```
 
 ```{r corr-heatmap, fig.width = 20, fig.height = 30}
