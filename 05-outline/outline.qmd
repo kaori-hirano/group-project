@@ -34,6 +34,8 @@ The methodology section should include visualizations and summary statistics rel
 
 note: when editing data, we should rename the region levels to the actual regions they represent. also, if we add more variables from happiness as suggested, we'll need to update the codebook
 
+note: hey! can you do a visualization between region and social support, as well as one between civil society participation and participation in democracy? or even civil society index as well. 
+
 ```{r data}
 #| warning: false 
 cs_full <- readRDS("/cloud/project/data/civil_society")
@@ -230,7 +232,7 @@ set.seed(286)
 train_control <- trainControl(method="cv", number = 5)
 
 # gets grid for mtry
-tune_grid <- expand.grid(mtry = 3:11)
+tune_grid <- expand.grid(mtry = 3:12)
 
 # does training
 best_forest <- train(cspart ~ . -year -country_name, data = cs[train,], 
@@ -238,13 +240,14 @@ best_forest <- train(cspart ~ . -year -country_name, data = cs[train,],
                      method="rf", 
                      tuneGrid = tune_grid,
                      verbose = FALSE)
+best_forest
 
 # gets test for y
 y_test <- y[test]
 
 # predictions for test set with optimal mtry of 8
 rf_cs <- randomForest(cspart ~ . -year -country_name, data = cs[train,], 
-                       mtry = 8, importance = TRUE)
+                       mtry = 9, importance = TRUE)
 yhat_rf <- predict(rf_cs, newdata = cs[test,])
 
 # calculates MSE
@@ -277,7 +280,7 @@ p1_rf + p2_rf
 
 # prints table of most important variables
 # feature names minus year, country, cspart
-rf_feature_names <- colnames(cs[,c(3:6, 8:12)])
+rf_feature_names <- colnames(cs[,c(3:6, 8:15)])
 
 # importance scores
 rf_importance_scores <- rf_cs$importance[, 1]
@@ -343,20 +346,19 @@ compare / (p1+p2)
 # need to find a way to represent the relationships we are interested in. 
 # i'm not really sure how we do that...
 # ohhh we can do all of the importance plots of predictors showing the ones that are most important by model
-
-# plots 
-
-# plots the %incMSE for random forests which is most important variables
-p1_rf + p2_rf
+# actually are the tables I made enough? I feel like they show the predictors that we're interested in 
 ```
 # Discussion
 ## This section is a conclusion and discussion. This will require a summary of what you have learned about your research question along with statistical and methodological arguments supporting your conclusions. You should critique your own methods and provide suggestions for improving your analysis and future work.
-Our research question regarded predictors of civil society participation. We hypothesized that countries with similar characteristics regarding social cohesion--such as region, presence of war, social support, and civil society index--will have similar civil society participation rates. The results of our data analysis partially supported our hypothesis, with the most important predictors identified being civil society index, region, and participation in democracy, which were seen across all three models, and social support which was found by two of the models run, LASSO and ridge regression. However, social support was shown to have a negative effect on civil society participation in 2019, which we did not expect. 
+Our research question regarded predictors of civil society participation. We hypothesized that countries with similar characteristics regarding social cohesion--such as region, presence of war, social support, and civil society index--will have similar civil society participation rates. The results of our data analysis partially supported our hypothesis, with the most important predictors identified being civil society index, region, and participation in democracy, which were seen across all models, and social support and civil society repression which was found by a minority of the models run. However, social support was shown to have a negative effect on civil society participation in 2019, which we did not expect. 
 
-Civil society participation and participation in democracy were the top two predictors in all models, with region and social support being identified as top predictors by some of the models. 
+Civil society index and participation in democracy were the top two predictors in all models, with region, social support, and civil society repression being identified as top predictors by some of the models. Civil society index had a positive impact on civil society participation, meaning that as elements of civil society increased so as to increase the civil society index, such as increasing the number of civil society organizations, the civil society participation would also increase. This makes sense because a higher civil society index means that there are likely more and better opportunities for people to engage in civil society, therefore increasing participation. Similarly, as participation in democracy increases, so does participation in civil society. Many civil society organizations have roles in politics, so as there is more political behavior more people likely will also engage in civil society. Further study into the relationship between civil society and participation in democracy is warranted to learn more about how these two processes interact with and influence each other. 
 
+In terms of region, countries located in the Pacific, Western Europe and North Africa and the Middle East, Latin America, Southeastern Asia, and Eastern Europe and Post Soviet Union states were all associated with a decrease in civil society participation. This result was surprising because there were no regions associated with an increase in civil society participation, leading us to think that factors within a country may be more important than region overall. (Is there a commonality between all of the negative regions? the only thing I can think of is like colonialism/imperialism but that also applies to some that aren't negative? because I don't want to make up things about these regions that I just don't know which seems to be what simon wants?) 
 
-Based on these results, in future works we would work to expand beyond 2019. This severely limited the generalizability of our results due to the smaller number of observations and because it removed any patterns that may have been present over time. 
+The other key predictors identified were civil society repression and social support, which were both associated with a negative effect on civil society participation. As measures to increase repression of civil societies increase, such as the decrease of influence of civil society organizations, a decrease in civil society participation is predicted. As opportunities to participate in civil society decrease or become more difficult to access, it would make sense that people would participate less in civil society as a whole. Surprisingly, an increase in social support is associated with a decrease in civil society participation. Social support is defined as whether someone feels they have someone to turn to in a difficult situation. We hypothesized that if countries were to have more social support, it meant they would have stronger civil society networks. However, the results suggest that having social support may indicate that people have strong social support networks already, decreasing the need to participate in civil society organizations. More research into this relationships is needed to fully understand the effects of social support on civil society participation.
+
+Based on these results, in future works we would work to expand beyond 2019. This severely limited the generalization of our results due to the smaller number of observations and because it removed any patterns that may have been present over time. 2019 was chosen due to a desire to understand the key factors in civil society participation as close to the present day, without the effects of covid, as possible. However, doing a comparison over time would give us more generalizability by allowing us to see if predictors continued to be important over time or not. Additionally, 2019 did not have any recorded instances of civil wars or coups, meaning we were not able to assess the influence of these predictors on civil society participation. Going over time or picking a year that included these variables would have allowed us to better predict civil society participation by understanding the possible effects of these two predictors. 
 
 
 ## You should also discuss issues pertaining to the reliability and validity of your data and the appropriateness of the analyses should also be discussed.
