@@ -23,7 +23,7 @@ suppressPackageStartupMessages(library(patchwork))
 
 ```{r data}
 #| warning: false 
-cs_full <- readRDS("/cloud/project/data/civil_society_factor")
+cs_full <- readRDS("/cloud/project/data/civil_society")
 # get only 2019 and remove civil war and coup because there are none in 2019
 cs <- cs_full %>% subset(year == 2019) %>% select(-one_of("civil_war", "coup")) %>% drop_na()
 # 70, 30 test train split
@@ -32,6 +32,7 @@ train <- sample(c(TRUE, FALSE), nrow(cs), replace = TRUE, prob=c(.7,.3))
 test <- (!train)
 val <- test
 ```
+
 ```{r choosing-base-level}
 # looks for region with most observations to set as base level table(cs$region)
 cs$region <- relevel(cs$region, ref = 4)
