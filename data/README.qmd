@@ -26,8 +26,7 @@ Measures for the happiness data were found in the 2023 statistical appendix, fou
 #| echo: false
 #| output: asis
 library(tidyverse)
-readRDS(file = "civil_society.rds")
-cs <- cs
+cs <- readRDS(file = "civil_society_factor")
 
 codebook <- tibble(
   Variables = paste0("`", names(cs), "`"), # makes it code script when rendered
