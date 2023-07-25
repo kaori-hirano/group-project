@@ -38,8 +38,8 @@ note: when editing data, we should rename the region levels to the actual region
 #| warning: false 
 cs_full <- readRDS("/cloud/project/data/civil_society_factor")
 # get only 2019 and remove civil war and coup because there are none in 2019
-cs <- cs_full %>% subset(year == 2019) %>% select(-one_of("civil_war", "coup"))
-                  %>% drop_na()
+cs <- cs_full %>% subset(year == 2019) %>% select(-one_of("civil_war", "coup")) %>% 
+  drop_na()
 
 # looks for region with most observations to set as base level table(cs$region)
 cs$region <- relevel(cs$region, ref = 4)
