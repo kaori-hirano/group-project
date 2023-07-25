@@ -1,4 +1,9 @@
-# Analysis Experimentation
+---
+title: "Data Analysis"
+author: "Group 4: Kaori Hirano, Alicia Nguyen, James Xia"
+date: "07/20/20"
+format: pdf
+---
 
 ## Methods Overview
 Choose 2 methods that we have talked about and use them to model the outcome 
@@ -7,79 +12,141 @@ and define the model in the context of your data and your research question.
 If the models require hyperparameters (tuning parameters) discuss how you plan 
 to go about tuning the model.
 
-1) Lasso Regression: We are using lasso regression to choose the best predictors. 
+1) Ridge & Lasso Regression: We are using lasso regression to choose the best predictors. 
 This will allow our clustering method to be more effective by only using the 
 most influential predictors. Our tuning parameters will be chosen by using cross
 validation on the (insert tuning parameters here). 
 
-2) K-means clustering: This will allow us to see the relationships between 
-clusters of countries with similar characteristics. Being able to understand the 
-cluster centers for each variable will provide us with information regarding 
-what is important in each cluster, highlighting what the key differences 
-between them are. 
+2) Single Decision Tree: This method will identify the most important predictors in a different way than ridge and lasso regression will. It will also help us see the relationships between the predictors as the tree continues to go down, which provides us with a different understanding of the relationship between the outcome variable and the predictors. The number of terminal nodes will be chosen by cross validation with the number of nodes that has the lowest error to be chosen as the number of nodes for the pruned tree.  
 
 ## Application
-Fit the two models you have presented in the previous section. If this process
-involves tuning parameters, include the process of tuning the model.
 ```{r libraries, echo=FALSE}
-# do they need to be able to see this? 
+#| warning: false
+#| message: false
 suppressPackageStartupMessages(library(glmnet)) # for ridge, LASSO
 suppressPackageStartupMessages(library(tidyverse))
 library(patchwork) # for plot arrangement
+library(tree) # for simple decision trees
+library(ggdendro) # for plotting decision trees using ggplot
+suppressPackageStartupMessages(library(randomForest)) # for random forests
+suppressPackageStartupMessages(library(patchwork))
 ```
 
 ```{r data}
-# import the data here
-cs_full <- readRDS("/cloud/project/data/civil_society.rds")
-# get only 2019
+#| warning: false 
+cs_full <- readRDS("/cloud/project/data/civil_society_factor")
+# get only 2019 and remove civil war and coup because there are none in 2019
 cs <- cs_full %>% subset(year == 2019)
+cs <- cs %>% select(-one_of("civil_war", "coup"))
 
 # 70, 30 test train split
 set.seed(145)
+<<<<<<< HEAD
 sample1 <- sample(c(TRUE, FALSE), nrow(cs), replace=TRUE, prob=c(0.7,0.3))
 train <- cs[sample1, ]
 test <- cs[!sample1, ]
+=======
+train <- sample(c(TRUE, FALSE), nrow(cs),
+     replace = TRUE, prob=c(.7,.3))
+test <- (!train)
+val <- test
+
 ```
 
 ```{r ridge-regression}
 # create x and y for glmnet
-x <- model.matrix(form, data = mls22_nona)[, -1]
-y <- mls22_nona$base_salary_log
+set.seed(129)
+x <- model.matrix(cspart ~ csrepress+v2x_partipdem+edu+corr+cs_index+social_support+
+                    choices+gen+region, data = cs)[, -1]
+y <- cs$cspart
 # do cross validation
-cv_r <- cv.glmnet(x[cv,], y[cv], alpha = 0, lambda = 10^seq(10, -2, length = 100))
+cv_r <- cv.glmnet(x[train,], y[train], alpha = 0, lambda = 10^seq(10, -2, length = 100))
 # saving optimal lambda
 bestlam_r <- cv_r$lambda.min
 # calculating MSE
 ridge_pred <- predict(cv_r, s = bestlam_r,
 newx = x[test, ])
-ridge_mse <- mean((ridge_pred - y[test])^2)
+(ridge_mse <- mean((ridge_pred - y[test])^2))
+# find how to fit ridge model and import here
+ridge_mod <- glmnet(x, y, alpha = 0, lambda = bestlam_r)
+(coef_r <-coef(ridge_mod))
 ```
 
 ```{r lasso-regression}
 # set seed
 set.seed(18)
 # do cross validation
-cv_l <- cv.glmnet(x[cv,], y[cv], alpha = 1,
+cv_l <- cv.glmnet(x[train,], y[train], alpha = 1,
 lambda = 10^seq(10, -2, length = 100))
 # saving optimal lambda
 bestlam_l <- cv_l$lambda.min
 # calculating MSE
 lasso_pred <- predict(cv_l, s = bestlam_l,
 newx = x[test, ])
-lasso_mse <- mean((lasso_pred - y[test])^2)
+(lasso_mse <- mean((lasso_pred - y[test])^2))
 # coefficients that matter
 lasso_mod <- glmnet(x, y, lambda = bestlam_l)
 (coef_l <-coef(lasso_mod))
 ```
+```{r plot-tree, echo=FALSE}
+format_tree_labels <- function(labels, levels) {
+  sapply(labels, \(x) if(grepl(":", x)) clean_col(x, levels) else clean_lt(x))
+} 
 
-```{r tree-method}
+# replace letter positions with actual level labels
+clean_col <- function(x, levels){
+  # split the label into label and levels
+  x <- str_split_1(x, ":")
+  # make new temp objects for the two components
+  var <- x[1]
+  levs_ids <- x[2]
+  # get levels for correct variable
+  levs <- levels[[var]]
+  # get level ids for *relevant* levels
+  levs_ids <- str_split_1(levs_ids, "") 
+  levs_ids <- sapply(levs_ids, \(x) which(letters == x))
+  # cut down levs to only the required levels
+  levs <- levs[levs_ids]
+  # paste everything together and return (immplicitly)
+  paste0(var, ": ", paste0(levs, collapse = ", "))
+}
 
-cv_carseats <- cv.tree(tree_carseats_train, FUN = prune.misclass)
-names(cv_carseats)
-cv_carseats
+# space out labels that include only "<"
+clean_lt <- function(x){
+  # split on <, then recombine with spaces before and after <
+  x <- str_split_1(x, "<")
+  paste0(x, collapse = " < ")
+}
 
+plot_tree <- function(model){
+  require(ggdendro)
+  # extract necessary information from tree object so that it is ggplotable
+  tree_data <- dendro_data(model)
+  # create a data frame with the split *values* which dendro_data() doesn't extract
+  frame <- model$frame %>%
+    rownames_to_column(var = "split") %>%
+    mutate(splits = as.data.frame(splits)) %>% 
+    unnest(cols = c(splits)) %>% 
+    filter(var != "<leaf>") %>% 
+    select(cutleft)
+  
+  # add the splits information in, which dendro_data() misses
+  tree_data$labels <- tree_data$labels %>% 
+    bind_cols(frame) %>% 
+    mutate(label = paste0(as.character(label), cutleft),
+           label = format_tree_labels(label, attr(model, "xlevels")))
+      
+  ggplot(segment(tree_data)) +
+    geom_segment(aes(x = x, y = y, xend = xend, yend = yend)) +
+    geom_text(data = label(tree_data), 
+              aes(x = x, y = y, label = label), vjust = -0.5, size = 3) +
+    geom_text(data = leaf_label(tree_data), 
+              aes(x = x, y = y, label = label), vjust = 1.5, size = 2) +
+    theme_dendro()
+}
 ```
 
+<<<<<<< HEAD
 ```{r plot-cv-results-baseR}
 par(mfrow = c(1, 2))
 plot(cv_carseats$size, cv_carseats$dev, type = "b")
@@ -90,16 +157,47 @@ plot(cv_carseats$k, cv_carseats$dev, type = "b")
 prune_carseats <- prune.misclass(tree_carseats_train, best = 9)
 plot(prune_carseats, main = "Tree Plot")
 text(prune_carseats, pretty = 0)
+=======
+```{r tree-method}
+set.seed(247)
+tree_train <- tree(cspart ~ . -year -country_name, cs,
+    subset = train)
+plot(tree_train)
+text(tree_train, pretty = 0)
+cv_train <- cv.tree(tree_train)
 
-plot_tree(prune_carseats)
+# plots to see if pruning will be effective
+ggplot(mapping = aes(x = cv_train$size, 
+                     y = cv_train$dev)) +
+  geom_point() +
+  geom_line() +
+  labs(x = "Tree Size (Terminal Nodes)", y = "Deviance",
+       title = "Cross-Validating Regression Tree") +
+  theme_classic()
+
+# uses 4 because that's where it levels off on the graph
+prune_train <- prune.tree(tree_train, best = 8)
+plot_tree(prune_train)
+>>>>>>> 3d56c96c01d72cb52779f1ee66756603bc566d53
+
 ```
-
 ```{r check-MSE}
-tree_pred_tuned <- predict(prune_carseats, Carseats_test,
-    type = "class")
-table(tree_pred_tuned, Carseats_test$High)
-(97 + 58) / 200
+tree_pred_tuned <- predict(prune_train, cs[test,],
+    type = "vector")
+y_test <- y[test]
+# gets mse for pruned (which is same as full tree)
+mse <- mean((tree_pred_tuned - y_test)^2)
+sqrt(mse)
+# plotting predicted by actual
+ggplot(mapping = aes(x = tree_pred_tuned, y = y_test)) +
+  geom_point(shape = 1) +
+  geom_abline(intercept = 0, slope = 1) +
+  labs(x = "Predicted Outcome",
+       y = "Actual Outcome") +
+  theme_classic() +
+  geom_jitter()
 ```
+The test set MSE associated with the regression tree is $0.015$. The square root of the MSE is therefore around $.125$, indicating that this model leads to test predictions that are (on average) within approximately $12.5%$ of the true median participation amount.
 
 ## Visualizing
 Depending on the direction of your project produce at least one visualization that
@@ -109,9 +207,40 @@ predictive questions: compares model fit between the two methods
 ## understand the relationship between your outcome and your explanatory 
 ## variable of interest.
 
+<<<<<<< HEAD
 # I think we do the k means cluster output graph
 # then idk a linear model or something with the regression output? or one that 
 # shows which variables are important--correlation plot? I'm not sure...
+=======
+```{r comparing-model}
+
+```
+# we can have a table! and that counts!
+# model on y, mse on x, can literally make it into a bar graph bruh
+```{r r-squared}
+# function giving us R2
+r2 <- function(predicted, y) {
+  #find SST and SSE
+  sst <- sum((y - mean(y))^2)
+  sse <- sum((predicted - y)^2)
+  #find R-Squared
+  rsq <- 1 - sse/sst
+  rsq
+}
+# R2 for tree, lasso, and ridge
+(r2(tree_pred_tuned, y_test))
+(r2(lasso_pred, y[test]))
+(r2(ridge_pred, y[test]))
+```
+>>>>>>> 3d56c96c01d72cb52779f1ee66756603bc566d53
 
 ## Discussion
-In one to two paragraphs, discuss what you have learned from your initial modeling attempts.
+
+From our regression models, we learned the most important predictors when predicting civil society participation. Both of these models used 10 (CHECK) fold cross validation, which is how a lambda of .01 was chosen. From lasso, the most important predictors were civil society index, social support index, and participation in democracy. Participation in democracy and civil society index both had a positive relationship with civil society participation, with coefficients of .391 and .474 respectively. Social support index had a negative relationship with civil society participation, with a coefficient of -.24, meaning that as the national average of a response to whether or not people felt like they had someone to rely on increased, the participation in civil society decreased. From the ridge mod, the order of predictors from most to least important in predictive ability was: civil society index (.472), participation in democracy (.459), social support (-.377), then generosity (.047), the feeling of freedom to make important life choices (.028), and the corruption index (-.022) followed by education (.0001) and civil society repression (-.005). The most influential predictors from both the lasso and ridge regression models were the same. The MSE for lasso and ridge regression were .010 for lasso and .009 for ridge, indicating that the models have similar error rates, which is expected considering their results. 
+
+From the decision tree, civil society index and participation in democracy appear to be the most important predictors in determining civil society participation in 2019. Civil society index scoring less than .46 is the initial node, followed by democracy participation lower than .096 and civil society participation below .865. This is the tree results after pruning which found that the nodes below civil society participation below .865 were cut from the model,    
+ACTUALLY I THINK OUR PRUNING MADE IT WORSE--CHECK OUT THE MSE
+
+These initial modelling attempts tell us that the most important predictors of civil society participation in 2019 are civil society index and participation in democracy, which were seen across all three models, and social support, which was identified as an important predictor by 2 of the models. The model that did the best was ridge regression, with an MSE of .0090, followed by lasso regression, MSE .0095, then the tree with an MSE of .0108.
+
+When looking at predicitive ability, lasso and ridge regression had the highest R2 values with about 86% of the change in civil society participation being explained by the models (ridge = 86.3%, lasso = 85.6%), while the decision tree explained 83.7%. All of these methods had very similar MSEs and R2s, with the lasso and ridge regression models slightly outperforming the tree method on both of the metrics. 
