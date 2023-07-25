@@ -20,6 +20,7 @@ library(ggdendro) # for plotting decision trees using ggplot
 suppressPackageStartupMessages(library(randomForest)) # for random forests
 suppressPackageStartupMessages(library(patchwork))
 ```
+
 ```{r data}
 #| warning: false 
 cs_full <- readRDS("/cloud/project/data/civil_society_factor")
@@ -189,4 +190,3 @@ These bar graphs help visualize the differences in MSE and R2 between models. Th
 =======
    These initial modelling attempts tell us that the most important predictors of civil society participation in 2019 are civil society index, region, and participation in democracy, which were seen across all three models, and social support which was also selected as important in the regression models only. The model that did the best was ridge regression, with an MSE of .0089, followed by lasso regression, MSE .0090, then the tree with an MSE of .0093. Lasso and ridge regression had the highest R2 values with about 86% of the change in civil society participation being explained by the models (ridge = 86.8%, lasso = 86.7%), while the decision tree explained 85.8%. All of these methods had very similar MSEs and R2s, with the lasso and ridge regression models slightly outperforming the tree method on both of the metrics. These findings mostly fit with our hypothesis in that we expected regional variation and civil society index to have an influential relationship with civil society participation, while we were suprised by how important participation in democracy was and that social support had a negative relationship. 
 
->>>>>>> b6da63271aa70f50ea2da252d491688afe701320
