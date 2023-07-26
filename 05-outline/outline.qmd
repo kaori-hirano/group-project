@@ -35,7 +35,7 @@ The methodology section should include visualizations and summary statistics rel
 
 note: when editing data, we should rename the region levels to the actual regions they represent. also, if we add more variables from happiness as suggested, we'll need to update the codebook
 
-note: hey! can you do a visualization between region and social support, as well as one between civil society participation and participation in democracy? or even civil society index as well. 
+note: hey! can you do a visualization between region and social support, as well as one between civil society participation and participation in democracy? or even civil society index as well. actually region and like as many things as possible would be great--I'm trying to understand the similarities between regions in the results so any way to compare the means of them in various important predictors or like any predictors would be swell
 
 ```{r data}
 #| warning: false 
@@ -302,6 +302,10 @@ print(rf_feature_importance)
 ## Visualizing
 ```{r comparing-models}
 #| warning: false
+# note: I think we are planning to cut this because
+# interpretation-wise it doesn't add much that the MSE doesn't
+# already cover. 
+
 # putting together data of predicted, actual, and model type
 dataplot <- data.frame(true_value = c(y[test], y[test], y[test], y[test]))
 dataplot$model_type <- c(rep("Lasso", length(lasso_pred)), rep("Ridge Model", 
