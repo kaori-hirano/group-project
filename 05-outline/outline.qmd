@@ -58,10 +58,10 @@ total_2012 %>% group_by(e_civil_war) %>% count()
 
 #replace missing values in each numeric column with median value of column
 new_total <- total_2012 %>% mutate(across(where(is.numeric),~replace_na(.,median(.,na.rm=TRUE))))
-# changes names to shorter and easier to type/remember forms
 ```
 For the sake of completeness of the data, no extra changes are made. For further analysis, the unclear NA data are omitted. 
 ```{r final change to data}
+# changes names to shorter and easier to type/remember forms
 cs <- new_total %>% rename(csrepress = v2csreprss, civil_war = e_civil_war, coup = e_pt_coup,
                            edu = e_peaveduc, corr = v2x_corr, cspart = v2x_cspart, 
                            cs_index = v2xcs_ccsi, social_support = 'Social support', 
@@ -75,8 +75,13 @@ cs <- cs %>% filter(year > 2011) # updates to match year for both datasets
 # filtered out for the sake of analysis
 cs$region <- as.factor(cs$region)
 ##saveRDS(cs, file = "civil_society")
+cs_full <- readRDS("/cloud/project/data/civil_society")
+names(cs_full)
+# get only 2019 and remove civil war and coup because there are none in 2019
+cs <- cs_full %>% subset(year == 2019) %>% select(-one_of("civil_war", "coup")) %>% 
+  drop_na()
 ```
-  The names of used variables are shortened for further analysis. The year after 2011 are specifically selected because we mainly focus on the change before and after pandemic year. Leaving a larger volume of data gives a stronger comparison and makes the data equipped with a historic background. 
+  The names of used variables are shortened for further analysis. The year after 2011 are specifically selected because we mainly focus on the change before and after pandemic year. We first wanted to leave the data between 2012 and 2019 to do time series. After multiple trials, we determine to concentrate on only pandemic year.
   
 The introduction provides motivation and context for your research. Describe your topic (citing sources) and provide a concise, clear statement of your research question and expectations.
 
@@ -93,11 +98,6 @@ note: hey! can you do a visualization between region and social support, as well
 
 ```{r data}
 #| warning: false 
-cs_full <- readRDS("/cloud/project/data/civil_society")
-names(cs_full)
-# get only 2019 and remove civil war and coup because there are none in 2019
-cs <- cs_full %>% subset(year == 2019) %>% select(-one_of("civil_war", "coup")) %>% 
-  drop_na()
 
 # looks for region with most observations to set as base level table(cs$region)
 cs$region <- relevel(cs$region, ref = 4)
