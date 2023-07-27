@@ -53,7 +53,7 @@ cs$region <- relevel(cs$region, ref = 4)
 # creates new data frame for tree plotting with regions as numbers still
 cs_num <- cs
 
-# recodes region to be the region it represents rather than a num
+# recodes region to be the region it represents rather than a number value/code
 levels(cs$region) <- c('SubSaharanAfrica',
                     'EasternEurope_PostSovietUnion', 
                     'LatinAmerica',
@@ -78,12 +78,13 @@ train <- sample(c(TRUE, FALSE), nrow(cs), replace = TRUE, prob=c(.7,.3))
 test <- (!train)
 val <- test
 ```
-
+   
 ```{r matrix-creation}
 # create x and y for glmnet
 set.seed(129)
 x <- model.matrix(cspart ~ csrepress+v2x_partipdem+edu+corr+cs_index+
-                    social_support+choices+gen+region, data = cs)[, -1]
+                           social_support+choices+gen+region+lifee+happ+gdp, 
+                  data = cs)[, -1]
 y <- cs$cspart
 ```
 
@@ -239,6 +240,7 @@ set.seed(286)
 train_control <- trainControl(method="cv", number = 5)
 
 # gets grid for mtry
+# IS THIS MTRY RANGE GOOD
 tune_grid <- expand.grid(mtry = 3:12)
 
 # does training
@@ -255,6 +257,7 @@ y_test <- y[test]
 # predictions for test set with optimal mtry of 8
 rf_cs <- randomForest(cspart ~ . -year -country_name, data = cs[train,], 
                        mtry = 9, importance = TRUE)
+
 yhat_rf <- predict(rf_cs, newdata = cs[test,])
 
 # calculates MSE
