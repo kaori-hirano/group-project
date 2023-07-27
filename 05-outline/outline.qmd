@@ -25,6 +25,11 @@ library(tibble)
 ```
 
 # Introduction and Data
+## Topic & Research Question
+The introduction provides motivation and context for your research. Describe your topic (citing sources) and provide a concise, clear statement of your research question and expectations.
+
+## Data
+Then identify the source of the data, when and how it was collected, the cases, a general description of relevant variables. You should describe any data wrangling that you have done, any variables you have changed from the original data set, the data tidying you had to do, and what variables you plan to include in any models you will do, and why.
 ```{r introduction to data/merge data}
 wh_2023 <- read_excel("/cloud/project/data/wh_2023.xls")
 load("/cloud/project/data/vdemdata-master/data/vdem.RData")
@@ -44,7 +49,6 @@ total=merge(vdem_use, wh_use, by = c("country_name", "year"),
             all.x=TRUE,
             all.y=TRUE) 
 ##merge data
-
 ```
  
   In this part, nearly all variables in wh_2023 are selected because we do not have sufficient background to interpret necessary relationships. We do the same for vdem_use dataset. However, incorporating all datasets is not possible. Thus, we incorporate all the quantified data variables associated with political events and possible social activities. Thus the final incorporated is a comprehensive dataset based on full analyses of given codebooks.  
@@ -64,6 +68,7 @@ total_2012 %>% group_by(e_civil_war) %>% count()
 
 #replace missing values in each numeric column with median value of column
 new_total <- total_2012 %>% mutate(across(where(is.numeric),~replace_na(.,median(.,na.rm=TRUE))))
+
 # changes names to shorter and easier to type/remember forms
 ```
 For the sake of completeness of the data, no additional changes are made. For further analysis, the NA data are omitted. 
