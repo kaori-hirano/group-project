@@ -30,6 +30,7 @@ The introduction provides motivation and context for your research. Describe you
 
 ## Data
 Then identify the source of the data, when and how it was collected, the cases, a general description of relevant variables. You should describe any data wrangling that you have done, any variables you have changed from the original data set, the data tidying you had to do, and what variables you plan to include in any models you will do, and why.
+
 ```{r introduction to data/merge data}
 wh_2023 <- read_excel("/cloud/project/data/wh_2023.xls")
 load("/cloud/project/data/vdemdata-master/data/vdem.RData")
@@ -61,10 +62,9 @@ total=merge(vdem_use, wh_use, by = c("country_name", "year"),
 total_2012 <- total[total$year > 2011,]
 head(total_2012) 
 
-# changing the NA entries with a median of that column
+# Cleaning the data and removing NA values
 summary(total_2012)
-total_not_NA <- total_2012 %>% na.omit() 
-total_2012 %>% group_by(e_civil_war) %>% count()
+total_not_NA <- total_2012 %>% na.omit()
 
 #replace missing values in each numeric column with median value of column
 new_total <- total_2012 %>% mutate(across(where(is.numeric),~replace_na(.,median(.,na.rm=TRUE))))
