@@ -23,7 +23,7 @@ library(broom)
 library(tree)
 library(tibble)
 ```
-
+note - have we updated the codebook, if not we need to
 # Introduction and Data
 ## Topic & Research Question
 The introduction provides motivation and context for your research. Describe your topic (citing sources) and provide a concise, clear statement of your research question and expectations.
@@ -31,7 +31,7 @@ The introduction provides motivation and context for your research. Describe you
 ## Data
 Then identify the source of the data, when and how it was collected, the cases, a general description of relevant variables. You should describe any data wrangling that you have done, any variables you have changed from the original data set, the data tidying you had to do, and what variables you plan to include in any models you will do, and why.
 
-```{r introduction to data/merge data}
+```{r merge-datasets}
 wh_2023 <- read_excel("/cloud/project/data/wh_2023.xls")
 load("/cloud/project/data/vdemdata-master/data/vdem.RData")
 ## load the original datasets
@@ -57,21 +57,19 @@ total=merge(vdem_use, wh_use, by = c("country_name", "year"),
 ```{r clean-data}
 #| message: false
 #| warning: false
+# note -- why are we including this? we are only using 2019
 
 # Select the time range from 2012 (inclusive) and later only 
-total_2012 <- total[total$year > 2011,]
+total_2019 <- total[total$year == 2019,]
 
-# note: why are we displaying this?
-head(total_2012)
+#replace missing values in each numeric column with median value of column
+new_total <- total_2019 %>% mutate(across(where(is.numeric),~replace_na(.,median(.,na.rm=TRUE))))
 
 # Cleaning the data and removing NA values
-total_not_NA <- total_2012 %>% na.omit()
+total_2019 <- total_2019 %>% select(-one_of("civil_war", "coup"))
 
 # changes names to shorter and easier to type/remember forms
-```
-For the sake of completeness of the data, no additional changes are made. For further analysis, the NA data are omitted. 
-```{r clean-data-and-var-names}
-cs <- new_total %>% rename(csrepress = v2csreprss, civil_war = e_civil_war, 
+cs <- total_2019 %>% rename(csrepress = v2csreprss, civil_war = e_civil_war, 
                            coup = e_pt_coup,
                            edu = e_peaveduc, corr = v2x_corr, 
                            cspart = v2x_cspart, 
@@ -83,39 +81,19 @@ cs <- new_total %>% rename(csrepress = v2csreprss, civil_war = e_civil_war,
                            happ = "Life Ladder", 
                            lifee = "Healthy life expectancy at birth", 
                            gdp = "Log GDP per capita")
+```
+For the sake of completeness of the data, no additional changes are made. For further analysis, the NA data are omitted. 
+```{r import-data, echo=FALSE}
+cs_full <- readRDS("/cloud/project/data/civil_society")
+# get only 2019 and remove civil war and coup because there are none in 2019
+cs <- cs_full %>% subset(year == 2019) %>% select(-one_of("civil_war", "coup")) %>% drop_na()
+```
 
-# updates to match year for both datasets 
-# the full measures for happiness start in 2012, so all years before then are 
-cs <- cs %>% filter(year > 2011)
-
-# filtered out for the sake of analysis
+```{r region-tidying}
+# sets as factor
 cs$region <- as.factor(cs$region)
 
-#saveRDS(cs, file = "civil_society")
-```
-  The names of used variables are shortened for further analysis. The year 2019 is chosen as our focus specifically because we want to focus on the change before and after pandemic year. 2019 is the most recent data set we have that is not reflecting social changes due to COVID-19. This might be more representative of the social conditions before the pandemic year and thus help us answer our main research question of how civil participation has changed before and after the pandemic. 
-  
-The introduction provides motivation and context for your research. Describe your topic (citing sources) and provide a concise, clear statement of your research question and expectations.
-
-Then identify the source of the data, when and how it was collected, the cases, a general description of relevant variables. You should describe any data wrangling that you have done, any variables you have changed from the original data set, the data tidying you had to do, and what variables you plan to include in any models you will do, and why.
-
-# Methodology
-The methodology section should include visualizations and summary statistics relevant to your research question. You should also justify the choice of method(s) used to answer your research question.
-
-note: when editing data, we should rename the region levels to the actual regions they represent. also, if we add more variables from happiness as suggested, we'll need to update the codebook
-
-note: do a visualization between region and social support, as well as one between civil society participation and participation in democracy? or even civil society index as well. actually region and like as many things as possible would be great - must understand the similarities between regions in the results so any way to compare the means of them in various important predictors or like any predictors would be swell
-
-```{r data}
-#| warning: false 
-cs_full <- readRDS("/cloud/project/data/civil_society")
-names(cs_full)
-# get only 2019 and remove civil war and coup because there are none in 2019
-cs <- cs_full %>% 
-  subset(year == 2019) %>% 
-  select(-one_of("civil_war", "coup")) %>% drop_na()
-
-# looks for region with most observations to set as base level table(cs$region)
+# looks for region with most observations to set as base level
 cs$region <- relevel(cs$region, ref = 4)
 # Sub Saharan Africa, was used as baseline
 
@@ -133,9 +111,17 @@ levels(cs$region) <- c('SubSaharanAfrica',
                     'SouthernAsia',
                     'ThePacific',
                     'TheCarribean')
-
-names(cs)
 ```
+  The names of used variables are shortened for further analysis. The year 2019 is chosen as our focus specifically because we want to focus on the change before and after pandemic year. 2019 is the most recent data set we have that is not reflecting social changes due to COVID-19. This might be more representative of the social conditions before the pandemic year and thus help us answer our main research question of how civil participation has changed before and after the pandemic. 
+  
+The introduction provides motivation and context for your research. Describe your topic (citing sources) and provide a concise, clear statement of your research question and expectations.
+
+Then identify the source of the data, when and how it was collected, the cases, a general description of relevant variables. You should describe any data wrangling that you have done, any variables you have changed from the original data set, the data tidying you had to do, and what variables you plan to include in any models you will do, and why.
+
+# Methodology
+The methodology section should include visualizations and summary statistics relevant to your research question. You should also justify the choice of method(s) used to answer your research question.
+
+note: do a visualization between region and social support, as well as one between civil society participation and participation in democracy? or even civil society index as well. actually region and like as many things as possible would be great - must understand the similarities between regions in the results so any way to compare the means of them in various important predictors or like any predictors would be swell
 
 ```{r variable-summary}
 #| warning: false
@@ -144,8 +130,6 @@ names(cs)
 # idk if that's something they care about (you'd probably know better from your last class)
 summary(cs)
 ```
-## Data Cleaning and Wrangling 
-
 
 ## Data Changes for Model Choice
 We can see that the scale of the variables used as predictors vary widely. This is why it is ideal to scale the data while doing Lasso and Ridge regression. We do not have to scale data in random forest model. 
@@ -258,6 +242,7 @@ box2
 box3
 box4
 ```
+
 # Results
 ## Test Train Split
 ```{r test-train-split}
