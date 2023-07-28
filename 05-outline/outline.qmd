@@ -1,7 +1,7 @@
 ---
 title: "Extended Outline"
 author: "Group 4: Kaori Hirano, Alicia Nguyen, James Xia"
-date: "07/23/23"
+date: "07/27/23"
 format: pdf
 execute: 
   error: true
@@ -11,6 +11,7 @@ execute:
 ---
 ```{r load-packages, echo = FALSE}
 library(readr)
+library(readxl)
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(dplyr))
 library(patchwork)
@@ -34,7 +35,7 @@ need_vdem=c("country_name","year","v2csreprss",'e_civil_war',"e_pt_coup",
 vdem_use=vdem[,need_vdem]
 need_wh=c("Country name","year","Social support","Freedom to make life choices","Generosity","Life Ladder","Healthy life expectancy at birth","Log GDP per capita")
 wh_use=wh_2023[,need_wh]
-## only select the portions where we need to need for our porject
+## only select the portions where we need to need for our project
 
 colnames(wh_use)[1] <- "country_name"
 ## change col name for eaier merge
@@ -45,8 +46,13 @@ total=merge(vdem_use, wh_use, by = c("country_name", "year"),
 ##merge data
 
 ```
-  In this part, neraly all variables in wh_2023 are selected because we do not have sufficient background to interpret necessary relationships. We do the same for vdem_use dataset. However, incorporating all datasets is not possible. Thus, we incorporate all the quantified data variables measing political events and possible social activities. Thus the final incorporated is a comprehensive dataset based on full analysis of given codebooks.  
+ 
+  In this part, nearly all variables in wh_2023 are selected because we do not have sufficient background to interpret necessary relationships. We do the same for vdem_use dataset. However, incorporating all datasets is not possible. Thus, we incorporate all the quantified data variables associated with political events and possible social activities. Thus the final incorporated is a comprehensive dataset based on full analyses of given codebooks.  
+  
 ```{r clean data}
+#| message: false
+#| warning: false
+
 # Select the time range from 2012 (inclusive) and later only 
 total_2012 <- total[total$year > 2011,]
 head(total_2012) 
@@ -59,21 +65,24 @@ total_2012 %>% group_by(e_civil_war) %>% count()
 #replace missing values in each numeric column with median value of column
 new_total <- total_2012 %>% mutate(across(where(is.numeric),~replace_na(.,median(.,na.rm=TRUE))))
 ```
-For the sake of completeness of the data, no extra changes are made. For further analysis, the unclear NA data are omitted. 
+For the sake of completeness of the data, no additional changes are made. For further analysis, the NA data are omitted. 
 ```{r final change to data}
 # changes names to shorter and easier to type/remember forms
 cs <- new_total %>% rename(csrepress = v2csreprss, civil_war = e_civil_war, coup = e_pt_coup,
                            edu = e_peaveduc, corr = v2x_corr, cspart = v2x_cspart, 
                            cs_index = v2xcs_ccsi, social_support = 'Social support', 
                            choices = 'Freedom to make life choices', gen = Generosity,
-                           region = e_regionpol,happ = "Life Ladder", lifee = 
-                             "Healthy life expectancy at birth", 
+                           region = e_regionpol,
+                           # CHECK THIS VARIABLE DESCRIPTION AGAIN
+                           happ = "Life Ladder", 
+                           lifee = "Healthy life expectancy at birth", 
                            gdp = "Log GDP per capita")
 
 cs <- cs %>% filter(year > 2011) # updates to match year for both datasets 
 # the full measures for happiness start in 2012, so all years before then are 
 # filtered out for the sake of analysis
 cs$region <- as.factor(cs$region)
+
 ##saveRDS(cs, file = "civil_society")
 cs_full <- readRDS("/cloud/project/data/civil_society")
 names(cs_full)
@@ -81,33 +90,42 @@ names(cs_full)
 cs <- cs_full %>% subset(year == 2019) %>% select(-one_of("civil_war", "coup")) %>% 
   drop_na()
 ```
-  The names of used variables are shortened for further analysis. The year after 2011 are specifically selected because we mainly focus on the change before and after pandemic year. We first wanted to leave the data between 2012 and 2019 to do time series. After multiple trials, we determine to concentrate on only pandemic year.
+
+```
+  The names of used variables are shortened for further analysis. The year 2019 is chosen as our focus specifically because we want to focus on the change before and after pandemic year. 2019 is the most recent data set we have that is not reflecting social changes due to COVID-19. This might be more representative of the social conditions before the pandemic year and thus help us answer our main research question of how civil participation has changed before and after the pandemic. 
+>>>>>>> f0807f4f2bc32ca69272eadaed2eeff321d83537
   
 The introduction provides motivation and context for your research. Describe your topic (citing sources) and provide a concise, clear statement of your research question and expectations.
 
 Then identify the source of the data, when and how it was collected, the cases, a general description of relevant variables. You should describe any data wrangling that you have done, any variables you have changed from the original data set, the data tidying you had to do, and what variables you plan to include in any models you will do, and why.
-
-note: we'll want to mention why we are using 2019 here or in methods
 
 # Methodology
 The methodology section should include visualizations and summary statistics relevant to your research question. You should also justify the choice of method(s) used to answer your research question.
 
 note: when editing data, we should rename the region levels to the actual regions they represent. also, if we add more variables from happiness as suggested, we'll need to update the codebook
 
-note: hey! can you do a visualization between region and social support, as well as one between civil society participation and participation in democracy? or even civil society index as well. actually region and like as many things as possible would be great--I'm trying to understand the similarities between regions in the results so any way to compare the means of them in various important predictors or like any predictors would be swell
+note: do a visualization between region and social support, as well as one between civil society participation and participation in democracy? or even civil society index as well. actually region and like as many things as possible would be great - must understand the similarities between regions in the results so any way to compare the means of them in various important predictors or like any predictors would be swell
 
 ```{r data}
 #| warning: false 
+<<<<<<< HEAD
+=======
+cs_full <- readRDS("/cloud/project/data/civil_society")
+names(cs_full)
+# get only 2019 and remove civil war and coup because there are none in 2019
+cs <- cs_full %>% subset(year == 2019) %>% select(-one_of("civil_war", 
+                                                          "coup")) %>% drop_na()
+>>>>>>> f0807f4f2bc32ca69272eadaed2eeff321d83537
 
 # looks for region with most observations to set as base level table(cs$region)
 cs$region <- relevel(cs$region, ref = 4)
-#Sub Saharan Africa, was used as the baseline because it has the most observations
-# need to say why most observations is best as base/ref
+# Sub Saharan Africa, was used as baseline because it has the most observations
+# NEED TO EXPLAIN WHY THE REGION WITH MOST OBS CAN BE USED AS REF BASE
 
 # creates new data frame for tree plotting with regions as numbers still
 cs_num <- cs
 
-# recodes region to be the region it represents rather than a num
+# recodes region to be the region it represents rather than a number value/code
 levels(cs$region) <- c('SubSaharanAfrica',
                     'EasternEurope_PostSovietUnion', 
                     'LatinAmerica',
@@ -118,11 +136,117 @@ levels(cs$region) <- c('SubSaharanAfrica',
                     'SouthernAsia',
                     'ThePacific',
                     'TheCarribean')
+
+names(cs)
+```
+
+```{r variable-summary}
+#| warning: false
+#| message: false
+
+summary(cs)
+
+```
+We can see that the scale of the variables used as predictors vary widely. This is why it is ideal to scale the data while doing Lasso and Ridge regression. We do not have to scale data in random Forest model. 
+
+Our research question is whether region, ... (ADD VARIABLE) would be important in predicting civil society participation across countries. Our outcome variable is a numerical variable. Therefore, we chose regression models: Lasso and Ridge to help us eliminate unimportant variables. We also used random Forest to help us see the ranking of the relative importance of the predictor variables in our model. If the top most important variables produced by our machine learning models are consistent with our hypothesis, and the model works well when applied to the test set, this means that the model results are relatively consistent with our hypothesis. We also want to see the specific relationship, negative or positive, and the magnitude of the relationship between our outcome variable and each of the predictor variable to help shed light on our research question. 
+
+```{r variable-visualization}
+#| warning: false
+#| message: false
+
+# A scatter plot to show the relationship between civil society participation 
+# and social support
+ggplot(cs, aes(x=social_support, 
+               y = v2x_partipdem)) + 
+  geom_jitter() +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(x = "Social support",
+       y = "Participation in democracy",
+title = "Relationship between Participation in Civil society and Social Support",
+color = "Regions")
+
+# A scatterplot to show the relationship between civil society participation 
+# and participation in democracy
+ggplot(cs, aes(x=cspart, 
+               y = v2x_partipdem)) + 
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(x = "Civil society participation",
+       y = "Participation in democracy",
+title = "Relationship between Participation in Civil society and in democracy")
+
+# A scatterplot to show the relationship between civil society participation 
+# and civil society index
+ggplot(cs, aes(x=cs_index, 
+               y = cspart)) + 
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(x = "Civil society index",
+       y = "Civil society participation",
+       title = "Relationship between Civil Society Participation and Index")
+
+# A box plot to show the relationship between region and 
+# Civil Society Participation
+ggplot(cs, aes(x=as.factor(region), 
+               y = cspart, 
+               color = as.factor(region),
+               group = as.factor(region))) + 
+  geom_boxplot() + 
+  labs(x = "Regions",
+       y = "Civil society participation by region",
+       title = "Civil society participation levels within different regions",
+       color = "Regions") + 
+  # Rotate x-axis labels by 90 degrees to the left
+  theme(axis.text.x = element_text(angle = 45, hjust = 0.9))
+
+# A box plot to show the relationship between region and social support
+ggplot(cs, aes(x=as.factor(region), 
+               y = social_support, 
+               color = as.factor(region),
+               group = as.factor(region))) + 
+  geom_boxplot() + 
+  labs(x = "Regions",
+       y = str_wrap("Social support by region",
+       width = 30),
+       title = "Social support levels within different regions",
+       color = "Regions") + 
+  # Rotate x-axis labels by 90 degrees to the left
+  theme(axis.text.x = element_text(angle = 45, hjust = 0.9))
+
+# A box plot to show the relationship between region and Civil Society Index
+ggplot(cs, aes(x=as.factor(region), 
+               y = cs_index, 
+               color = as.factor(region),
+               group = as.factor(region))) + 
+  geom_boxplot() + 
+  labs(x = "Regions",
+       y = "Civil Society Index by region",
+       title = "Civil Society index within different regions",
+       color = "Regions") + 
+  # Rotate x-axis labels by 90 degrees to the left
+  theme(axis.text.x = element_text(angle = 45, hjust = 0.9))
+
+# A box plot to show the relationship between region
+# and participation in democracy
+ggplot(cs, aes(x = as.factor(region), 
+               y = v2x_partipdem, 
+               color = as.factor(region),
+               group = as.factor(region))) + 
+  geom_boxplot() + 
+  labs(x = "Regions",
+       y = "Participation in Democracy by region",
+       title = "Participation in Democracy within different regions",
+       color = "Regions") + 
+  # Rotate x-axis labels by 90 degrees to the left
+  theme(axis.text.x = element_text(angle = 45, hjust = 0.9))
+
 ```
 # Results
 Showcase how you arrived at answers to your research question using the techniques we have learned in class (and beyond, if you’re feeling adventurous).
 
 Provide only the main results from your analysis. As a reminder, the goal is not to do an exhaustive data analysis (calculate every possible statistic and perform every possible procedure for all variables). Rather, you should demonstrate that you are proficient at asking meaningful questions and answering them using data, that you are skilled in interpreting and presenting results, and that you can accomplish these tasks using R. More is not always better.
+
 # what does 'main results' mean? like don't include the output? or how we got there? or only the important output?
 
 ```{r test-train-split}
@@ -132,12 +256,13 @@ train <- sample(c(TRUE, FALSE), nrow(cs), replace = TRUE, prob=c(.7,.3))
 test <- (!train)
 val <- test
 ```
-
+   
 ```{r matrix-creation}
 # create x and y for glmnet
 set.seed(129)
 x <- model.matrix(cspart ~ csrepress+v2x_partipdem+edu+corr+cs_index+
-                    social_support+choices+gen+region, data = cs)[, -1]
+                           social_support+choices+gen+region+lifee+happ+gdp, 
+                  data = cs)[, -1]
 y <- cs$cspart
 ```
 
@@ -274,7 +399,9 @@ plot_tree(prune_train) +
   labs(title = "Pruned Tree Plot",
        caption = 'Regions 1, 2, 3, 7, and 9 represent Eastern Europe & Post
        Soviet Union, Latin America, North Africa and Middle East, South Eastern 
-       Asia, and the Pacific')
+       Asia, and the Pacific') + 
+  # Center the plot title
+  theme(plot.title = element_text(hjust = 0.4))
 
 # gets predictions and test values for mse
 tree_pred_tuned <- predict(prune_train, cs_num[test,],
@@ -293,6 +420,7 @@ set.seed(286)
 train_control <- trainControl(method="cv", number = 5)
 
 # gets grid for mtry
+# IS THIS MTRY RANGE GOOD
 tune_grid <- expand.grid(mtry = 3:12)
 
 # does training
@@ -306,9 +434,10 @@ best_forest
 # gets test for y
 y_test <- y[test]
 
-# predictions for test set with optimal mtry of 8
+# predictions for test set with optimal mtry of 9
 rf_cs <- randomForest(cspart ~ . -year -country_name, data = cs[train,], 
                        mtry = 9, importance = TRUE)
+
 yhat_rf <- predict(rf_cs, newdata = cs[test,])
 
 # calculates MSE
@@ -347,14 +476,15 @@ rf_feature_names <- colnames(cs[,c(3:6, 8:15)])
 rf_importance_scores <- rf_cs$importance[, 1]
 
 # combine feature names and importance scores
-rf_feature_importance <- tibble(Feature = rf_feature_names, '% Increase MSE' = rf_importance_scores)
+rf_feature_importance <- tibble(Feature = rf_feature_names, 
+                                '% Increase MSE' = rf_importance_scores)
 
 # Print the result
 print(rf_feature_importance)
 ```
 
 ## Visualizing
-```{r comparing-models}
+```{r, echo = FALSE}
 #| warning: false
 # note: I think we are planning to cut this because
 # interpretation-wise it doesn't add much that the MSE doesn't
@@ -370,7 +500,7 @@ dataplot$predictions <- c(lasso_pred, ridge_pred, tree_pred_tuned, yhat_rf)
 #plotting predicted vs actual by model type
 compare <- ggplot(dataplot, aes(y = predictions, x = true_value,
                                 color = model_type)) +
-  geom_point(shape = 1) + geom_abline(intercept = 0, slope = 1) +
+  geom_jitter() + geom_abline(intercept = 0, slope = 1) +
   labs(x = "Predicted Outcome", y = "Actual Outcome",
        title = 'Comparison of Model Type by Predicted vs Actual', 
        color = 'Model Type') + theme_classic() 
@@ -405,16 +535,13 @@ p2=ggplot(compare_data, aes(x=name, y=mse_all))+
   labs(x="Model",y="MSE",title = "Comparing MSE") +
   theme_classic()
 compare / (p1+p2)
+
 ```
 
-```{r data-vis}
-# need to find a way to represent the relationships we are interested in. 
-# i'm not really sure how we do that...
-# ohhh we can do all of the importance plots of predictors showing the ones that are most important by model
-# actually are the tables I made enough? I feel like they show the predictors that we're interested in 
-```
 # Discussion
+
 ## This section is a conclusion and discussion. This will require a summary of what you have learned about your research question along with statistical and methodological arguments supporting your conclusions. You should critique your own methods and provide suggestions for improving your analysis and future work.
+
 Our research question regarded predictors of civil society participation. We hypothesized that countries with similar characteristics regarding social cohesion--such as region, presence of war, social support, and civil society index--will have similar civil society participation rates. The results of our data analysis partially supported our hypothesis, with the most important predictors identified being civil society index, region, and participation in democracy, which were seen across all models, and social support and civil society repression which was found by a minority of the models run. However, social support was shown to have a negative effect on civil society participation in 2019, which we did not expect. 
 
 Civil society index and participation in democracy were the top two predictors in all models, with region, social support, and civil society repression being identified as top predictors by some of the models. Civil society index had a positive impact on civil society participation, meaning that as elements of civil society increased so as to increase the civil society index, such as increasing the number of civil society organizations, the civil society participation would also increase. This makes sense because a higher civil society index means that there are likely more and better opportunities for people to engage in civil society, therefore increasing participation. Similarly, as participation in democracy increases, so does participation in civil society. Many civil society organizations have roles in politics, so as there is more political behavior more people likely will also engage in civil society. Further study into the relationship between civil society and participation in democracy is warranted to learn more about how these two processes interact with and influence each other. 
