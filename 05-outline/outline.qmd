@@ -82,8 +82,9 @@ cs <- new_total %>% rename(csrepress = v2csreprss, civil_war = e_civil_war,
                            lifee = "Healthy life expectancy at birth", 
                            gdp = "Log GDP per capita")
 
-cs <- cs %>% filter(year > 2011) # updates to match year for both datasets 
+# updates to match year for both datasets 
 # the full measures for happiness start in 2012, so all years before then are 
+cs <- cs %>% filter(year > 2011)
 
 # filtered out for the sake of analysis
 cs$region <- as.factor(cs$region)
