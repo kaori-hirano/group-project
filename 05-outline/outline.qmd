@@ -28,6 +28,8 @@ note - have we updated the codebook, if not we need to
 ## Topic & Research Question
 The introduction provides motivation and context for your research. Describe your topic (citing sources) and provide a concise, clear statement of your research question and expectations.
 
+# NEED TO ADD THE INTRODUCTION AND PROPOSAL HERE, THEN START THE DATA PART
+
 ## Data
 Then identify the source of the data, when and how it was collected, the cases, a general description of relevant variables. You should describe any data wrangling that you have done, any variables you have changed from the original data set, the data tidying you had to do, and what variables you plan to include in any models you will do, and why.
 
@@ -57,9 +59,9 @@ total=merge(vdem_use, wh_use, by = c("country_name", "year"),
 ```{r clean-data}
 #| message: false
 #| warning: false
-# note -- why are we including this? we are only using 2019
+# note -- WHY? why are we including this? we are only using 2019
 
-# Select the time range from 2012 (inclusive) and later only 
+# Select the time range from 2019 only 
 total_2019 <- total[total$year == 2019,]
 
 #replace missing values in each numeric column with median value of column
@@ -119,6 +121,8 @@ The introduction provides motivation and context for your research. Describe you
 
 Then identify the source of the data, when and how it was collected, the cases, a general description of relevant variables. You should describe any data wrangling that you have done, any variables you have changed from the original data set, the data tidying you had to do, and what variables you plan to include in any models you will do, and why.
 
+# NEED TO ADD INTRO HERE
+
 # Methodology
 The methodology section should include visualizations and summary statistics relevant to your research question. You should also justify the choice of method(s) used to answer your research question.
 
@@ -127,11 +131,17 @@ note: do a visualization between region and social support, as well as one betwe
 ```{r variable-summary}
 #| warning: false
 #| message: false
-# note is there a way to make this look nicer than just printing the output?
-# idk if that's something they care about (you'd probably know better from your last class)
-# also, are all of these relevant? and if so we should say why
-# it seems like they're really just looking for us to justify everything we did
-summary(cs)
+
+# Visualize the outcome variable to see how it is distributed
+summary(cs$cspart)
+
+# Plot the distribution of the outcome variable
+ggplot(cs, aes(cspart, fill = region)) + 
+  geom_histogram() + 
+  labs(x = "Civil Participation", 
+       title = "Civil Participation across regions", 
+       fill = "Regions")
+
 ```
 
 ## Data Changes for Model Choice
@@ -144,53 +154,48 @@ Our research question regards which predictors are the most important in predict
 #| warning: false
 #| message: false
 
-## note do we want an lm line for non linear? or smooth w/ no method?
-
 # A scatter plot to show the relationship between civil society participation 
 # and social support
 viz1 <- ggplot(cs, aes(x=social_support, 
                y = v2x_partipdem)) + 
   geom_jitter() +
-  geom_smooth(method = "lm", se = FALSE) +
+  geom_smooth() +
   labs(x = "Social support",
        y = "Participation in democracy",
-title = "Relationship between Participation in Civil society and Social Support",
-color = "Regions")
+       color = "Regions")
 
 # A scatterplot to show the relationship between civil society participation 
 # and participation in democracy
 viz2 <- ggplot(cs, aes(x=cspart, 
                y = v2x_partipdem)) + 
   geom_point() +
-  geom_smooth(method = "lm", se = FALSE) +
+  geom_smooth() +
   labs(x = "Civil society participation",
-       y = "Participation in democracy",
-title = "Relationship between Participation in Civil society and in democracy")
+       y = "Participation in democracy")
 
 # A scatterplot to show the relationship between civil society participation 
 # and civil society index
 viz3 <- ggplot(cs, aes(x=cs_index, 
                y = cspart)) + 
   geom_point() +
-  geom_smooth(method = "lm", se = FALSE) +
+  geom_smooth() +
   labs(x = "Civil society index",
-       y = "Civil society participation",
-       title = "Relationship between Civil Society Participation and Index")
+       y = "Civil society participation")
 
 ## Note that when rendered these three are too squished to be read. 
 ## might be better to just do them all on their own?
-viz1 + viz2 + viz3 
+viz1 + viz2 + viz3 + 
+  plot_annotation(title = "Relationship between Civil Society Participation and Predictors")
+
 ```
 
-```{r visualize-region-diff}
+```{r visualize-region-diff-cspart}
 # A box plot to show the relationship between region and 
 # Civil Society Participation
 
-# note: we have the regions listed twice--only need to be on x? or is it a weird graphing thing?
-
 csp <- ggplot(cs, aes(x=as.factor(region), 
-               y = cspart, 
-               color = as.factor(region),
+               y = cspart,
+               color = as.factor(region), 
                group = as.factor(region))) + 
   geom_boxplot() + 
   labs(x = "Regions",
@@ -198,54 +203,74 @@ csp <- ggplot(cs, aes(x=as.factor(region),
        title = "Civil society participation levels within different regions",
        color = "Regions") + 
   # Rotate x-axis labels by 90 degrees to the left
-  theme(axis.text.x = element_text(angle = 45, hjust = 0.9))
+  theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
+        legend.position = "none")
 
+csp 
+
+```
+
+```{r social-support-viz}
 # A box plot to show the relationship between region and social support
 social <- ggplot(cs, aes(x=as.factor(region), 
-               y = social_support, 
-               color = as.factor(region),
+               y = social_support,
+               color = as.factor(region), 
                group = as.factor(region))) + 
   geom_boxplot() + 
-  labs(x = "Regions",
-       y = str_wrap("Social support by region",
-       width = 30),
-       title = "Social support levels within different regions",
+  labs(x = "",
+       y = "Social support",
        color = "Regions") + 
   # Rotate x-axis labels by 90 degrees to the left
-  theme(axis.text.x = element_text(angle = 45, hjust = 0.9))
+  theme(axis.text.x = element_text(angle = 45, hjust = 0.9), 
+        legend.position = "none")
 
+social
+
+```
+
+```{r civil-society-index-plot}
 # A box plot to show the relationship between region and Civil Society Index
 csi <- ggplot(cs, aes(x=as.factor(region), 
                y = cs_index, 
                color = as.factor(region),
+               
                group = as.factor(region))) + 
   geom_boxplot() + 
-  labs(x = "Regions",
-       y = "Civil Society Index by region",
-       title = "Civil Society index within different regions",
+  labs(x = "",
+       y = "Civil Society Index",
        color = "Regions") + 
   # Rotate x-axis labels by 90 degrees to the left
-  theme(axis.text.x = element_text(angle = 45, hjust = 0.9))
+  theme(axis.text.x = element_text(angle = 45, hjust = 0.9), 
+        legend.position = "none")
 
+csi 
+
+```
+
+```{r democracy-viz}
 # A box plot to show the relationship between region
 # and participation in democracy
 democracy <- ggplot(cs, aes(x = as.factor(region), 
                y = v2x_partipdem, 
-               color = as.factor(region),
+               color = as.factor(region), 
                group = as.factor(region))) + 
   geom_boxplot() + 
   labs(x = "Regions",
        y = "Participation in Democracy by region",
-       title = "Participation in Democracy within different regions",
        color = "Regions") + 
   # Rotate x-axis labels by 90 degrees to the left
-  theme(axis.text.x = element_text(angle = 45, hjust = 0.9))
+  theme(axis.text.x = element_text(angle = 45, hjust = 0.9), 
+        legend.position = "none")
 
-## note maybe put these after the code blocks? idk 
-csp
-social
-csi
 democracy
+
+# Combine the plots
+final_plot <- csi + democracy + social /
+  plot_layout(guides = "collect") + 
+  plot_annotation(title = "Region differences in social variables")
+final_plot
+
+
 ```
 
 # Results
