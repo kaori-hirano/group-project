@@ -121,8 +121,6 @@ The introduction provides motivation and context for your research. Describe you
 
 Then identify the source of the data, when and how it was collected, the cases, a general description of relevant variables. You should describe any data wrangling that you have done, any variables you have changed from the original data set, the data tidying you had to do, and what variables you plan to include in any models you will do, and why.
 
-# NEED TO ADD INTRO HERE
-
 # Methodology
 The methodology section should include visualizations and summary statistics relevant to your research question. You should also justify the choice of method(s) used to answer your research question.
 
@@ -141,6 +139,14 @@ ggplot(cs, aes(cspart, fill = region)) +
   labs(x = "Civil Participation", 
        title = "Civil Participation across regions", 
        fill = "Regions")
+
+# Plot the distribution by region
+ggplot(cs, aes(cspart)) + 
+  geom_histogram() + 
+  labs(x = "Civil Participation", 
+       title = "Civil Participation across regions",
+       y = "Count") + 
+  facet_wrap(~region)
 
 ```
 
@@ -185,8 +191,8 @@ viz3 <- ggplot(cs, aes(x=cs_index,
 ## Note that when rendered these three are too squished to be read. 
 ## might be better to just do them all on their own?
 viz1 + viz2 + viz3 + 
-  plot_annotation(title = "Relationship between Civil Society Participation and Predictors")
-
+  plot_annotation(title = 
+                  "Civil Society Participation vs. Social Predictors")
 ```
 
 ```{r visualize-region-diff-cspart}
@@ -206,8 +212,6 @@ csp <- ggplot(cs, aes(x=as.factor(region),
   theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
         legend.position = "none")
 
-csp 
-
 ```
 
 ```{r social-support-viz}
@@ -223,9 +227,6 @@ social <- ggplot(cs, aes(x=as.factor(region),
   # Rotate x-axis labels by 90 degrees to the left
   theme(axis.text.x = element_text(angle = 45, hjust = 0.9), 
         legend.position = "none")
-
-social
-
 ```
 
 ```{r civil-society-index-plot}
@@ -242,9 +243,6 @@ csi <- ggplot(cs, aes(x=as.factor(region),
   # Rotate x-axis labels by 90 degrees to the left
   theme(axis.text.x = element_text(angle = 45, hjust = 0.9), 
         legend.position = "none")
-
-csi 
-
 ```
 
 ```{r democracy-viz}
@@ -262,18 +260,16 @@ democracy <- ggplot(cs, aes(x = as.factor(region),
   theme(axis.text.x = element_text(angle = 45, hjust = 0.9), 
         legend.position = "none")
 
-democracy
-
 # Combine the plots
 final_plot <- csi + democracy + social /
   plot_layout(guides = "collect") + 
   plot_annotation(title = "Region differences in social variables")
 final_plot
 
-
 ```
 
 # Results
+
 ## Test Train Split
 ```{r test-train-split}
 # 70, 30 test train split
