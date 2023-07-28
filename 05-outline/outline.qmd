@@ -69,10 +69,14 @@ total_not_NA <- total_2012 %>% na.omit()
 ```
 For the sake of completeness of the data, no additional changes are made. For further analysis, the NA data are omitted. 
 ```{r clean-data-and-var-names}
-cs <- new_total %>% rename(csrepress = v2csreprss, civil_war = e_civil_war, coup = e_pt_coup,
-                           edu = e_peaveduc, corr = v2x_corr, cspart = v2x_cspart, 
-                           cs_index = v2xcs_ccsi, social_support = 'Social support', 
-                           choices = 'Freedom to make life choices', gen = Generosity,
+cs <- new_total %>% rename(csrepress = v2csreprss, civil_war = e_civil_war, 
+                           coup = e_pt_coup,
+                           edu = e_peaveduc, corr = v2x_corr, 
+                           cspart = v2x_cspart, 
+                           cs_index = v2xcs_ccsi, 
+                           social_support = 'Social support', 
+                           choices = 'Freedom to make life choices', 
+                           gen = Generosity,
                            region = e_regionpol,
                            happ = "Life Ladder", 
                            lifee = "Healthy life expectancy at birth", 
