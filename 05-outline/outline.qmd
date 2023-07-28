@@ -130,7 +130,7 @@ note: do a visualization between region and social support, as well as one betwe
 # note is there a way to make this look nicer than just printing the output?
 # idk if that's something they care about (you'd probably know better from your last class)
 # also, are all of these relevant? and if so we should say why
-# it seems like they're really just looking for us to justify everything we do
+# it seems like they're really just looking for us to justify everything we did
 summary(cs)
 ```
 
@@ -177,8 +177,9 @@ viz3 <- ggplot(cs, aes(x=cs_index,
        y = "Civil society participation",
        title = "Relationship between Civil Society Participation and Index")
 
-viz1 + viz2 + viz3 #+ 
-  # geom_text("Relationship between civil society participation and predictors")
+## Note that when rendered these three are too squished to be read. 
+## might be better to just do them all on their own?
+viz1 + viz2 + viz3 
 ```
 
 ```{r visualize-region-diff}
@@ -187,7 +188,7 @@ viz1 + viz2 + viz3 #+
 
 # note: we have the regions listed twice--only need to be on x? or is it a weird graphing thing?
 
-box1 <- ggplot(cs, aes(x=as.factor(region), 
+csp <- ggplot(cs, aes(x=as.factor(region), 
                y = cspart, 
                color = as.factor(region),
                group = as.factor(region))) + 
@@ -200,7 +201,7 @@ box1 <- ggplot(cs, aes(x=as.factor(region),
   theme(axis.text.x = element_text(angle = 45, hjust = 0.9))
 
 # A box plot to show the relationship between region and social support
-box2 <- ggplot(cs, aes(x=as.factor(region), 
+social <- ggplot(cs, aes(x=as.factor(region), 
                y = social_support, 
                color = as.factor(region),
                group = as.factor(region))) + 
@@ -214,7 +215,7 @@ box2 <- ggplot(cs, aes(x=as.factor(region),
   theme(axis.text.x = element_text(angle = 45, hjust = 0.9))
 
 # A box plot to show the relationship between region and Civil Society Index
-box3 <- ggplot(cs, aes(x=as.factor(region), 
+csi <- ggplot(cs, aes(x=as.factor(region), 
                y = cs_index, 
                color = as.factor(region),
                group = as.factor(region))) + 
@@ -228,7 +229,7 @@ box3 <- ggplot(cs, aes(x=as.factor(region),
 
 # A box plot to show the relationship between region
 # and participation in democracy
-box4 <- ggplot(cs, aes(x = as.factor(region), 
+democracy <- ggplot(cs, aes(x = as.factor(region), 
                y = v2x_partipdem, 
                color = as.factor(region),
                group = as.factor(region))) + 
@@ -240,10 +241,11 @@ box4 <- ggplot(cs, aes(x = as.factor(region),
   # Rotate x-axis labels by 90 degrees to the left
   theme(axis.text.x = element_text(angle = 45, hjust = 0.9))
 
-box1
-box2
-box3
-box4
+## note maybe put these after the code blocks? idk 
+csp
+social
+csi
+democracy
 ```
 
 # Results
@@ -320,7 +322,9 @@ coef_l <-coef(lasso_mod)
 # prints important coefficients as a table
 lasso_feature_estimate <- lasso_mod %>% tidy() %>%
   select(term, estimate)
-print(lasso_feature_estimate)
+lasso_feature_estimate_ordered <- lasso_feature_estimate %>% 
+  arrange(desc(abs(estimate)))
+print(lasso_feature_estimate_ordered)
 ```
 # note that the zeroed out levels of the factor are basically the same as the baseline and can be compared against the others at this point.
 
@@ -481,8 +485,11 @@ rf_importance_scores <- rf_cs$importance[, 1]
 rf_feature_importance <- tibble(Feature = rf_feature_names, 
                                 '% Increase MSE' = rf_importance_scores)
 
+# get desc order for ease of interpretation
+f_feature_importance_ordered <- rf_feature_importance %>% 
+  arrange(desc(abs(rf_importance_scores)))
 # Print the result
-print(rf_feature_importance)
+print(f_feature_importance_ordered)
 ```
 
 ## Comparing Models
