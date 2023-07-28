@@ -60,6 +60,8 @@ total=merge(vdem_use, wh_use, by = c("country_name", "year"),
 
 # Select the time range from 2012 (inclusive) and later only 
 total_2012 <- total[total$year > 2011,]
+
+# note: why are we displaying this?
 head(total_2012)
 
 # Cleaning the data and removing NA values
@@ -138,20 +140,19 @@ names(cs)
 ```{r variable-summary}
 #| warning: false
 #| message: false
-
 summary(cs)
 ```
 ## Data Cleaning and Wrangling 
 
 
-## Data Summary
+## Data Changes for Model Choice
 We can see that the scale of the variables used as predictors vary widely. This is why it is ideal to scale the data while doing Lasso and Ridge regression. We do not have to scale data in random Forest model. 
 
 ## Model Choice 
-Our research question is whether region, ... (ADD VARIABLE) would be important in predicting civil society participation across countries. Our outcome variable is a numerical variable. Therefore, we chose regression models: Lasso and Ridge to help us eliminate unimportant variables. We also used random Forest to help us see the ranking of the relative importance of the predictor variables in our model. If the top most important variables produced by our machine learning models are consistent with our hypothesis, and the model works well when applied to the test set, this means that the model results are relatively consistent with our hypothesis. We also want to see the specific relationship, negative or positive, and the magnitude of the relationship between our outcome variable and each of the predictor variable to help shed light on our research question. 
+Our research question regards which predictors are the most important in predicting civil society participation across countries. We further edited this question to focus on 2019, specifically, to make our analysis more feasible. Our outcome variable is a numeric. We chose to used regression to identify the most important predictors of civil society participation in 2019. Lasso will eliminate non-influential variables, while ridge will shrink them to a smaller value. The optimal lambda will be determined using 10-fold cross validation. We also used tree models to further understand the most important variables. We initially chose a single decision tree to give a base understanding of the main predictors visually. However, because single decision trees are not the best in terms of prediction compared to other tree models, we also used a random forests model. Random forests allows us to see a relative ranking of the most important variables and their relationships to each other in our model. The hyperparameters (terminal nodes for the single decison tree and number of variables considered for random forests) will be chosen by 5-fold cross validation. If the top most important variables produced by our machine learning models are consistent with our hypothesis, and the model works well when applied to the test set, this means that the model results are relatively consistent with our hypothesis. We also want to see the specific relationship, negative or positive, and the magnitude of the relationship between our outcome variable and each of the predictor variable to help shed light on our research question. 
 
 # note for the long graph is maybe to have the region numbers as the x axis with the colors as the labels? 
-# also we probably don't want a lm line when the data isn't linear
+# also we probably don't want a lm line when the data isn't linear?
 
 ```{r variable-visualization}
 #| warning: false
@@ -254,10 +255,7 @@ box3
 box4
 ```
 # Results
-Showcase how you arrived at answers to your research question using the techniques we have learned in class (and beyond, if you’re feeling adventurous).
-
-Provide only the main results from your analysis. As a reminder, the goal is not to do an exhaustive data analysis (calculate every possible statistic and perform every possible procedure for all variables). Rather, you should demonstrate that you are proficient at asking meaningful questions and answering them using data, that you are skilled in interpreting and presenting results, and that you can accomplish these tasks using R. More is not always better.
-
+## Test Train Split
 ```{r test-train-split}
 # 70, 30 test train split
 set.seed(145)
@@ -265,7 +263,8 @@ train <- sample(c(TRUE, FALSE), nrow(cs), replace = TRUE, prob=c(.7,.3))
 test <- (!train)
 val <- test
 ```
-   
+
+## Regression
 ```{r matrix-creation}
 # create x and y for glmnet
 set.seed(129)
@@ -275,6 +274,7 @@ x <- model.matrix(cspart ~ csrepress+v2x_partipdem+edu+corr+cs_index+
 y <- cs$cspart
 ```
 
+### Ridge Regression
 ```{r ridge-regression}
 # set seed for reproducibility
 set.seed(129)
@@ -302,7 +302,7 @@ ridge_feature_estimate <- ridge_mod %>% tidy() %>%
   select(term, estimate)
 print(ridge_feature_estimate)
 ```
-
+### LASSO Regression
 ```{r lasso-regression}
 # set seed for reproducibility
 set.seed(18)
@@ -332,6 +332,7 @@ print(lasso_feature_estimate)
 ```
 # note that the zeroed out levels of the factor are basically the same as the baseline and can be compared against the others at this point.
 
+## Tree Methods
 ```{r plot-tree, echo=FALSE}
 format_tree_labels <- function(labels, levels) {
   sapply(labels, \(x) if(grepl(":", x)) clean_col(x, levels) else clean_lt(x))
@@ -390,6 +391,7 @@ plot_tree <- function(model){
 }
 ```
 
+### Single Decision Tree Model
 ```{r tree-method}
 # sets set for reproducibility
 set.seed(247) 
@@ -421,7 +423,7 @@ y_test <- y[test]
 # gets mse for pruned tree
 mse <- mean((tree_pred_tuned - y_test)^2)
 ```
-
+### Random Forest Model
 ```{r random-forests}
 # sets seed for reproducibility
 set.seed(286)
@@ -491,7 +493,7 @@ rf_feature_importance <- tibble(Feature = rf_feature_names,
 print(rf_feature_importance)
 ```
 
-## Visualizing
+## Comparing Models
 ```{r, echo = FALSE}
 #| warning: false
 # note: I think we are planning to cut this because
