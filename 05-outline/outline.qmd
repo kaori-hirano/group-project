@@ -140,23 +140,24 @@ names(cs)
 ```{r variable-summary}
 #| warning: false
 #| message: false
+# note is there a way to make this look nicer than just printing the output?
+# idk if that's something they care about (you'd probably know better from your last class)
 summary(cs)
 ```
 ## Data Cleaning and Wrangling 
 
 
 ## Data Changes for Model Choice
-We can see that the scale of the variables used as predictors vary widely. This is why it is ideal to scale the data while doing Lasso and Ridge regression. We do not have to scale data in random Forest model. 
+We can see that the scale of the variables used as predictors vary widely. This is why it is ideal to scale the data while doing Lasso and Ridge regression. We do not have to scale data in random forest model. 
 
 ## Model Choice 
-Our research question regards which predictors are the most important in predicting civil society participation across countries. We further edited this question to focus on 2019, specifically, to make our analysis more feasible. Our outcome variable is a numeric. We chose to used regression to identify the most important predictors of civil society participation in 2019. Lasso will eliminate non-influential variables, while ridge will shrink them to a smaller value. The optimal lambda will be determined using 10-fold cross validation. We also used tree models to further understand the most important variables. We initially chose a single decision tree to give a base understanding of the main predictors visually. However, because single decision trees are not the best in terms of prediction compared to other tree models, we also used a random forests model. Random forests allows us to see a relative ranking of the most important variables and their relationships to each other in our model. The hyperparameters (terminal nodes for the single decison tree and number of variables considered for random forests) will be chosen by 5-fold cross validation. If the top most important variables produced by our machine learning models are consistent with our hypothesis, and the model works well when applied to the test set, this means that the model results are relatively consistent with our hypothesis. We also want to see the specific relationship, negative or positive, and the magnitude of the relationship between our outcome variable and each of the predictor variable to help shed light on our research question. 
-
-# note for the long graph is maybe to have the region numbers as the x axis with the colors as the labels? 
-# also we probably don't want a lm line when the data isn't linear?
+Our research question regards which predictors are the most important in predicting civil society participation across countries. We further edited this question to focus on 2019, specifically, to make our analysis more feasible. Our outcome variable is a numeric. We chose to used regression to identify the most important predictors of civil society participation in 2019. Lasso will eliminate non-influential variables, while ridge will shrink them to a smaller value. The optimal lambda will be determined using 10-fold cross validation. We also used tree models to further understand the most important variables. We initially chose a single decision tree to give a base understanding of the main predictors visually. However, because single decision trees are not the best in terms of prediction compared to other tree models, we also used a random forests model. Random forests allows us to see a relative ranking of the most important variables and their relationships to each other in our model. The hyperparameters (terminal nodes for the single decision tree and number of variables considered for random forests) will be chosen by 5-fold cross validation. If the top most important variables produced by our machine learning models are consistent with our hypothesis, and the model works well when applied to the test set, this means that the model results are relatively consistent with our hypothesis. We also want to see the specific relationship, negative or positive, and the magnitude of the relationship between our outcome variable and each of the predictor variable to help shed light on our research question. 
 
 ```{r variable-visualization}
 #| warning: false
 #| message: false
+
+## note do we want an lm line for non linear? or smooth w/ no method?
 
 # A scatter plot to show the relationship between civil society participation 
 # and social support
@@ -196,6 +197,9 @@ viz1 + viz2 + viz3 #+
 ```{r visualize-region-diff}
 # A box plot to show the relationship between region and 
 # Civil Society Participation
+
+# note: we have the regions listed twice--only need to be on x? or is it a weird graphing thing?
+
 box1 <- ggplot(cs, aes(x=as.factor(region), 
                y = cspart, 
                color = as.factor(region),
