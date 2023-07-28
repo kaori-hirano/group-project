@@ -41,7 +41,7 @@ codebook <- tibble(
                   
                   "Government Corruption Index; 0-1 from low to high corruption",
                   
-                  "Civil Society Participation, includes if organizations are consulted by governments, involvment of women participants, and the overall number participating; 0-1 from low to high participation",
+                  "Civil Society Participation, includes if organizations are consulted by governments, involvement of women participants, and the overall number participating; 0-1 from low to high participation",
                   
                   "Civil Society Index, includes repression of civil society, number/types of civil society organizations, and how long these organizations last; 0-1 from low to high strength of civil society",
                   
