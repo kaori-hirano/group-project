@@ -32,6 +32,10 @@ The introduction provides motivation and context for your research. Describe you
 
 You should describe any data wrangling that you have done, any variables you have changed from the original data set, the data tidying you had to do, and what variables you plan to include in any models you will do, and why.
 
+  The reason we choose to do the happiness dataset and the civil society datasets is because we wish to stand in a broader perspective, seeing the general relationship and taking each national society as a whole, to determine what might be effective for the creation of a civil society. The wh_2023 gives us social events in a quantitative way and the vdem_data provides us with a bunch of indexes measuring the stability of a society from various perspectives. 
+
+  Based on Jens Steffek and Maria Paola Ferretti's publication of "Accountability or “Good Decisions”? The Competing Goals of Civil Society Participation in International Governance" on 07 Jan 2009, "(civil society participation) may either enhance the democratic accountability of intergovernmental organisations and regimes, or the epistemic quality of rules and decisions made within them." They pointed out the direct cause&effect relationship between civil society participation and the shape of societies. We are curious about how the civil society participation and societies are mutually affected, so our research question is determining the most essential factor in predicting civil society participation across countries. We expect to see one or multiple dominant variable(s) contributing to the  civil society participation.
+
 ## Data Cleaning and Wrangling 
 Then identify the source of the data, when and how it was collected, the cases, a general description of relevant variables. You should describe any data wrangling that you have done, any variables you have changed from the original data set, the data tidying you had to do, and what variables you plan to include in any models you will do, and why.
 
@@ -120,7 +124,7 @@ levels(cs$region) <- c('SubSaharanAfrica',
                     'ThePacific',
                     'TheCarribean')
 ```
-  The names of used variables are shortened for further analysis. The year 2019 is chosen as our focus specifically because we want to focus on the change before and after pandemic year. 2019 is the most recent data set we have that is not reflecting social changes due to COVID-19. This might be more representative of the social conditions before the pandemic year and thus help us answer our main research question of how civil participation has changed before and after the pandemic. 
+  The names of used variables are shortened for further analysis. The year 2019 is chosen as our focus specifically because we want to focus on the change before and after pandemic year. 2019 is the most recent data set we have that is not reflecting social changes due to COVID-19. This might be more representative of the social conditions before the pandemic year and thus help us answer our main research question of how civil participation has changed before and after the pandemic.
 
   We then get the summary data on all the variables to check whether the scale of the variables used as predictors vary widely. They do vary in scale. This is why it is ideal to scale the data while doing Lasso and Ridge regression. We do not have to scale data in random forest model. 
 
