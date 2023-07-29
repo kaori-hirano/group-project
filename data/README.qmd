@@ -53,11 +53,11 @@ codebook <- tibble(
                   
                   "Generosity, the residual of regressing national average of response to 'Have you donated money to a charity in the past month?' on GDP per capita",
                   
-                  "Life Ladder, measure of happiness",
+                  "Life Ladder, national average measure of happiness or subjective well-being on a scale of 0 (worst) to 10 (best) life a person could be living",
                   
-                  "Life Expectancy...",
+                  "Life Expectancy at Birth, age a person in that country can expect to live if born in that year",
                   
-                  "GDP..."
+                  "Log GDP Per Capita, measured in purchasing power parity at constant 2017 international dollar prices per country"
                   ),
   Type = map_chr(cs, typeof))
 
