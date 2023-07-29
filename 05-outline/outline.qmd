@@ -24,13 +24,15 @@ library(tree)
 library(tibble)
 ```
 note - have we updated the codebook, if not we need to
+
 # Introduction and Data
+
 ## Topic & Research Question
-The introduction provides motivation and context for your research. Describe your topic (citing sources) and provide a concise, clear statement of your research question and expectations.
+The introduction provides motivation and context for your research. Describe your topic (citing sources) and provide a concise, clear statement of your research question and expectations. Then identify the source of the data, when and how it was collected, the cases, a general description of relevant variables.
 
-# NEED TO ADD THE INTRODUCTION AND PROPOSAL HERE, THEN START THE DATA PART
+You should describe any data wrangling that you have done, any variables you have changed from the original data set, the data tidying you had to do, and what variables you plan to include in any models you will do, and why.
 
-## Data
+## Data Cleaning and Wrangling 
 Then identify the source of the data, when and how it was collected, the cases, a general description of relevant variables. You should describe any data wrangling that you have done, any variables you have changed from the original data set, the data tidying you had to do, and what variables you plan to include in any models you will do, and why.
 
 ```{r merge-datasets}
@@ -85,7 +87,7 @@ cs <- total_2019 %>% rename(csrepress = v2csreprss, civil_war = e_civil_war,
                            lifee = "Healthy life expectancy at birth", 
                            gdp = "Log GDP per capita")
 ```
-For the sake of completeness of the data, no additional changes are made. For further analysis, the NA data are omitted. 
+  For the sake of completeness of the data, no additional changes are made. For further analysis, the NA data are omitted. 
 ```{r import-data, echo=FALSE}
 # import data
 cs_full <- readRDS("/cloud/project/data/civil_society")
@@ -118,83 +120,21 @@ levels(cs$region) <- c('SubSaharanAfrica',
                     'ThePacific',
                     'TheCarribean')
 ```
-The names of used variables are shortened for further analysis. The year 2019 is chosen as our focus specifically because we want to focus on the change before and after pandemic year. 2019 is the most recent data set we have that is not reflecting social changes due to COVID-19. This might be more representative of the social conditions before the pandemic year and thus help us answer our main research question of how civil participation has changed before and after the pandemic. 
-  
-The introduction provides motivation and context for your research. Describe your topic (citing sources) and provide a concise, clear statement of your research question and expectations.
+  The names of used variables are shortened for further analysis. The year 2019 is chosen as our focus specifically because we want to focus on the change before and after pandemic year. 2019 is the most recent data set we have that is not reflecting social changes due to COVID-19. This might be more representative of the social conditions before the pandemic year and thus help us answer our main research question of how civil participation has changed before and after the pandemic. 
 
-Then identify the source of the data, when and how it was collected, the cases, a general description of relevant variables. You should describe any data wrangling that you have done, any variables you have changed from the original data set, the data tidying you had to do, and what variables you plan to include in any models you will do, and why.
-
-# Methodology
-The methodology section should include visualizations and summary statistics relevant to your research question. You should also justify the choice of method(s) used to answer your research question.
+  We then get the summary data on all the variables to check whether the scale of the variables used as predictors vary widely. They do vary in scale. This is why it is ideal to scale the data while doing Lasso and Ridge regression. We do not have to scale data in random forest model. 
 
 ```{r variable-summary}
 #| warning: false
 #| message: false
 
+# Visualize all the variables to see whether we need to scale the variables
+# summary(cs)
+# Because of the scale differences, we do need to scale variables
+
 # Visualize the outcome variable to see how it is distributed
 summary(cs$cspart)
 
-# Plot the distribution of the outcome variable
-ggplot(cs, aes(cspart, fill = region)) + 
-  geom_histogram() + 
-  labs(x = "Civil Participation", 
-       title = "Civil Participation across regions", 
-       fill = "Regions")
-
-# The median and mode values of the outcome variable across regions seem to be
-# approximately within the same vicinity so as long as we choose one of the 
-# regions NOT with abnormal 
-
-# Plot the distribution by region
-ggplot(cs, aes(cspart)) + 
-  geom_histogram() + 
-  labs(x = "Civil Participation", 
-       title = "Civil Participation across regions",
-       y = "Count") + 
-  facet_wrap(~region)
-
-```
-
-```{r variable-visualization}
-#| warning: false
-#| message: false
-
-# A scatter plot to show the relationship between civil society participation 
-# and social support
-viz1 <- ggplot(cs, aes(x=social_support, 
-               y = v2x_partipdem)) + 
-  geom_jitter() +
-  geom_smooth() +
-  labs(x = "Social support",
-       y = "Participation in democracy",
-       color = "Regions")
-
-# A scatterplot to show the relationship between civil society participation 
-# and participation in democracy
-viz2 <- ggplot(cs, aes(x=cspart, 
-               y = v2x_partipdem)) + 
-  geom_point() +
-  geom_smooth() +
-  labs(x = "Civil society participation",
-       y = "Participation in democracy")
-
-# A scatterplot to show the relationship between civil society participation 
-# and civil society index
-viz3 <- ggplot(cs, aes(x=cs_index, 
-               y = cspart)) + 
-  geom_point() +
-  geom_smooth() +
-  labs(x = "Civil society index",
-       y = "Civil society participation")
-
-## Note that when rendered these three are too squished to be read. 
-## might be better to just do them all on their own?
-viz1 + viz2 + viz3 + 
-  plot_annotation(title = 
-                  "Civil Society Participation vs. Social Predictors")
-```
-
-```{r visualize-region-diff-cspart}
 # A box plot to show the relationship between region and 
 # Civil Society Participation
 
@@ -211,7 +151,15 @@ csp <- ggplot(cs, aes(x=as.factor(region),
   theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
         legend.position = "none")
 csp
+
 ```
+
+  The median and mode values of the outcome variable across regions seem to be approximately within the same vicinity so as long as we choose one of the regions NOT with abnormal cspart as the reference, our analysis will not be too skewed. Because the graphs also show that our reference level Sub Saharan Africa is not too far off from the majority of other regions, our reference level is not too skewed. 
+
+# Methodology
+The methodology section should include visualizations and summary statistics relevant to your research question. You should also justify the choice of method(s) used to answer your research question.
+
+  Because we are interested in how civil society participation is different across regions, we also plot the distribution of different important social variables in our hypothesis against regions to see whether there are any strong correlation between our predictors and regions. After the visualization, it is hard to point out a consistent and clear trend among the regions. There are no regions that score consistently high or low across all three of these chosen social participation related variables. 
 
 ```{r social-support-viz}
 # A box plot to show the relationship between region and social support
@@ -266,16 +214,57 @@ csi + democracy + social +
 
 ```
 
-## Data Changes for Model Choice
-We get the summary data on all the variables to check whether the scale of the variables used as predictors vary widely. They do vary in scale. This is why it is ideal to scale the data while doing Lasso and Ridge regression. We do not have to scale data in random forest model. 
+We also plot out the most important variables in our hypothesis against the outcome variable to see whether there is a complex relationship or a linear one between them. We are also interested in how strong the relationship is. This will give us more confidence in running linear regression models vs. tree-based models if the relationship is linear. If not, we will focus more on interpreting the tree-based models. There is a strong and more linear relationship between civil society participation and civil society index than between the outcome variables and the other two chosen variables. The other two relationships are not as linear and more complicated. 
 
-Because we are interested in how civil society participation is different across regions, we also plot the distribution of different important social variables in our hypothesis against regions to see whether there are any strong correlation between our predictors and regions. 
+```{r variable-visualization}
+#| warning: false
+#| message: false
 
-We also plot out the most important variables in our hypothesis against the outcome variable to see whether there is a complex relationship or a liner one between them. 
+# A scatter plot to show the relationship between civil society participation 
+# and social support
+viz1 <- ggplot(cs, aes(x=social_support, 
+               y = v2x_partipdem)) + 
+  geom_jitter() +
+  geom_smooth() +
+  labs(x = "Social support",
+       y = "Participation in democracy",
+       color = "Regions")
+
+# A scatterplot to show the relationship between civil society participation 
+# and participation in democracy
+viz2 <- ggplot(cs, aes(x=cspart, 
+               y = v2x_partipdem)) + 
+  geom_point() +
+  geom_smooth() +
+  labs(x = "Civil society participation",
+       y = "Participation in democracy")
+
+# A scatterplot to show the relationship between civil society participation 
+# and civil society index
+viz3 <- ggplot(cs, aes(x=cs_index, 
+               y = cspart)) + 
+  geom_point() +
+  geom_smooth() +
+  labs(x = "Civil society index",
+       y = "Civil society participation")
+
+## Note that when rendered these three are too squished to be read. 
+## might be better to just do them all on their own?
+viz1 + viz2 + viz3 + 
+  plot_annotation(title = 
+                  "Civil Society Participation vs. Social Predictors")
+```
 
 ## Model Choice 
-Our research question regards which predictors are the most important in predicting civil society participation across countries. We further edited this question to focus on 2019, specifically, to make our analysis more feasible. Our outcome variable is a numeric. We chose to used regression to identify the most important predictors of civil society participation in 2019. Lasso will eliminate non-influential variables, while ridge will shrink them to a smaller value. The optimal lambda will be determined using 10-fold cross validation. We also used tree models to further understand the most important variables. We initially chose a single decision tree to give a base understanding of the main predictors visually. However, because single decision trees are not the best in terms of prediction compared to other tree models, we also used a random forests model. Random forests allows us to see a relative ranking of the most important variables and their relationships to each other in our model. The hyperparameters (terminal nodes for the single decision tree and number of variables considered for random forests) will be chosen by 5-fold cross validation. If the top most important variables produced by our machine learning models are consistent with our hypothesis, and the model works well when applied to the test set, this means that the model results are relatively consistent with our hypothesis. We also want to see the specific relationship, negative or positive, and the magnitude of the relationship between our outcome variable and each of the predictor variable to help shed light on our research question. 
+Our research question regards which predictors are the most important in predicting civil society participation across countries. We further edited this question to focus on 2019, specifically, to make our analysis more feasible. 
 
+Our outcome variable is a numerical variable. We chose to used regression to identify the most important predictors of civil society participation in 2019. Lasso will eliminate non-influential variables, while ridge will shrink them to a smaller value. We will do both models to test which of our chosen variables are important in predicting civil society participation. To increase our model performance, we will do cross-validation. The optimal lambda will be determined using 10-fold cross validation. 
+
+We also used tree models to further understand the most important variables. This is because, as shown in our data visualizations, there are not only linear relationships between the predictors and the outcome variable. So, doing a different type of regression, regression tree, might help us shed light on the relationship between our predictors and the outcome variable - civil society participation. 
+
+We initially chose a single decision tree to give a base understanding of the main predictors visually. However, because single decision trees are not the best in terms of prediction compared to other tree models, we also used a random forests model. Random forests allows us to see a relative ranking of the most important variables and their relationships to each other in our model. The hyperparameters (terminal nodes for the single decision tree and number of variables considered for random forests) will be chosen by 5-fold cross validation. 
+
+If the top most important variables produced by our machine learning models are consistent with our hypothesis, and the model works well when applied to the test set, this means that the model results are relatively consistent with our hypothesis. We also want to see the nature of the specific relationships, negative or positive, and the magnitude of the relationship between our outcome variable and each of the predictor variable to help us understand our research question. 
 
 # Results
 ## Test Train Split
@@ -304,6 +293,7 @@ set.seed(129)
 
 # cross validation for best l
 cv_r <- cv.glmnet(x[train,], y[train], alpha = 0, 
+                  # scale the x values 
                   lambda = 10^seq(10, -2, length = 100), scale = TRUE)
 
 # saving optimal lambda
@@ -325,6 +315,7 @@ ridge_feature_estimate <- ridge_mod %>% tidy() %>%
   select(term, estimate)
 print(ridge_feature_estimate)
 ```
+
 ### LASSO Regression
 ```{r lasso-regression}
 # set seed for reproducibility
@@ -339,6 +330,7 @@ bestlam_l <- cv_l$lambda.min
 
 # calculating MSE
 lasso_pred <- predict(cv_l, s = bestlam_l,
+# scale x values
 newx = x[test, ], scale = TRUE)
 lasso_mse <- mean((lasso_pred - y[test])^2)
 
@@ -353,9 +345,10 @@ lasso_feature_estimate <- lasso_mod %>% tidy() %>%
   select(term, estimate)
 lasso_feature_estimate_ordered <- lasso_feature_estimate %>% 
   arrange(desc(abs(estimate)))
+
 print(lasso_feature_estimate_ordered)
 ```
-# note that the zeroed out levels of the factor are basically the same as the baseline and can be compared against the others at this point.
+# We note that the zeroed out levels of the factor are basically the same as the baseline and can be compared against the others at this point.
 
 ## Tree Methods
 ```{r plot-tree, echo=FALSE}
@@ -448,6 +441,7 @@ y_test <- y[test]
 # gets mse for pruned tree
 mse <- mean((tree_pred_tuned - y_test)^2)
 ```
+
 ### Random Forest Model
 ```{r random-forests}
 # sets seed for reproducibility
@@ -586,7 +580,8 @@ model_comp
 # Discussion
 
 ## This section is a conclusion and discussion. This will require a summary of what you have learned about your research question along with statistical and methodological arguments supporting your conclusions. You should critique your own methods and provide suggestions for improving your analysis and future work.
-### when scaled, it becomes one standard deviation change per change in the predictor
+
+### We note that when predictor variables are scaled, it becomes one standard deviation change per change in the predictor
 
 Our research question regarded predictors of civil society participation. We hypothesized that countries with similar characteristics regarding social cohesion--such as region, presence of war, social support, and civil society index--will have similar civil society participation rates. The results of our data analysis partially supported our hypothesis, with the most important predictors identified being civil society index, region, and participation in democracy, which were seen across all models, and social support, average life expectancy, and civil society repression which was found by a minority of the models run. However, social support was shown to have a negative effect on civil society participation in 2019, which we did not expect. 
 Civil society index and participation in democracy were the top two predictors in all models, with region, social support, and civil society repression being identified as top predictors by some of the models. Civil society index had a positive impact on civil society participation, meaning that as elements of civil society increased so as to increase the civil society index, such as increasing the number of civil society organizations, the civil society participation would also increase. This makes sense because a higher civil society index means that there are likely more and better opportunities for people to engage in civil society, therefore increasing participation. Similarly, as participation in democracy increases, so does participation in civil society. Many civil society organizations have roles in politics, so as there is more political behavior more people likely will also engage in civil society. Further study into the relationship between civil society and participation in democracy is warranted to learn more about how these two processes interact with and influence each other. 
