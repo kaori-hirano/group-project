@@ -97,7 +97,10 @@ cs <- cs_full %>% subset(year == 2019) %>% select(-one_of("civil_war", "coup")) 
 # sets as factor
 cs$region <- as.factor(cs$region)
 
-# looks for region with most observations to set as base level
+# We choose Sub Saharan Africa as the reference level
+# We are interested in how all regions differ from one another
+# We are not focused on only one specific region so we did not intentionally
+# choose Sub Saharan Africa
 cs$region <- relevel(cs$region, ref = 4)
 
 # creates new data frame for tree plotting with regions as numbers still
@@ -124,8 +127,6 @@ Then identify the source of the data, when and how it was collected, the cases, 
 # Methodology
 The methodology section should include visualizations and summary statistics relevant to your research question. You should also justify the choice of method(s) used to answer your research question.
 
-note: do a visualization between region and social support, as well as one between civil society participation and participation in democracy? or even civil society index as well. actually region and like as many things as possible would be great - must understand the similarities between regions in the results so any way to compare the means of them in various important predictors or like any predictors would be swell
-
 ```{r variable-summary}
 #| warning: false
 #| message: false
@@ -140,6 +141,10 @@ ggplot(cs, aes(cspart, fill = region)) +
        title = "Civil Participation across regions", 
        fill = "Regions")
 
+# The median and mode values of the outcome variable across regions seem to be
+# approximately within the same vicinity so as long as we choose one of the 
+# regions NOT with abnormal 
+
 # Plot the distribution by region
 ggplot(cs, aes(cspart)) + 
   geom_histogram() + 
@@ -149,12 +154,6 @@ ggplot(cs, aes(cspart)) +
   facet_wrap(~region)
 
 ```
-
-## Data Changes for Model Choice
-We can see that the scale of the variables used as predictors vary widely. This is why it is ideal to scale the data while doing Lasso and Ridge regression. We do not have to scale data in random forest model. 
-
-## Model Choice 
-Our research question regards which predictors are the most important in predicting civil society participation across countries. We further edited this question to focus on 2019, specifically, to make our analysis more feasible. Our outcome variable is a numeric. We chose to used regression to identify the most important predictors of civil society participation in 2019. Lasso will eliminate non-influential variables, while ridge will shrink them to a smaller value. The optimal lambda will be determined using 10-fold cross validation. We also used tree models to further understand the most important variables. We initially chose a single decision tree to give a base understanding of the main predictors visually. However, because single decision trees are not the best in terms of prediction compared to other tree models, we also used a random forests model. Random forests allows us to see a relative ranking of the most important variables and their relationships to each other in our model. The hyperparameters (terminal nodes for the single decision tree and number of variables considered for random forests) will be chosen by 5-fold cross validation. If the top most important variables produced by our machine learning models are consistent with our hypothesis, and the model works well when applied to the test set, this means that the model results are relatively consistent with our hypothesis. We also want to see the specific relationship, negative or positive, and the magnitude of the relationship between our outcome variable and each of the predictor variable to help shed light on our research question. 
 
 ```{r variable-visualization}
 #| warning: false
@@ -211,7 +210,7 @@ csp <- ggplot(cs, aes(x=as.factor(region),
   # Rotate x-axis labels by 90 degrees to the left
   theme(axis.text.x = element_text(angle = 45, hjust = 0.9),
         legend.position = "none")
-
+csp
 ```
 
 ```{r social-support-viz}
@@ -261,15 +260,24 @@ democracy <- ggplot(cs, aes(x = as.factor(region),
         legend.position = "none")
 
 # Combine the plots
-final_plot <- csi + democracy + social /
+csi + democracy + social + 
   plot_layout(guides = "collect") + 
   plot_annotation(title = "Region differences in social variables")
-final_plot
 
 ```
 
-# Results
+## Data Changes for Model Choice
+We get the summary data on all the variables to check whether the scale of the variables used as predictors vary widely. They do vary in scale. This is why it is ideal to scale the data while doing Lasso and Ridge regression. We do not have to scale data in random forest model. 
 
+Because we are interested in how civil society participation is different across regions, we also plot the distribution of different important social variables in our hypothesis against regions to see whether there are any strong correlation between our predictors and regions. 
+
+We also plot out the most important variables in our hypothesis against the outcome variable to see whether there is a complex relationship or a liner one between them. 
+
+## Model Choice 
+Our research question regards which predictors are the most important in predicting civil society participation across countries. We further edited this question to focus on 2019, specifically, to make our analysis more feasible. Our outcome variable is a numeric. We chose to used regression to identify the most important predictors of civil society participation in 2019. Lasso will eliminate non-influential variables, while ridge will shrink them to a smaller value. The optimal lambda will be determined using 10-fold cross validation. We also used tree models to further understand the most important variables. We initially chose a single decision tree to give a base understanding of the main predictors visually. However, because single decision trees are not the best in terms of prediction compared to other tree models, we also used a random forests model. Random forests allows us to see a relative ranking of the most important variables and their relationships to each other in our model. The hyperparameters (terminal nodes for the single decision tree and number of variables considered for random forests) will be chosen by 5-fold cross validation. If the top most important variables produced by our machine learning models are consistent with our hypothesis, and the model works well when applied to the test set, this means that the model results are relatively consistent with our hypothesis. We also want to see the specific relationship, negative or positive, and the magnitude of the relationship between our outcome variable and each of the predictor variable to help shed light on our research question. 
+
+
+# Results
 ## Test Train Split
 ```{r test-train-split}
 # 70, 30 test train split
