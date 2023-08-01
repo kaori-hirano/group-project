@@ -324,11 +324,89 @@ print(lasso_feature_estimate_ordered)
 ## Single Decision Tree
 - Visualize importance and relationships between variables and outcome
 - Greedy method--may be less generalizable
+- CV for number of terminal nodes
+```{r tree-method}
+# accesses tree plot
+install.packages('here')
+library(here)
+plot_tree <- here::here("project/scripts/tree_plot.R")
+
+# sets set for reproducibility
+set.seed(247) 
+
+# creates tree on training data
+tree_train <- tree(cspart ~ . -year -country_name, cs_num,
+    subset = train)
+
+# cross validation of tree
+cv_train <- cv.tree(tree_train)
+
+# pruning to 8 nodes per CV results
+prune_train <- prune.tree(tree_train, best = 8)
+
+# plots pruned tree
+plot_tree(prune_train) + 
+  labs(title = "Pruned Tree Plot",
+       caption = 'Regions 1, 2, 3, 7, and 9 represent Eastern Europe & Post
+       Soviet Union, Latin America, North Africa and Middle East, South Eastern 
+       Asia, and the Pacific') + 
+  # Center the plot title
+  theme(plot.title = element_text(hjust = 0.4))
+
+# gets predictions and test values for mse
+tree_pred_tuned <- predict(prune_train, cs_num[test,],
+    type = "vector")
+y_test <- y[test]
+
+# gets mse for pruned tree
+mse <- mean((tree_pred_tuned - y_test)^2)
+```
+:::{.notes}
+The single decision tree plots the relationship between the most important predictors and the outcome. We can see that civil society index is the most influential as it is the topmost node of the tree. From there, participation in democracy and regions 1, 2, 3, 7, and 9, which represent Eastern Europe & Post Soviet Union, Latin America, North Africa and Middle East, South Eastern Asia, and the Pacific, were also identified as the most influential predictors in this model when predicting civil society participation. 
+:::
+
+## Random Forests
+- Relative variable importances
+- CV for number of considered parameters
+- More accurate than tree methods
+```{r random-forests}
+# sets seed for reproducibility
+set.seed(286)
+
+# sets cv parameters
+train_control <- trainControl(method="cv", number = 5)
+
+# gets grid for mtry
+tune_grid <- expand.grid(mtry = 3:12)
+
+# does training
+best_forest <- train(cspart ~ . -year -country_name, data = cs[train,], 
+                     trControl = train_control, 
+                     method="rf", 
+                     tuneGrid = tune_grid,
+                     verbose = FALSE)
+
+# gets test for y
+y_test <- y[test]
+
+# predictions for test set with optimal mtry of 9
+rf_cs <- randomForest(cspart ~ . -year -country_name, data = cs[train,], 
+                       mtry = 9, importance = TRUE)
+
+yhat_rf <- predict(rf_cs, newdata = cs[test,])
+
+# calculates MSE
+rf_mse <- mean((yhat_rf - y_test)^2)
+
+# importances
+importances_cs <- importance(rf_cs) %>% 
+  as_tibble(rownames = "Variable")
+```
 
 ## Model Comparison
 - Random forests was the most effective model of for the data
 - Lowest MSE and highest R2
-```{r, echo = FALSE}
+```{r model-comp}
 #| warning: false
 # note: I think we are planning to cut this because
 # interpretation-wise it doesn't add much that the MSE doesn't
