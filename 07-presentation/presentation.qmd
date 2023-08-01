@@ -1,11 +1,59 @@
 ---
 title: "Presentation"
-author: "Names"
+author: "Kaori Hirano, Alicia Nguyen, James Xia"
 format: 
   revealjs:
     embed-resources: true
-    theme: "default" 
+    theme: "serif" 
 ---
+```{r load-packages, echo = FALSE}
+library(readr)
+library(readxl)
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(dplyr))
+library(patchwork)
+suppressPackageStartupMessages(library(glmnet)) # for ridge, Lasso
+suppressPackageStartupMessages(library(randomForest))
+suppressPackageStartupMessages(library(caret))
+library(Matrix)
+library(broom)
+library(tree)
+library(tibble)
+```
+
+```{r import-data}
+# import data
+cs_full <- readRDS("/cloud/project/data/civil_society")
+# get only 2019 and remove civil war and coup because there are none in 2019
+cs <- cs_full %>% subset(year == 2019) %>% 
+        select(-one_of("civil_war", "coup")) %>% drop_na()
+```
+
+```{r region-tidying}
+# sets as factor
+cs$region <- as.factor(cs$region)
+
+# We choose Sub Saharan Africa as the reference level
+# We are interested in how all regions differ from one another
+# We are not focused on only one specific region so we did not intentionally
+# choose Sub Saharan Africa
+cs$region <- relevel(cs$region, ref = 4)
+
+# creates new data frame for tree plotting with regions as numbers still
+cs_num <- cs
+
+# recodes region to be the region it represents rather than a number value/code
+levels(cs$region) <- c('SubSaharanAfrica',
+                    'EasternEurope_PostSovietUnion', 
+                    'LatinAmerica',
+                    'NorthAfrica_MiddleEast',
+                    'WesternEurope_NorthAmerica',
+                    'EasternAsia',
+                    'SouthEasternAsia',
+                    'SouthernAsia',
+                    'ThePacific',
+                    'TheCarribean')
+```
 
 # Intro to Slides with Quarto (Delete This Section for Final Presentation!)
 
@@ -96,16 +144,125 @@ with useful tips
 - Each group member should speak for an equal amount of time
 - You can separate sections with section slides but do not have to
 
+## Hypothesis
+- The presence of more social cohesive factors--such as region, presence of war, social support, and civil society index--will have strong influences on civil society participation
+- Specific focus on 2019 because it is pre-covid 
+
 ## Introduction to Topic and Motivation
+:::{.incremental}
+- Curious about how civil society interacts with society overall
+- What is civil society? 
+- Political and Social perspective
+- Relevance to our daily lives and interests
+:::
+
+We are curious about how the civil society participation and societies are mutually affected, so our research question is determining the most essential factors in predicting civil society participation. We hypothesized that characteristics regarding social cohesion--such as region, presence of war, social support, and civil society index--will have large influences on civil society participation rates. The reason we choose to do the happiness dataset and the civil society datasets is because we wish to stand in a broader perspective, seeing the general relationship and taking each national society as a whole, to determine what might be effective for the creation of a civil society. The World Happiness Index gives us social events in a quantitative way and the VDEM provides us with a bunch of indexes measuring the stability of a society from various perspectives. 2019 is the most recent data set we have that is not reflecting social changes due to COVID-19, which is why we chose 2019 specifically over another year. This might be more representative of the social conditions before the pandemic year. 
+
+Based on Jens Steffek and Maria Paola Ferretti's publication of "Accountability or “Good Decisions”? The Competing Goals of Civil Society Participation in International Governance" on 07 Jan 2009, "(civil society participation) may either enhance the democratic accountability of intergovernmental organisations and regimes, or the epistemic quality of rules and decisions made within them." They pointed out the direct cause and effect relationship between civil society participation and the shape of societies. To examine this, we chose to look at the question from both a social and political lens. 
+
+
 
 ## Introduction to Data
+:::{.incremental}
+- Data is from the VDEM Group and the World Happiness Index
+- We selected variables we thought would relate to civil society, such as social support and GDP
+- NAs were replaced with the median value 
+- Region was modified to a factor with regional names
+- Variables were scaled for regression models
+- Civil war and coup were dropped because there were no instances in 2019
+:::
 
-## Highlights from EDA 1
+::: {.notes}
+list some variables when talking about how we chose them
+say why NAs were replaced with median briefly
+note that variables were scaled because of the wide range (0-1 vs 1-10 etc)
+:::
 
-## Highlights from EDA 2
+## Highlights from EDA 1: By Region
+:::{.incremental}
+- 
+:::
 
-## Inference and Modeling 1
+::: {.notes}
+list some variables when talking about how we chose them
+say why NAs were replaced with median briefly
+note that variables were scaled because of the wide range (0-1 vs 1-10 etc)
+:::
 
-## Inference and Modeling 2
+## Highlights from EDA 2: Social Predictors
+```{r variable-visualization}
+#| message: false
+# A scatter plot to show the relationship between civil society participation 
+# and social support
+viz1 <- ggplot(cs, aes(x=social_support, 
+               y = v2x_partipdem)) + 
+  geom_jitter() +
+  geom_smooth() +
+  labs(x = "Social support",
+       y = "Civil society participation",
+       color = "Regions")
+
+# A scatterplot to show the relationship between civil society participation 
+# and participation in democracy
+viz2 <- ggplot(cs, aes(x=cspart, 
+               y = v2x_partipdem)) + 
+  geom_point() +
+  geom_smooth() +
+  labs(x = "Participation in Democracy",
+       y = "Civil society participation")
+
+# A scatterplot to show the relationship between civil society participation 
+# and civil society index
+viz3 <- ggplot(cs, aes(x=cs_index, 
+               y = cspart)) + 
+  geom_point() +
+  geom_smooth() +
+  labs(x = "Civil society index",
+       y = "Civil society participation")
+
+viz1 + viz2 + viz3 + 
+  plot_annotation(title = 
+                  "Civil Society Participation vs. Social Predictors")
+```
+- Social support has a complex relationship 
+- Participation in democracy and civil society index appear more linear
+
+::: {.notes}
+talk about the relationships present, the right two being somewhat linear but social support has a more complex relationship, just something we needed to keep in mind
+tried transforming social support but we didn't find a way to make it more linear
+:::
+
+## Inference and Modeling 1: Regression Methods
+::::{.columns}
+
+:::{.column width=50%}
+Ridge
+:::
+
+:::{.column width=50%}
+Lasso
+:::
+
+
+::::
+
+## Inference and Modeling 2: Tree Methods
+::::{.columns}
+
+:::{.column width=50%}
+Single Decision Tree
+:::
+
+:::{.column width=50%}
+Random Forests
+:::
+
+
+::::
+
 
 ## Conclusions and Future Work
+:::{.incremental}
+- these bullet points
+- will appear click-by-click
+:::
