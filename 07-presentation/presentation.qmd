@@ -232,37 +232,147 @@ talk about the relationships present, the right two being somewhat linear but so
 tried transforming social support but we didn't find a way to make it more linear
 :::
 
-## Inference and Modeling 1: Regression Methods
-::::{.columns}
+## Inference and Modeling: Regression
+```{r test-train-split, echo = FALSE}
+# 70, 30 test train split
+set.seed(145)
+train <- sample(c(TRUE, FALSE), nrow(cs), replace = TRUE, prob=c(.7,.3))
+test <- (!train)
+val <- test
+```
 
-:::{.column width=50%}
-Ridge
-:::
+## Regression
+```{r matrix-creation, echo=FALSE}
+# create x and y for glmnet
+set.seed(129)
+x <- model.matrix(cspart ~ csrepress+v2x_partipdem+edu+corr+cs_index+
+                           social_support+choices+gen+region+lifee+happ+gdp, 
+                  data = cs)[, -1]
+y <- cs$cspart
+```
+## Ridge
+- Minimizes the effect of non-influential variables
+- hypertuning lambda with CV
+- Civil society index, participation in democracy, social support, region, freedom to make life choices were important
+- Education, generosity, life expectancy, less so
+```{r ridge-regression}
+# set seed for reproducibility
+set.seed(129)
 
-:::{.column width=50%}
-Lasso
-:::
+# cross validation for best l
+cv_r <- cv.glmnet(x[train,], y[train], alpha = 0, 
+                  # scale the x values 
+                  lambda = 10^seq(10, -2, length = 100), scale = TRUE)
 
+# saving optimal lambda
+bestlam_r <- cv_r$lambda.min
 
-::::
+# calculating MSE
+ridge_pred <- predict(cv_r, s = bestlam_r,
+newx = x[test, ], scale = TRUE)
+ridge_mse <- mean((ridge_pred - y[test])^2)
 
-## Inference and Modeling 2: Tree Methods
-::::{.columns}
+# fits final ridge model
+ridge_mod <- glmnet(x, y, alpha = 0, lambda = bestlam_r, scale = TRUE)
 
-:::{.column width=50%}
-Single Decision Tree
-:::
+# saves coefficients
+coef_r <-coef(ridge_mod)
 
-:::{.column width=50%}
-Random Forests
-:::
+# prints important coefficients as a table
+ridge_feature_estimate <- ridge_mod %>% tidy() %>%
+  select(term, estimate)
+ridge_feature_estimate_ordered <- ridge_feature_estimate %>% 
+  arrange(desc(abs(estimate)))
+print(ridge_feature_estimate_ordered)
+``` 
+## Lasso
+- Zeros out non-influential variables
+- hypertuning of lambda from CV
+```{r lasso-regression}
+# set seed for reproducibility
+set.seed(18)
+ 
+# cross validation for best l
+cv_l <- cv.glmnet(x[train,], y[train], alpha = 1,
+lambda = 10^seq(10, -2, length = 100), scale = TRUE)
 
+# saving optimal lambda
+bestlam_l <- cv_l$lambda.min
 
-::::
+# calculating MSE
+lasso_pred <- predict(cv_l, s = bestlam_l,
+# scale x values
+newx = x[test, ], scale = TRUE)
+lasso_mse <- mean((lasso_pred - y[test])^2)
 
+# fits model
+lasso_mod <- glmnet(x, y, lambda = bestlam_l, scale = TRUE)
 
-## Conclusions and Future Work
+# saves coefficients
+coef_l <-coef(lasso_mod)
+
+# prints important coefficients as a table
+lasso_feature_estimate <- lasso_mod %>% tidy() %>%
+  select(term, estimate)
+lasso_feature_estimate_ordered <- lasso_feature_estimate %>% 
+  arrange(desc(abs(estimate)))
+
+print(lasso_feature_estimate_ordered)
+```
+## Tree Methods
+
+## Single Decision Tree
+- Visualize importance and relationships between variables and outcome
+- Greedy method--may be less generalizable
+
+## Model Comparison
+- Random forests was the most effective model of for the data
+- Lowest MSE and highest R2
+```{r, echo = FALSE}
+#| warning: false
+# note: I think we are planning to cut this because
+# interpretation-wise it doesn't add much that the MSE doesn't
+# already cover. 
+
+# putting together data of predicted, actual, and model type
+dataplot <- data.frame(true_value = c(y[test], y[test], y[test], y[test]))
+dataplot$model_type <- c(rep("Lasso", length(lasso_pred)), rep("Ridge Model", 
+            length(ridge_pred)), rep("Tree Model", length(tree_pred_tuned)), 
+            rep('Random Forests', length(yhat_rf)))
+dataplot$predictions <- c(lasso_pred, ridge_pred, tree_pred_tuned, yhat_rf)
+
+# function giving us R2
+r2 <- function(predicted, y) {
+  #find SST and SSE
+  sst <- sum((y - mean(y))^2)
+  sse <- sum((predicted - y)^2)
+  #find R-Squared
+  rsq <- 1 - sse/sst
+}
+
+# setting up values for graph
+name=c("Tree","Random Forest", "Lasso","Ridge")
+mse_all=c(mse, rf_mse, lasso_mse, ridge_mse)
+value=c(r2(tree_pred_tuned, y[test]), r2(yhat_rf, y[test]), 
+        r2(lasso_pred, y[test]), r2(ridge_pred, y[test]))
+
+# putting into table
+compare_data=tibble(name,mse_all,value)
+
+# table of scores because differences may be hard to tell from graph
+model_comp <- tibble('Model' = name, 
+                     'MSE' = mse_all,
+                     'R-Squared' = value)
+
+# prints table
+model_comp
+```
+
+## Conclusions & Future Work
 :::{.incremental}
-- these bullet points
-- will appear click-by-click
+- Civil society index, participation in democracy, and region are the most important predictors of civil society participation in 2019
+- Life expectancy, civil society repression, and social support may also play a lesser role
+- Mostly supports our hypothesis
+- Invites further research into how the key predictors interact with each other and the outcome
+- Going beyond 2019 because of limitations and predictive power
 :::
