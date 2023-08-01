@@ -162,7 +162,6 @@ Because we are interested in how civil society participation is different across
 # A box plot to show the relationship between region and social support
 social <- ggplot(cs, aes(x=as.factor(region), 
                y = social_support,
-               color = as.factor(region), 
                group = as.factor(region))) + 
   geom_boxplot() + 
   labs(x = "",
@@ -179,8 +178,6 @@ social
 # A box plot to show the relationship between region and Civil Society Index
 csi <- ggplot(cs, aes(x=as.factor(region), 
                y = cs_index, 
-               color = as.factor(region),
-               
                group = as.factor(region))) + 
   geom_boxplot() + 
   labs(x = "",
@@ -189,7 +186,7 @@ csi <- ggplot(cs, aes(x=as.factor(region),
        title = 'Civil Society Index by Region') + 
   # Rotate x-axis labels by 90 degrees to the left
   theme(axis.text.x = element_text(angle = 45, hjust = 0.9), 
-        legend.position = "none")
+        legend.position = "none") 
 csi
 ```
 
@@ -198,7 +195,6 @@ csi
 # and participation in democracy
 democracy <- ggplot(cs, aes(x = as.factor(region), 
                y = v2x_partipdem, 
-               color = as.factor(region), 
                group = as.factor(region))) + 
   geom_boxplot() + 
   labs(x = "Regions",
