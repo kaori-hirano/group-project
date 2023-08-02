@@ -1,7 +1,7 @@
 ---
-title: "Extended Outline"
+title: "Final Report"
 author: "Group 4: Kaori Hirano, Alicia Nguyen, James Xia"
-date: "07/27/23"
+date: "08/01/23"
 format: pdf
 execute: 
   error: true
@@ -23,29 +23,25 @@ library(broom)
 library(tree)
 library(tibble)
 ```
-<<<<<<< HEAD
-=======
 # Introduction and Data
 ## Topic & Research Question
-We are curious about how the civil society participation and societies are mutually affected, so our research question is determining the most essential factors in predicting civil society participation. We hypothesized that characteristics regarding social cohesion--such as region, presence of war, social support, and civil society index--will have large influences on civil society participation rates. The reason we choose to do the happiness dataset and the civil society datasets is because we wish to stand in a broader perspective, seeing the general relationship and taking each national society as a whole, to determine what might be effective for the creation of a civil society. The World Happiness Index gives us social events in a quantitative way and the VDEM provides us with a bunch of indexes measuring the stability of a society from various perspectives. 2019 is the most recent data set we have that is not reflecting social changes due to COVID-19, which is why we chose 2019 specifically over another year. This might be more representative of the social conditions before the pandemic year. 
+We are interested in how the civil society participation and societies are mutually affected: Our research question is determining the most essential factors in predicting civil society participation. We hypothesized that characteristics regarding social cohesion--such as region, presence of war, social support, and civil society index--will have large influences on civil society participation rates. The World Happiness Index and V-Dem datasets were chosen because want to understand civil society better by understanding what affects it from a variety of perspectives. The World Happiness Index measures social phenomenons in a quantitative manner, and the V-Dem provides a variety of indexes measuring the stability of a society from various perspectives. 2019 is the most recent data set we have that is not reflecting social changes due to COVID-19, which is why we chose 2019 specifically over another year. This might be more representative of the social conditions before the pandemic year. 
 
-Based on Jens Steffek and Maria Paola Ferretti's publication of "Accountability or “Good Decisions”? The Competing Goals of Civil Society Participation in International Governance" on 07 Jan 2009, "(civil society participation) may either enhance the democratic accountability of intergovernmental organisations and regimes, or the epistemic quality of rules and decisions made within them." They pointed out the direct cause and effect relationship between civil society participation and the shape of societies. To examin this, we chose to look at the question from both a social and political lens. 
+Based on Jens Steffek and Maria Paola Ferretti's publication of "Accountability" or “Good Decisions"? The Competing Goals of Civil Society Participation in International Governance" on 07 Jan 2009, "(civil society participation) may either enhance the democratic accountability of intergovernmental organisations and regimes, or the epistemic quality of rules and decisions made within them." They pointed out the direct cause and effect relationship between civil society participation and the shape of societies. To examine this, we chose to look at the question from both a social and political lens. 
 
 ## Data Information
-Data is attributed to the Varieties of Democracy (V-Dem) Project (https://doi.org/10.23696/vdemds20) which provides a multidimensional perspective on democracy beyond elections by considering measures including electoral, participatory, egalitarian, deliberative, and liberal principles in data collection and the Sustainable Development Solutions Network which aggregates data from the Gallup World Poll on happiness, GDP per capita, social support, healthy life expectancy, freedom, generosity, and corruption (https://worldhappiness.report/ed/2023/). Further information on the measures used in V-Dem specifically is found in the V-Dem codebook, found here: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3802627. Measures for the happiness data were found in the 2023 statistical appendix, found here https://happiness-report.s3.amazonaws.com/2023/WHR+23_Statistical_Appendix.pdf These datasets are collected yearly, with vdem having data dating back hundreds of years (since 1789) while the happiness index dataset has been collected since 2019. We specifically used data from 2019. The vdem group collects the data themselves. The world happiness index has information from a variety of sources, including gallup. Many elements of the datasets are created from multiple or different variables, such as civil society index which is defined by several factors, including number of civil society organizations and the length such civil society organizations exist. Explanations for how data categories are created and calculated are clearly laid out in the respective codebooks or statistical appendixes. Each row represents a country in the year of 2019, with the relevant data associated with it from the vdem and happiness index datasets.
+Data is attributed to the [Varieties of Democracy (V-Dem) Project](https://doi.org/10.23696/vdemds20) which provides a multidimensional perspective on democracy beyond elections by considering measures including electoral, participatory, egalitarian, deliberative, and liberal principles in data collection and the Sustainable Development Solutions Network which aggregates [data from the Gallup World Poll](https://worldhappiness.report/ed/2023/) on happiness, GDP per capita, social support, healthy life expectancy, freedom, generosity, and corruption. Further information on the measures used in V-Dem specifically is found in the [V-Dem codebook](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3802627). Measures for the happiness data were found in the [2023 statistical appendix](https://happiness-report.s3.amazonaws.com/2023/WHR+23_Statistical_Appendix.pdf). These datasets are collected yearly, with V-Dem having data dating back hundreds of years (since 1789) while the happiness index dataset has been collected since 2019. We specifically used data from 2019. The V-Dem group collects the data themselves. The world happiness index has information from a variety of sources, including gallup. Many elements of the datasets are created from multiple or different variables, such as civil society index which is defined by several factors, including number of civil society organizations and the length such civil society organizations exist. Explanations for how data categories are created and calculated are clearly laid out in the respective codebooks or statistical appendixes. Each row represents a country in the year of 2019, with the relevant data associated with it from the V-Dem and happiness index datasets.
   
-Our choices of variables reflect our understanding of civil society and the factors that make it stronger or weaker. Things that bring people together, such as generosity, and things that may bring people apart, such as corruption, we expect to have an effect on participation in civil society, which is why they are included. Civil society repression effort is included because we expect higher repression efforts to have an effect on participation in general, likely negative. This is considered in the civil society index, but will be used in preliminary analysis for better understanding and exploration of the topic. Social support we expect to have a positive relationship with civil society participation because people will be connected with each other, and the same applies to generosity, with the opposite logic applying to presence of war and coups. Civil society index is included because we expect a stronger civil society to have a stronger participation rate, as with education because schools and teaching organizations often are a large part of civil society. The civil society index takes into account the entry/exit of civil society organizations (CSOs), the repression of civil society, and the participatory environment, which is the types and amount of CSOs available. Government corruption is included because this may dissuade people from participating in civil society or weaken civil society by underfunding it making people less likely to engage in it. Additionally, participation in democracy is used because it measures the active level of citizen participation which considers suffrage, direct democracy, engagement with civil society organizations, and subnational elected bodies. Additionally, we chose three more social variables from the happiness dataset that we thought would relate to civil society participation: life ladder, longevity, and GDP per capita. Happiness is measured by the life ladder, which is a scale from 0-10 which represents the worst to best possible life and takes the average of all scores in a country. Longevity is the life expectancy at birth for a person in this year. Finally, is GDP, which is log GDP per capita, GDP calcuated at constant 22018 international dollar prices. These three were added because we suspect that a society with longer life spans, higher happiness overall, and more money would be associated with people having more ability to spend time participating in civil society. 
+Our choices of variables reflect our understanding of civil society and the factors that make it stronger or weaker. Things that bring people together, such as generosity, and things that may bring people apart, such as corruption, we expect to have an effect on participation in civil society, which is why they are included. Civil society repression effort is included because we expect higher repression efforts to have an effect on participation in general, likely negative. This is considered in the civil society index, but will be used in preliminary analysis for better understanding and exploration of the topic. Social support we expect to have a positive relationship with civil society participation because people will be connected with each other, and the same applies to generosity, withthe opposite logic applying to presence of war and coups. Civil society index is included because we expect a stronger civil society to have a stronger participation rate, as with education because schools and teaching organizations often are a large part of civil society. The civil society index takes into account the entry/exitof civil society organizations (CSOs), the repression of civil society, and the participatory environment, which is the types and amount of CSOs available. Government corruption is included because this may dissuade people from participating in civil society or weaken civil society by underfunding it making people less likely to engage in it. Additionally, participation in democracy is used because it measures the active level of citizen participation which considers suffrage, direct democracy, engagement with civil society organizations, and subnational elected bodies. Additionally, we chose three more social variables from the happiness dataset that we thought would relate to civil society participation: life ladder, longevity, and GDP per capita. Happiness is measured by the life ladder, which is a scale from 0-10 which represents the worst to best possible life and takes the average of all scores in a country. Longevity is the life expectancy at birth for a person in this year. Finally, is GDP, which is log GDP per capita, GDP calcuated at constant 22018 international dollar prices. These three were added because we suspect that a society with longer life spans, higher happiness overall, and more money would be associated with people having more ability to spend time participating in civil society. 
 
 ## Data Cleaning and Wrangling 
-As for data wrangling, no variables were significantly altered from the original dataset. The only variable change that was made is changing the regions from numbers (1-10) to the region names. NAs were dealt with by replacing the NA with the median of that column in 2019. This is not the best method of dealing with NAs but we reduced the window we drew the median from to just 2019 instead of the entire dataset to reduce the possibility of skewing the data by incorporating information that may not fit into the context of the rest of the 2019 data. Further, NA values were replaced with the median over a mean to ensure we do not skew the data considering that most of the variables were not normally distributed. Variables were scaled when used in the Lasso and ridge regression models. As seen in the summary statistics, there were wide distributions between predictors, making scaling necessary for best accuracy. Note that scaling is not necessary in tree models, which is why it was not scaled there. Scaling changes the interpretation of the results, so rather than one unit of the variable having the listed effect on the outcome it becomes one standard deviation of the variable having the listed effect on the outcome. 
+As for data wrangling, no variables were significantly altered from the original dataset. The only variable change that was made is changing the regions from numbers (1-10) to the region names. NAs were dealt with by replacing the NA with the median of that column in 2019. This is not the best method of dealing with NAs but we reduced the window we drew the median from to just 2019 instead of the entire dataset to reduce the possibility of skewing the data by incorporating information that may not fit into the context of the rest of the 2019 data. Further, NA values were replaced with the median over the mean to ensure we do not skew the data considering that most of the variables were not normally distributed. Variables were scaled when used in the Lasso and ridge regression models. As seen in the summary statistics, there were wide distributions between predictors, making scaling necessary for best accuracy. Note that scaling is not necessary in tree models, which is why it was not scaled there. Scaling changes the interpretation of the results, so rather than one unit of the variable having the listed effect on the outcome it becomes one standard deviation of the variable having the listed effect on the outcome. 
 
 All variables except civil war and coup are going to be used in the models. Civil war and coup were dropped because there were no instances of civil war or coups in 2019. Because of this, including these variables did not make sense. The reasoning for including all other variables is because we believed these variables were likely to have an effect on civil society participation rates. None of the models we chose had limitations in variables allowed, such as numerical only, so we were able to successfully add all of them to the models. However, to make our models be the most effective, we did have to deal with NA values. 
 
 When creating regression models, we had to specify a baseline level of region because it is a factor. The median and mode values of the outcome variable across regions seem to be approximately within the same vicinity. This means that as long as we choose one of the regions not with abnormal civil society participation as the reference, our analysis will not be affected. Similarly, the reference level is not incredibly important as we do not care about a specific region, we simply want to know if regional differences do exist which would likely be present regardless of the baseline chosen. Because the graphs show that Sub Saharan Africa is largely in the middle of the regions, we chose it as our reference level. 
->>>>>>> 09c2a7e3a3816bad3bac55595c56877c4c781438
 
-# Introduction and Data
-```{r introduction to data/merge data}
+```{r merge-datasets}
 wh_2023 <- read_excel("/cloud/project/data/wh_2023.xls")
 load("/cloud/project/data/vdemdata-master/data/vdem.RData")
 ## load the original datasets
@@ -67,109 +63,53 @@ total=merge(vdem_use, wh_use, by = c("country_name", "year"),
             all.x=TRUE,
             all.y=TRUE) 
 ##merge data
-
 ```
   
-```{r clean data}
+```{r clean-data}
 #| message: false
 #| warning: false
-<<<<<<< HEAD
-
-# Select the time range from 2012 (inclusive) and later only 
-total_2012 <- total[total$year > 2011,]
-head(total_2012) 
-=======
 # Select the time range from 2019 only 
 total_2019 <- total[total$year == 2019,]
 
 #replace missing values in each numeric column with median value of column
 total_2019 <- total_2019 %>% 
   mutate(across(where(is.numeric),~replace_na(.,median(.,na.rm=TRUE))))
->>>>>>> 09c2a7e3a3816bad3bac55595c56877c4c781438
 
-# changing the NA entries with a median of that column
-summary(total_2012)
-total_not_NA <- total_2012 %>% na.omit() 
-total_2012 %>% group_by(e_civil_war) %>% count()
+# removing coup and civil war because it was all NA or 0 for 2019
+total_2019 <- total_2019 %>% select(-one_of("civil_war", "coup"))
 
-#replace missing values in each numeric column with median value of column
-new_total <- total_2012 %>% mutate(across(where(is.numeric),~replace_na(.,median(.,na.rm=TRUE))))
-```
-For the sake of completeness of the data, no additional changes are made. For further analysis, the NA data are omitted. 
-```{r final change to data}
 # changes names to shorter and easier to type/remember forms
-cs <- new_total %>% rename(csrepress = v2csreprss, civil_war = e_civil_war, coup = e_pt_coup,
-                           edu = e_peaveduc, corr = v2x_corr, cspart = v2x_cspart, 
-                           cs_index = v2xcs_ccsi, social_support = 'Social support', 
-                           choices = 'Freedom to make life choices', gen = Generosity,
+cs <- total_2019 %>% rename(csrepress = v2csreprss, civil_war = e_civil_war, 
+                           coup = e_pt_coup,
+                           edu = e_peaveduc, corr = v2x_corr, 
+                           cspart = v2x_cspart, 
+                           cs_index = v2xcs_ccsi, 
+                           social_support = 'Social support', 
+                           choices = 'Freedom to make life choices', 
+                           gen = Generosity,
                            region = e_regionpol,
-                           # CHECK THIS VARIABLE DESCRIPTION AGAIN
                            happ = "Life Ladder", 
                            lifee = "Healthy life expectancy at birth", 
                            gdp = "Log GDP per capita")
-<<<<<<< HEAD
-
-cs <- cs %>% filter(year > 2011) # updates to match year for both datasets 
-# the full measures for happiness start in 2012, so all years before then are 
-# filtered out for the sake of analysis
-cs$region <- as.factor(cs$region)
-
-##saveRDS(cs, file = "civil_society")
-=======
 ```
  
 ```{r import-data, echo=FALSE}
 # import data
->>>>>>> 09c2a7e3a3816bad3bac55595c56877c4c781438
 cs_full <- readRDS("/cloud/project/data/civil_society")
-names(cs_full)
 # get only 2019 and remove civil war and coup because there are none in 2019
-<<<<<<< HEAD
-cs <- cs_full %>% subset(year == 2019) %>% select(-one_of("civil_war", "coup")) %>% 
-  drop_na()
-=======
 cs <- cs_full %>% subset(year == 2019) %>% 
         select(-one_of("civil_war", "coup")) %>% drop_na()
->>>>>>> 09c2a7e3a3816bad3bac55595c56877c4c781438
 ```
 
-```
-  The names of used variables are shortened for further analysis. The year 2019 is chosen as our focus specifically because we want to focus on the change before and after pandemic year. 2019 is the most recent data set we have that is not reflecting social changes due to COVID-19. This might be more representative of the social conditions before the pandemic year and thus help us answer our main research question of how civil participation has changed before and after the pandemic. 
->>>>>>> f0807f4f2bc32ca69272eadaed2eeff321d83537
-  
-The introduction provides motivation and context for your research. Describe your topic (citing sources) and provide a concise, clear statement of your research question and expectations.
+```{r region-tidying}
+# sets as factor
+cs$region <- as.factor(cs$region)
 
-Then identify the source of the data, when and how it was collected, the cases, a general description of relevant variables. You should describe any data wrangling that you have done, any variables you have changed from the original data set, the data tidying you had to do, and what variables you plan to include in any models you will do, and why.
-
-<<<<<<< HEAD
-# Methodology
-The methodology section should include visualizations and summary statistics relevant to your research question. You should also justify the choice of method(s) used to answer your research question.
-
-note: when editing data, we should rename the region levels to the actual regions they represent. also, if we add more variables from happiness as suggested, we'll need to update the codebook
-
-note: do a visualization between region and social support, as well as one between civil society participation and participation in democracy? or even civil society index as well. actually region and like as many things as possible would be great - must understand the similarities between regions in the results so any way to compare the means of them in various important predictors or like any predictors would be swell
-
-```{r data}
-#| warning: false 
-<<<<<<< HEAD
-=======
-cs_full <- readRDS("/cloud/project/data/civil_society")
-names(cs_full)
-# get only 2019 and remove civil war and coup because there are none in 2019
-cs <- cs_full %>% subset(year == 2019) %>% select(-one_of("civil_war", 
-                                                          "coup")) %>% drop_na()
->>>>>>> f0807f4f2bc32ca69272eadaed2eeff321d83537
-
-# looks for region with most observations to set as base level table(cs$region)
-=======
 # We choose Sub Saharan Africa as the reference level
 # We are interested in how all regions differ from one another
 # We are not focused on only one specific region so we did not intentionally
 # choose Sub Saharan Africa
->>>>>>> 09c2a7e3a3816bad3bac55595c56877c4c781438
 cs$region <- relevel(cs$region, ref = 4)
-# Sub Saharan Africa, was used as baseline because it has the most observations
-# NEED TO EXPLAIN WHY THE REGION WITH MOST OBS CAN BE USED AS REF BASE
 
 # creates new data frame for tree plotting with regions as numbers still
 cs_num <- cs
@@ -185,66 +125,11 @@ levels(cs$region) <- c('SubSaharanAfrica',
                     'SouthernAsia',
                     'ThePacific',
                     'TheCarribean')
-<<<<<<< HEAD
-
-names(cs)
-=======
->>>>>>> 09c2a7e3a3816bad3bac55595c56877c4c781438
 ```
 
 ```{r variable-summary}
 #| warning: false
 #| message: false
-<<<<<<< HEAD
-
-summary(cs)
-
-```
-We can see that the scale of the variables used as predictors vary widely. This is why it is ideal to scale the data while doing Lasso and Ridge regression. We do not have to scale data in random Forest model. 
-
-Our research question is whether region, ... (ADD VARIABLE) would be important in predicting civil society participation across countries. Our outcome variable is a numerical variable. Therefore, we chose regression models: Lasso and Ridge to help us eliminate unimportant variables. We also used random Forest to help us see the ranking of the relative importance of the predictor variables in our model. If the top most important variables produced by our machine learning models are consistent with our hypothesis, and the model works well when applied to the test set, this means that the model results are relatively consistent with our hypothesis. We also want to see the specific relationship, negative or positive, and the magnitude of the relationship between our outcome variable and each of the predictor variable to help shed light on our research question. 
-
-```{r variable-visualization}
-#| warning: false
-#| message: false
-
-# A scatter plot to show the relationship between civil society participation 
-# and social support
-ggplot(cs, aes(x=social_support, 
-               y = v2x_partipdem)) + 
-  geom_jitter() +
-  geom_smooth(method = "lm", se = FALSE) +
-  labs(x = "Social support",
-       y = "Participation in democracy",
-title = "Relationship between Participation in Civil society and Social Support",
-color = "Regions")
-
-# A scatterplot to show the relationship between civil society participation 
-# and participation in democracy
-ggplot(cs, aes(x=cspart, 
-               y = v2x_partipdem)) + 
-  geom_point() +
-  geom_smooth(method = "lm", se = FALSE) +
-  labs(x = "Civil society participation",
-       y = "Participation in democracy",
-title = "Relationship between Participation in Civil society and in democracy")
-
-# A scatterplot to show the relationship between civil society participation 
-# and civil society index
-ggplot(cs, aes(x=cs_index, 
-               y = cspart)) + 
-  geom_point() +
-  geom_smooth(method = "lm", se = FALSE) +
-  labs(x = "Civil society index",
-       y = "Civil society participation",
-       title = "Relationship between Civil Society Participation and Index")
-
-# A box plot to show the relationship between region and 
-# Civil Society Participation
-ggplot(cs, aes(x=as.factor(region), 
-               y = cspart, 
-               color = as.factor(region),
-=======
 # Visualize all the variables to see whether we need to scale the variables
 # Because of the scale differences, we do need to scale variables
 
@@ -257,7 +142,6 @@ summary(cs$cspart)
 csp <- ggplot(cs, aes(x=as.factor(region), 
                y = cspart,
                color = as.factor(region), 
->>>>>>> 09c2a7e3a3816bad3bac55595c56877c4c781438
                group = as.factor(region))) + 
   geom_boxplot() + 
   labs(x = "Regions",
@@ -276,15 +160,9 @@ Because we are interested in how civil society participation is different across
 
 ```{r social-support-viz}
 # A box plot to show the relationship between region and social support
-<<<<<<< HEAD
-ggplot(cs, aes(x=as.factor(region), 
-               y = social_support, 
-               color = as.factor(region),
-=======
 social <- ggplot(cs, aes(x=as.factor(region), 
                y = social_support,
                color = as.factor(region), 
->>>>>>> 09c2a7e3a3816bad3bac55595c56877c4c781438
                group = as.factor(region))) + 
   geom_boxplot() + 
   labs(x = "",
@@ -299,11 +177,7 @@ social
 
 ```{r civil-society-index-plot}
 # A box plot to show the relationship between region and Civil Society Index
-<<<<<<< HEAD
-ggplot(cs, aes(x=as.factor(region), 
-=======
 csi <- ggplot(cs, aes(x=as.factor(region), 
->>>>>>> 09c2a7e3a3816bad3bac55595c56877c4c781438
                y = cs_index, 
                color = as.factor(region),
                
@@ -322,11 +196,7 @@ csi
 ```{r democracy-viz}
 # A box plot to show the relationship between region
 # and participation in democracy
-<<<<<<< HEAD
-ggplot(cs, aes(x = as.factor(region), 
-=======
 democracy <- ggplot(cs, aes(x = as.factor(region), 
->>>>>>> 09c2a7e3a3816bad3bac55595c56877c4c781438
                y = v2x_partipdem, 
                color = as.factor(region), 
                group = as.factor(region))) + 
@@ -344,48 +214,47 @@ democracy
 We also plotted the expected most important variables in our hypothesis against the outcome to see whether there is a complex relationship or a linear one between them. The method $lm$ for the best fit line was not specified as we wanted to understand the type of relationship that may be present. We are also interested in how strong the relationship is. There is a strong and more linear relationship between civil society participation and civil society index than between the outcome variables and the other two chosen variables. The other two relationships are not as linear and more complicated, as visualized below. This information may help us interpret our models later on. 
 
 ```{r variable-visualization}
+#| warning: false
 #| message: false
 # A scatter plot to show the relationship between civil society participation 
-# and social support
+# and social support by region
 viz1 <- ggplot(cs, aes(x=social_support, 
-               y = v2x_partipdem)) + 
+               y = cspart,
+               color = region)) + 
   geom_jitter() +
-  geom_smooth() +
-  labs(x = "Social support",
-       y = "Civil society participation",
-       color = "Regions")
+  geom_smooth(method = 'lm', aes(group = 1)) + 
+  labs(x = "Social Support",
+       y = "Civil Society Participation") +
+  theme(legend.position = "none")
 
 # A scatterplot to show the relationship between civil society participation 
-# and participation in democracy
-viz2 <- ggplot(cs, aes(x=cspart, 
-               y = v2x_partipdem)) + 
+# and participation in democracy by region
+viz2 <- ggplot(cs, aes(x=v2x_partipdem, 
+               y = cspart,
+               color = region)) + 
   geom_point() +
-  geom_smooth() +
+  geom_smooth(method = 'lm', aes(group = 1)) +
   labs(x = "Participation in Democracy",
-       y = "Civil society participation")
+       y = "Civil Society Participation",
+       color = "Region") +
+  theme(legend.position = "bottom")
 
 # A scatterplot to show the relationship between civil society participation 
-# and civil society index
+# and civil society index by region
 viz3 <- ggplot(cs, aes(x=cs_index, 
-               y = cspart)) + 
+               y = cspart,
+               color = region)) + 
   geom_point() +
-  geom_smooth() +
-  labs(x = "Civil society index",
-       y = "Civil society participation")
+  geom_smooth(method = 'lm', aes(group = 1)) + 
+  labs(x = "Civil Society Index",
+       y = "Civil Society Participation") +
+  theme(legend.position = "none")
 
-<<<<<<< HEAD
-```
-# Results
-Showcase how you arrived at answers to your research question using the techniques we have learned in class (and beyond, if you’re feeling adventurous).
-
-Provide only the main results from your analysis. As a reminder, the goal is not to do an exhaustive data analysis (calculate every possible statistic and perform every possible procedure for all variables). Rather, you should demonstrate that you are proficient at asking meaningful questions and answering them using data, that you are skilled in interpreting and presenting results, and that you can accomplish these tasks using R. More is not always better.
-
-# what does 'main results' mean? like don't include the output? or how we got there? or only the important output?
-
-=======
+## Note that when rendered these three are too squished to be read. 
+## might be better to just do them all on their own?
 viz1 + viz2 + viz3 + 
   plot_annotation(title = 
-                  "Civil Society Participation vs. Social Predictors")
+                  "Civil Society Participation vs. Hypothesized Key Predictors by Region", caption = "Blue lines represent the best fit line for the respective plots.")
 ```
 ## Model Choice 
 Our research question regards which predictors are the most important in predicting civil society participation. We further edited this question to focus on 2019, specifically, to make our analysis more feasible. 
@@ -402,7 +271,6 @@ If the topmost important variables produced by our machine learning models are c
 The best performing model was random forests, which had the highest R-squared value and the lowest MSE on the test set. Across all models, civil society index, participation in democracy, and region were identified as the most influential in predicting civil society participation. Other important variables identified by a non-majority include social support, life expectancy, and civil society repression. The specific results for each model and comparison between the model types are listed below. 
 
 ## Test Train Split
->>>>>>> 09c2a7e3a3816bad3bac55595c56877c4c781438
 ```{r test-train-split}
 # 70, 30 test train split
 set.seed(145)
@@ -410,7 +278,8 @@ train <- sample(c(TRUE, FALSE), nrow(cs), replace = TRUE, prob=c(.7,.3))
 test <- (!train)
 val <- test
 ```
-   
+
+## Regression
 ```{r matrix-creation}
 # create x and y for glmnet
 set.seed(129)
@@ -420,29 +289,26 @@ x <- model.matrix(cspart ~ csrepress+v2x_partipdem+edu+corr+cs_index+
 y <- cs$cspart
 ```
 
+### Ridge Regression
 ```{r ridge-regression}
 # set seed for reproducibility
 set.seed(129)
 
 # cross validation for best l
 cv_r <- cv.glmnet(x[train,], y[train], alpha = 0, 
-<<<<<<< HEAD
-                  lambda = 10^seq(10, -2, length = 100))
-=======
                   # scale the x values 
                   lambda = 10^seq(10, -2, length = 100), scale = TRUE)
->>>>>>> 09c2a7e3a3816bad3bac55595c56877c4c781438
 
 # saving optimal lambda
 bestlam_r <- cv_r$lambda.min
 
 # calculating MSE
 ridge_pred <- predict(cv_r, s = bestlam_r,
-newx = x[test, ])
+newx = x[test, ], scale = TRUE)
 ridge_mse <- mean((ridge_pred - y[test])^2)
 
 # fits final ridge model
-ridge_mod <- glmnet(x, y, alpha = 0, lambda = bestlam_r)
+ridge_mod <- glmnet(x, y, alpha = 0, lambda = bestlam_r, scale = TRUE)
 
 # saves coefficients
 coef_r <-coef(ridge_mod)
@@ -454,36 +320,28 @@ ridge_feature_estimate_ordered <- ridge_feature_estimate %>%
   arrange(desc(abs(estimate)))
 print(ridge_feature_estimate_ordered)
 ```
-<<<<<<< HEAD
-
-=======
 Ridge does not eliminate variables, so all variables are still listed here. It does minimize the estimate of less influential variables, though. In order of most to least important, the top 10 predictors identified by ridge regression are: civil society index, participation in democracy, social support, region (specifically the Pacific, Latin America, Eastern Europe Post Soviet Union), freedom to make life choices, government corruption index, followed by region (the Carribean). It is interesting to note that all region variables, excluding Eastern Europe North America, social support, and freedom to make life choices are associated with a negative estimate of affect on civil society participation. 
 
 ### Lasso Regression
->>>>>>> 09c2a7e3a3816bad3bac55595c56877c4c781438
 ```{r lasso-regression}
 # set seed for reproducibility
 set.seed(18)
  
 # cross validation for best l
 cv_l <- cv.glmnet(x[train,], y[train], alpha = 1,
-lambda = 10^seq(10, -2, length = 100))
+lambda = 10^seq(10, -2, length = 100), scale = TRUE)
 
 # saving optimal lambda
 bestlam_l <- cv_l$lambda.min
 
 # calculating MSE
 lasso_pred <- predict(cv_l, s = bestlam_l,
-<<<<<<< HEAD
-newx = x[test, ])
-=======
 # scale x values
 newx = x[test, ], scale = TRUE)
->>>>>>> 09c2a7e3a3816bad3bac55595c56877c4c781438
 lasso_mse <- mean((lasso_pred - y[test])^2)
 
 # fits model
-lasso_mod <- glmnet(x, y, lambda = bestlam_l)
+lasso_mod <- glmnet(x, y, lambda = bestlam_l, scale = TRUE)
 
 # saves coefficients
 coef_l <-coef(lasso_mod)
@@ -496,11 +354,9 @@ lasso_feature_estimate_ordered <- lasso_feature_estimate %>%
 
 print(lasso_feature_estimate_ordered)
 ```
-<<<<<<< HEAD
-=======
 Lasso identified participation in democracy, social support, region, and life expectancy to be the most influential variables. The model found that Latin America, Eastern Europe and Post Soviet Union, the Pacific, and North Africa and Middle East were significantly different than the remaining regions. The remaining regions, Sub Saharan Africa, Western Europe and North America, Eastern Asia, Southeastern Asia, Southern Asia, and the Caribbean, were not significantly different than each other in terms of effect on civil society participation. This model also associates significant region variables, life expectancy, and social support with a negative effect on civil society participation. 
->>>>>>> 09c2a7e3a3816bad3bac55595c56877c4c781438
 
+## Tree Methods
 ```{r plot-tree, echo=FALSE}
 format_tree_labels <- function(labels, levels) {
   sapply(labels, \(x) if(grepl(":", x)) clean_col(x, levels) else clean_lt(x))
@@ -559,6 +415,7 @@ plot_tree <- function(model){
 }
 ```
 
+### Single Decision Tree Model
 ```{r tree-method}
 # sets set for reproducibility
 set.seed(247) 
@@ -590,13 +447,9 @@ y_test <- y[test]
 # gets mse for pruned tree
 mse <- mean((tree_pred_tuned - y_test)^2)
 ```
-<<<<<<< HEAD
-
-=======
 The single decision tree plots the relationship between the most important predictors and the outcome. We can see that civil society index is the most influential as it is the topmost node of the tree. From there, participation in democracy and regions 1, 2, 3, 7, and 9, which represent Eastern Europe & Post Soviet Union, Latin America, North Africa and Middle East, South Eastern Asia, and the Pacific, were also identified as the most influential predictors in this model when predicting civil society participation. 
 
 ### Random Forest Model
->>>>>>> 09c2a7e3a3816bad3bac55595c56877c4c781438
 ```{r random-forests}
 # sets seed for reproducibility
 set.seed(286)
@@ -605,7 +458,6 @@ set.seed(286)
 train_control <- trainControl(method="cv", number = 5)
 
 # gets grid for mtry
-# IS THIS MTRY RANGE GOOD
 tune_grid <- expand.grid(mtry = 3:12)
 
 # does training
@@ -614,7 +466,6 @@ best_forest <- train(cspart ~ . -year -country_name, data = cs[train,],
                      method="rf", 
                      tuneGrid = tune_grid,
                      verbose = FALSE)
-best_forest
 
 # gets test for y
 y_test <- y[test]
@@ -672,7 +523,7 @@ print(f_feature_importance_ordered)
 ```
 The random forests model identifies civil society index and participation in democracy as the most important variables relative to other variables in the model when predicting civil society participation. 
 
-## Visualizing
+## Comparing Models
 ```{r, echo = FALSE}
 #| warning: false
 # note: I think we are planning to cut this because
@@ -704,22 +555,31 @@ value=c(r2(tree_pred_tuned, y[test]), r2(yhat_rf, y[test]),
 # putting into table
 compare_data=tibble(name,mse_all,value)
 
-#plotting MSE
+#plotting R2
 p1=ggplot(compare_data, aes(x=name, y=value))+
   geom_col()+ coord_cartesian(ylim=c(0.8,.9))+
   labs(x="Model",y="R2",title = "Relative R2 Comparison") +
-  theme_classic()
+  theme_classic() +
+  guides(x =  guide_axis(angle = 5))
 
-# plotting R Squared
+# plotting MSE
 p2=ggplot(compare_data, aes(x=name, y=mse_all))+
   geom_col()+ coord_cartesian(ylim=c(0.005, .01))+
   labs(x="Model",y="MSE",title = "Relative MSE Comparison") +
-  theme_classic()
+  theme_classic() +
+  guides(x =  guide_axis(angle = 5))
 
 (p1+p2)
 
+# table of scores because differences may be hard to tell from graph
+model_comp <- tibble('Model' = name, 
+                     'MSE' = mse_all,
+                     'R-Squared' = value)
+
+# prints table
+model_comp
 ```
-The model that performs on the test set in terms of minimizing error the best is random forests, as seen by the lowest MSE. Random forests also has the highest R-squared meaning it accounts for the most change in the predictor relative to the other models, as pictured above. This led us to conlude that random forests was the best performing model when predicting civil society participation from the data provided. 
+The model that performs on the test set in terms of minimizing error the best is random forests, as seen by the lowest MSE. Random forests also has the highest R-squared meaning it accounts for the most change in the predictor relative to the other models, as pictured above. This led us to conclude that random forests was the best performing model when predicting civil society participation from the data provided. 
 
 # Discussion
 ## Summary of What We Learned
@@ -727,45 +587,18 @@ The model that performs on the test set in terms of minimizing error the best is
   
   Civil society index and participation in democracy were the top two predictors in all models, with region, social support, and civil society repression being identified as top predictors by some of the models. Civil society index had a positive impact on civil society participation, meaning that as elements of civil society increased so as to increase the civil society index, such as increasing the number of civil society organizations, the civil society participation would also increase. This makes sense because a higher civil society index means that there are likely more and better opportunities for people to engage in civil society, therefore increasing participation. Additionally, we must note that when considering the make-up of the civil society participation variable and the civil society index variable both consider the same piece of information in CSO Participatory Environment, which is the best description of people in civil society organizations. Both of these variables also consider three other factors, but do have an element that is in common, meaning that the relationship between the two will be in part because they share some of the same information. That said, we are unable to determine at the present how much is based on that shared information out of the entire information contained in civil society index. In future research, we would want to examine how the different aspects of civil society index (explained in the codebook) relate to civil society participation. If we were to redo this, we would consider not including this predictor because of the overlap in data, which we didn't consider to be significant given that it was one of 4 pieces of information considered. Similarly, as participation in democracy increases, so does participation in civil society. Many civil society organizations have roles in politics, so as there is more political behavior more people likely will also engage in civil society. Further study into the relationship between civil society and participation in democracy is warranted to learn more about how these two processes interact with and influence each other. 
 
-<<<<<<< HEAD
-## This section is a conclusion and discussion. This will require a summary of what you have learned about your research question along with statistical and methodological arguments supporting your conclusions. You should critique your own methods and provide suggestions for improving your analysis and future work.
-
-Our research question regarded predictors of civil society participation. We hypothesized that countries with similar characteristics regarding social cohesion--such as region, presence of war, social support, and civil society index--will have similar civil society participation rates. The results of our data analysis partially supported our hypothesis, with the most important predictors identified being civil society index, region, and participation in democracy, which were seen across all models, and social support and civil society repression which was found by a minority of the models run. However, social support was shown to have a negative effect on civil society participation in 2019, which we did not expect. 
-
-Civil society index and participation in democracy were the top two predictors in all models, with region, social support, and civil society repression being identified as top predictors by some of the models. Civil society index had a positive impact on civil society participation, meaning that as elements of civil society increased so as to increase the civil society index, such as increasing the number of civil society organizations, the civil society participation would also increase. This makes sense because a higher civil society index means that there are likely more and better opportunities for people to engage in civil society, therefore increasing participation. Similarly, as participation in democracy increases, so does participation in civil society. Many civil society organizations have roles in politics, so as there is more political behavior more people likely will also engage in civil society. Further study into the relationship between civil society and participation in democracy is warranted to learn more about how these two processes interact with and influence each other. 
-
-In terms of region, countries located in the Pacific, Western Europe and North Africa and the Middle East, Latin America, Southeastern Asia, and Eastern Europe and Post Soviet Union states were all associated with a decrease in civil society participation. This result was surprising because there were no regions associated with an increase in civil society participation, leading us to think that factors within a country may be more important than region overall. (Is there a commonality between all of the negative regions? the only thing I can think of is like colonialism/imperialism but that also applies to some that aren't negative? because I don't want to make up things about these regions that I just don't know which seems to be what simon wants?) Our choice of regression and tree methods would not work as well at explaining these differences as a clustering method may have, which could have illuminated the similarities between regions with similiar civil society participation rates as well as other important factors. In terms of understanding why these regions are significant in more certain terms, further analysis, such as k-means clustering, is required. 
-
-The other key predictors identified were civil society repression and social support, which were both associated with a negative effect on civil society participation. As measures to increase repression of civil societies increase, such as the decrease of influence of civil society organizations, a decrease in civil society participation is predicted. As opportunities to participate in civil society decrease or become more difficult to access, it would make sense that people would participate less in civil society as a whole. Surprisingly, an increase in social support is associated with a decrease in civil society participation. Social support is defined as whether someone feels they have someone to turn to in a difficult situation. We hypothesized that if countries were to have more social support, it meant they would have stronger civil society networks. However, the results suggest that having social support may indicate that people have strong social support networks already, decreasing the need to participate in civil society organizations. More research into this relationships is needed to fully understand the effects of social support on civil society participation.
-
-
-## You should also discuss issues pertaining to the reliability and validity of your data and the appropriateness of the analyses should also be discussed.
-reliability is consistency/reproducibility/precision of a measure, validity is accuracy of measure (how well does it match established theories) (content validitiy is adequate coverage of the subject, criterion validity is whether it performs as expected/is a meaningful parameter, construct is does it match what it should. 
-
-Reliability is the consistency or reproducibility of the results. We did our best to make results reproducible by including set seed anytime we needed random number generation. This ensures that if someone were to replicate our project they would get the same results we did. From the provided codebooks, we can tell the methods of the data collection are consistent and reliable. For validity, the codebooks provided thorough descriptions of how the measures were calculated, what was included, and why. These variables should have high validity. As for the variables we chose, there was less validity in terms of the selected variables being good measures of civil society participation because we had minimal amounts of research when determining which variables to include in our project. This means that even though the variables measured what they claimed to, they may have had less . 
-? in terms of validity, does it refer to the way we used it or just the measurement
-
-You must include at least one paragraph discussing in what ways the training data you used limits any inferential conclusions or predictions for new data you can make.
-
-The training data we used certainly limited our conclusions and predictions. Our data consisted of 187 observations, 70% of which were in the training set. While this is a majority of the countries of the world, it is still a limited sample. This greatly limited the generalizability of our results due to the smaller number of observations and because it removed any patterns that may have been present over time. 2019 was chosen due to a desire to understand the key factors in civil society participation as close to the present day, without the effects of covid, as possible. However, doing a comparison over time would give us more generalizability by allowing us to see if predictors continued to be important over time or not. Additionally, 2019 did not have any recorded instances of civil wars or coups, meaning we were not able to assess the influence of these predictors on civil society participation. Going over time or picking a year that included these variables would have allowed us to better predict civil society participation by understanding the possible effects of these two predictors. In future works we would work to expand beyond 2019. Working with multiple years would have allowed us to make broader generalizations about civil society participation due to the larger amount of data we could use for training. Additionally, it would have allowed us to see patterns in civil society over time and country that we were not able to see with just the 2019 data. These data were also limited in the sense that we were not able to make generalizations or predictions about regions/countries in general because we could only predict for 2019. This does not have much practical use considering 2019 is only one year. 
-=======
   In terms of region, countries located in the Pacific, North Africa and the Middle East, Latin America, Southeastern Asia (identified only by tree model), and Eastern Europe and Post Soviet Union states were all associated with a decrease in civil society participation when compared to the other regions in the data, which are Sub Saharan Africa, Western Europe North America, Eastern Asia, Southern Asia, and the Caribbean, in both the tree model and regression models. This result was surprising because there were no regions associated with an increase in civil society participation, leading us to think that specific factors within a country may be more important than region overall. We were unable to find a commonality between all of these regions from our knowledge of these parts of the world or exploratory data analysis. Our choice of regression and tree methods does not work as well at explaining these differences as a clustering method may have, which could have illuminated the similarities between regions with similar civil society participation rates as well as other important factors. In terms of understanding why these regions are significant in more certain terms, further analysis, such as k-means clustering, is required. 
 
   The other key predictors identified were civil society repression, life expectancy, and social support, which were associated with a negative effect on civil society participation. As measures to increase repression of civil societies increase, such as the decrease of influence of civil society organizations, a decrease in civil society participation is predicted. As opportunities to participate in civil society decrease or become more difficult to access, it would make sense that people would participate less in civil society as a whole. Surprisingly, an increase in social support is associated with a decrease in civil society participation. Social support is defined as whether someone feels they have someone to turn to in a difficult situation. We hypothesized that if countries were to have more social support, it meant they would have stronger civil society networks. However, we infer that having social support may indicate that people have strong social support networks already, decreasing the need to participate in civil society organizations. More research into this relationships is needed to fully understand the effects of social support on civil society participation. Additionally, we would like to note that there are likely more relationships (interactions) between the variables than we were able to investigate, meaning social support may not truly have an overall negative effect on civil society participation as seen in the regression methods. We were not able to include interaction terms in our models, which is something that would limit our findings. Similarly, the relationship between this predictor, and other predictors, as well, and the outcome, may not have been linear, meaning that our two linear models may not have been the best representation of the data in real life. The skills of that analysis go above our abilities at this time but are worth noting as a possibility for future study.  
 
 ## Reliability and Validity
-  Reliability is the consistency or reproducibility of the results. We did our best to make results reproducible by including set seed anytime we needed random number generation. This ensures that if someone were to replicate our project they would get the same results we did. From the provided codebooks, we can tell the methods of the data collection are consistent and can be trusted. We also made sure to document our code and thinking with comments to allow for readers to follow along with our logic and conclusions. For validity, the codebooks provided thorough descriptions of how the measures were calculated, what was included, and why. These variables should have high validity. Both the vdem group and the data from the world happiness index are wellknown, reputable sources of data, leaving us confident that their measures are as accurate as they claim to be. As for the variables we chose, there was less validity in terms of the selected variables being good measures of civil society participation. We had minimal amounts of research when determining which variables to include in our project compared to the typical researcher in this field. This means that even though the variables measured what they claimed to, they may have had less validity in the sense that the way they were used to potentially measure civil society participation was not entirely in line with the definition of civil society or the initial meaning of the variable. Also, because of the way we added the median value for NAs of the year 2019 the analysis had less validity. This is because there are ways to better represent the true data for that country than 2019, such as replacing it with the median or mean of the missing data for the country over a certain number of years, which was above our knowledge level. 
+  Reliability is the consistency or reproducibility of the results. We did our best to make results reproducible by including set seed anytime we needed random number generation. This ensures that if someone were to replicate our project they would get the same results we did. From the provided codebooks, we can tell the methods of the data collection are consistent and can be trusted. We also made sure to document our code and thinking with comments to allow for readers to follow along with our logic and conclusions. For validity, the codebooks provided thorough descriptions of how the measures were calculated, what was included, and why. These variables should have high validity. Both the V-Dem group and the data from the world happiness index are wellknown, reputable sources of data, leaving us confident that their measures are as accurate as they claim to be. As for the variables we chose, there was less validity in terms of the selected variables being good measures of civil society participation. We had minimal amounts of research when determining which variables to include in our project compared to the typical researcher in this field. This means that even though the variables measured what they claimed to, they may have had less validity in the sense that the way they were used to potentially measure civil society participation was not entirely in line with the definition of civil society or the initial meaning of the variable. Also, because of the way we added the median value for NAs of the year 2019 the analysis had less validity. This is because there are ways to better represent the true data for that country than 2019, such as replacing it with the median or mean of the missing data for the country over a certain number of years, which was above our knowledge level. 
   
 ## Appropriateness of Analysis
   The analyses we conducted were fairly appropriate. As noted in the justification of methods in the methodology section, the regression models helped quantify the effects of predictors when others were held constant, giving us insight into which predictors had the most influence on the outcome. Lasso, especially, was helpful in this because it zeros out predictors that do not add enough to the model. Regression models are also easy to conceptualize and interpret, allowing both us and the reader to have a clearer picture of the relationship we are presenting. However, as discussed previously, the relationships in the data between the predictors and outcome may not be linear. This means that the results of the regression models may be somewhat inaccurate in their portrayal of the real relationship. However, tree models would be applicable for non-linear relationships, which is part of why we also chose a tree method to do in addition to regression. With the tree models, the tuning of hyperparameters minimized flaws of the tree model. One such issue we tried to minimize was overfitting. Because trees are locally greedy (fitting the best option for that node, not the whole tree) they run the risk of overfitting based on the data. This may result in a less accurate tree overall. Similarly, because one of the biggest risks of tree models is overfitting, if the test data is especially different than the training data it will likely do poorly. This is especially relevant as we had a smaller sample, making differences in the test vs training set more impactful. Finally, tree models are more costly in terms of computation/time even though they are very helpful in identifying predictors. However, in our case to our understanding due to the smaller number of observations we have, a tree model with random forests is not as costly as it could have been otherwise. We stand by our choice of the tree models: The single decision tree gave a strong visual depiction of the most important predictors and the relationships between them and the outcome, and random forests which identifies the most important predictors and is in general more accurate in prediction ability than the single decision tree and other methods. 
->>>>>>> 09c2a7e3a3816bad3bac55595c56877c4c781438
 
 ## Training Data Limitations
   The training data we used limited our conclusions and predictions. Our data consisted of 187 observations, 70% of which were in the training set. While this is a majority of the countries of the world, it is still a limited sample. This greatly limited the generalizability of our results due to the smaller number of observations and because it removed any patterns that may have been present over time. 2019 was chosen due to a desire to understand the key factors in civil society participation as close to the present day, without the effects of covid, as possible. However, doing a comparison over time would give us more generalizability and predicitie ability by allowing us to see if predictors continued to be important over time or not. Additionally, 2019 did not have any recorded instances of civil wars or coups, meaning we were not able to assess the influence of these predictors on civil society participation. Going over time or picking a year that included these variables would have allowed us to better predict civil society participation by understanding the possible effects of these two predictors. In future works we would work to expand beyond 2019 or compare 2019 to a present post-covid year. Working with multiple years would have allowed us to make broader generalizations about civil society participation due to the larger amount of data we could use for training. Additionally, it would have allowed us to see patterns in civil society over time and country that we were not able to see with just the 2019 data. These data were also limited in the sense that we were not able to make generalizations or predictions about regions/countries in general because we could only predict for 2019. 
 
-<<<<<<< HEAD
-If we were to start over with this project, we would take more time to develop our questions and analysis of the data, in addition to the training set limitations discussed in the prior paragraph. Going into the project, we did not have a strong understanding of the data we were working with. This  made formulating our question difficult. Doing some data exploration to learn about the realtionships between explanatory variables would have helped in formulating a question. From there, being more intentional about the data we used from the beginning would have been different, as well. In our data analysis phase, we ended up making a lot of decisions about data cleaning and data wrangling, even some about the basics of the project itself, that should have been made earlier. Choosing to focus on one year instead of multiple was a decision we do not regret, but coming to this choice at the beginning of the project would have greatly changed our data exploration and cleaning phases, as we had to approach them from a different perspective and basically redo them to do data analysis. Furthermore, learning more about the predictors themselves is a change we would make. We did not assess for covariance or any other sort of relationship between predictors. We also did not realize that some predictors we chose for our model would simply be NA for all observations, leading us to remove it later on. Additionally, the late inclusion or dropping of predictors, which proved to be tedious, would have been avoided had we taken more time to fully explore the data in the beginning. In summary, if we were to do this project again, we would do a more in-depth exploration of the data itself, think more carefully about the feasibility of our research question, then be more intentional about the data exploration and visualization we do. 
-=======
 ## Looking Back
   If we were to start over with this project, we would take more time to develop our questions and analysis of the data, in addition to the training set limitations discussed in the prior paragraph. Going into the project, we did not have a strong understanding of the data we were working with. This made formulating our question difficult. Doing some data exploration to learn about the relationships between explanatory variables would have helped in formulating a question. From there, being more intentional about the data we used from the beginning would have been different, as well. We had a very broad hypothesis, so narrowing down the variables we were interested in or picking a region of interest to base our analysis on would have made our data exploration and analysis more directed. In our data analysis phase, we ended up making a lot of decisions about data cleaning and data wrangling, even some about the basics of the project itself, that should have been made earlier. Choosing to focus on one year instead of multiple was a decision we do not regret, but coming to this choice at the beginning of the project would have greatly changed our data exploration and cleaning phases, as we had to approach them from a different perspective and basically redo them to do data analysis. Furthermore, learning more about the predictors themselves is a change we would make. We did not assess for covariance or any other sort of relationship between predictors. We also did not realize that some predictors we chose for our model would simply be NA for all observations, leading us to remove it later on. Additionally, the late inclusion or dropping of predictors, which proved to be tedious, would have been avoided had we taken more time to fully explore the data in the beginning. In summary, if we were to do this project again, we would do a more in-depth exploration of the data itself, think more carefully about the feasibility of our research question, then be more intentional about the data exploration and visualization we do. 
->>>>>>> 09c2a7e3a3816bad3bac55595c56877c4c781438
