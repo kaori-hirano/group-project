@@ -433,20 +433,46 @@ p1_rf <- importances_cs %>%
   arrange(`%IncMSE`) %>% 
   mutate(Variable = factor(Variable, levels = Variable)) %>% 
   ggplot(aes(x = `%IncMSE`, y = Variable)) +
-  geom_col(alpha = 0.5) + 
-  labs(title = "Variable Importance Plot 1") +
+  geom_col(alpha = 0.5) + scale_y_discrete(
+          labels = rev(c("Civil Society Index",
+                         "Democracy Participation",
+                         "Gov Corruption Index",
+                         "Region", 
+                         "Civil Society Repression",
+                         "Life Expectancy",
+                         "Social Support", 
+                         "Education",
+                         "Log GDP/capita",
+                         "Happiness Level", 
+                         "Generosity",
+                         "Choice Freedom"))) + 
+  labs(title = "Variable Importances 1",
+       y = "Variables",
+       x = "% Increase in MSE") +
   theme_classic()
-
-p1_rf
 
 # plot 2
 p2_rf <- importances_cs %>% 
   arrange(IncNodePurity) %>% 
   mutate(Variable = factor(Variable, levels = Variable)) %>% 
   ggplot(aes(x = IncNodePurity, y = Variable)) +
-  geom_col(alpha = 0.5) +
-  labs(title = "Variable Importance Plot 2") +
-  theme_classic()
+  geom_col(alpha = 0.5) + scale_y_discrete(
+          labels = rev(c("Civil Society Index",
+                         "Democracy Participation",
+                         "Civil Society Repression",
+                         "Region", 
+                         "Gov Corruption Index",
+                         "Life Expectancy",
+                         "Education",
+                         "Social Support",
+                         "Choice Freedom",
+                         "Happiness Level", 
+                         "Log GDP/capita",
+                         "Generosity"))) + 
+  labs(title = "Variable Importances 2", 
+       x = "Increase in Node Impurity") +
+  theme_classic() + 
+  theme(axis.title.y = element_blank())
 
 # side by side
 p1_rf + p2_rf
@@ -460,13 +486,26 @@ rf_importance_scores <- rf_cs$importance[, 1]
 
 # combine feature names and importance scores
 rf_feature_importance <- tibble(Feature = rf_feature_names, 
-                                '% Increase MSE' = rf_importance_scores)
+                                'Importance Scores' = rf_importance_scores)
 
 # get desc order for ease of interpretation
 f_feature_importance_ordered <- rf_feature_importance %>% 
+  mutate(Feature = c("Democracy Participation",
+                     "Civil Society Index",
+                     "Civil Society Repression",
+                     "Gov Corruption Index",
+                     "Region",
+                     "Life Expectancy",
+                     "Education",
+                     "Social Support",
+                     "Log GDP/capita",
+                     "Happiness Level",
+                     "Choice Freedom",
+                     "Generosity")) %>% 
   arrange(desc(abs(rf_importance_scores)))
 # Print the result
 print(f_feature_importance_ordered)
+
 ```
 The random forests model identifies civil society index and participation in democracy as the most important variables relative to other variables in the model when predicting civil society participation. 
 

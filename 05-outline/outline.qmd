@@ -158,22 +158,6 @@ csp
 # Methodology
 Because we are interested in how civil society participation is different across regions, we also plotted the distribution of different important social variables in our hypothesis against regions to see whether there are any strong correlation between our predictors and regions. After the visualization, it is hard to point out a consistent and clear trend among the regions. There are no regions that score consistently high or low across all three of these chosen social participation related variables. 
 
-```{r social-support-viz}
-# A box plot to show the relationship between region and social support
-social <- ggplot(cs, aes(x=as.factor(region), 
-               y = social_support,
-               color = as.factor(region), 
-               group = as.factor(region))) + 
-  geom_boxplot() + 
-  labs(x = "",
-       y = "Social Support",
-       color = "Region",
-       title = 'Social Support by Region') + 
-  # Rotate x-axis labels by 90 degrees to the left
-  theme(axis.text.x = element_text(angle = 45, hjust = 0.9), 
-        legend.position = "none")
-social       
-```
 
 ```{r civil-society-index-plot}
 # A box plot to show the relationship between region and Civil Society Index
@@ -532,13 +516,14 @@ rf_importance_scores <- rf_cs$importance[, 1]
 
 # combine feature names and importance scores
 rf_feature_importance <- tibble(Feature = rf_feature_names, 
-                                '% Increase MSE' = rf_importance_scores)
+                                'Importance Scores' = rf_importance_scores)
 
 # get desc order for ease of interpretation
 f_feature_importance_ordered <- rf_feature_importance %>% 
   arrange(desc(abs(rf_importance_scores)))
 # Print the result
 print(f_feature_importance_ordered)
+
 ```
 The random forests model identifies civil society index and participation in democracy as the most important variables relative to other variables in the model when predicting civil society participation. 
 
