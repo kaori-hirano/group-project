@@ -479,7 +479,8 @@ p1_rf <- importances_cs %>%
   arrange(`%IncMSE`) %>% 
   mutate(Variable = factor(Variable, levels = Variable)) %>% 
   ggplot(aes(x = `%IncMSE`, y = Variable)) +
-  geom_col(alpha = 0.5) + scale_y_discrete(labels = c("Civil Society Index",
+  geom_col(alpha = 0.5) + scale_y_discrete(
+          labels = rev(c("Civil Society Index",
                          "Democracy Participation",
                          "Gov Corruption Index",
                          "Region", 
@@ -490,8 +491,10 @@ p1_rf <- importances_cs %>%
                          "Log GDP/capita",
                          "Happiness Level", 
                          "Generosity",
-                         "Choice Freedom")) + 
-  labs(title = "Variable Importances 1") +
+                         "Choice Freedom"))) + 
+  labs(title = "Variable Importances 1",
+       y = "Variables",
+       x = "% Increase in MSE") +
   theme_classic()
 
 # plot 2
@@ -499,7 +502,8 @@ p2_rf <- importances_cs %>%
   arrange(IncNodePurity) %>% 
   mutate(Variable = factor(Variable, levels = Variable)) %>% 
   ggplot(aes(x = IncNodePurity, y = Variable)) +
-  geom_col(alpha = 0.5) + scale_y_discrete(labels = c("Civil Society Index",
+  geom_col(alpha = 0.5) + scale_y_discrete(
+          labels = rev(c("Civil Society Index",
                          "Democracy Participation",
                          "Gov Repression",
                          "Region", 
@@ -510,27 +514,18 @@ p2_rf <- importances_cs %>%
                          "Choice Freedom",
                          "Happiness Level", 
                          "Log GDP/capita",
-                         "Generosity")) + 
-  labs(title = "Variable Importances 2") +
-  theme_classic()
+                         "Generosity"))) + 
+  labs(title = "Variable Importances 2", 
+       x = "Increase in Node Impurity") +
+  theme_classic() + 
+  theme(axis.title.y = element_blank())
 
 # side by side
 p1_rf + p2_rf
 
 # prints table of most important variables
 # feature names minus year, country, cspart
-rf_feature_names <-    c("Civil Society Index",
-                         "Democracy Participation",
-                         "Gov Corruption Index",
-                         "Region", 
-                         "Gov Repression",
-                         "Life Expectancy",
-                         "Education",
-                         "Social Support", 
-                         "Log GDP/capita",
-                         "Happiness Level", 
-                         "Generosity",
-                         "Choice Freedom")
+rf_feature_names <- colnames(cs[,c(3:6, 8:15)])
 
 # importance scores
 rf_importance_scores <- rf_cs$importance[, 1]
