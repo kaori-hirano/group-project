@@ -25,8 +25,8 @@ library(tibble)
 install.packages("plotly")
 library(plotly)
 library(rempsyc)## for drawing scientific tables
-pkgs <- c("flextable", "broom", "report", "effectsize")
-install_if_not_installed(pkgs)
+##pkgs <- c("flextable", "broom", "report", "effectsize")
+##install_if_not_installed(pkgs)
 ```
 # Introduction and Data
 ## Topic & Research Question
@@ -303,7 +303,30 @@ ridge_feature_estimate_ordered <- ridge_feature_estimate %>%
   arrange(desc(abs(estimate))) # %>%
   # mutate(term = c())
 #print(ridge_feature_estimate_ordered)
-nice_table(ridge_feature_estimate_ordered)
+ridge_feature_estimate_ordered_table=ridge_feature_estimate_ordered%>% 
+  mutate(term = c('Intercept',
+                  "Civil Society Index",
+                  "Democracy Participation",
+                     "Social Support",
+                      "The Pacific",
+                    "Latin America",
+                    "Eastern European- Post Soviet Union",
+                    'Freedom to make life choices',
+                    "Gov Corruption Index",
+                    "The Caribbean",
+                    "North Africa- Middle East",
+                    "Eastern Asia",
+                    "Southern Asia",
+                    "Western Europe- North America",
+                    "Log GDP/capita",
+                    "life ladder",
+                     "Civil Society Repression",
+                     "Generosity",
+                     "South Eastern Asia",
+                  "Education",
+                     "Healthy life expectancy at birth"
+                     )) 
+nice_table(ridge_feature_estimate_ordered_table)
 ```
 Ridge does not eliminate variables, so all variables are still listed here. It does minimize the estimate of less influential variables, though. In order of most to least important, the top 10 predictors identified by ridge regression are: civil society index, participation in democracy, social support, region (specifically the Pacific, Latin America, Eastern Europe Post Soviet Union), freedom to make life choices, government corruption index, followed by region (the Carribean). It is interesting to note that all region variables, excluding Eastern Europe North America, social support, and freedom to make life choices are associated with a negative estimate of affect on civil society participation. 
 
@@ -338,8 +361,22 @@ lasso_feature_estimate_ordered <- lasso_feature_estimate %>%
   arrange(desc(abs(estimate))) #%>%
   # mutate(term = c())
 
+lasso_feature_estimate_ordered_table=lasso_feature_estimate_ordered%>% 
+  mutate(term = c("Civil Society Index",
+                  'Intercept',
+                  "Democracy Participation",
+                     "Social Support",
+                  "Latin America",
+                  "Eastern European- Post Soviet Union",
+                      "The Pacific",
+                   "North Africa- Middle East",
+                    "Healthy life expectancy at birth"
+                     )) 
+
 #print(lasso_feature_estimate_ordered)
-nice_table(lasso_feature_estimate_ordered)
+
+nice_table(lasso_feature_estimate_ordered_table)
+
 ```
 Lasso identified participation in democracy, social support, region, and life expectancy to be the most influential variables. The model found that Latin America, Eastern Europe and Post Soviet Union, the Pacific, and North Africa and Middle East were significantly different than the remaining regions. The remaining regions, Sub Saharan Africa, Western Europe and North America, Eastern Asia, Southeastern Asia, Southern Asia, and the Caribbean, were not significantly different than each other in terms of effect on civil society participation. This model also associates significant region variables, life expectancy, and social support with a negative effect on civil society participation. 
 
