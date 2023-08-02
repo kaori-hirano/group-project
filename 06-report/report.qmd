@@ -150,7 +150,17 @@ csp <- ggplot(cs, aes(x=as.factor(region),
        title = "Civil society participation levels within different regions") + 
   # Rotate x-axis labels by 90 degrees to the left
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
-        legend.position = "none")
+        legend.position = "none") + 
+  scale_x_discrete(labels = c("Sub-Saharan Africa",
+                              "Eastern European- Post Soviet Union",
+                              "Latin America",
+                              "North Africa- Middle East",
+                              "Western Europe- North America",
+                              "Eastern Asia",
+                              "South Eastern Asia",
+                              "Southern Asia",
+                              "The Pacific",
+                              "The Caribbean"))
 csp
 
 ```
@@ -163,6 +173,20 @@ We plot the expected most important variables in our hypothesis against the outc
 #| message: false
 # A scatter plot to show the relationship between civil society participation 
 # and social support by region
+
+# Reformat the legend
+# Custom labels for color legend with text wrapping
+custom_labels <-            c("Sub-Saharan Africa",
+                              "Eastern European- Post Soviet Union",
+                              "Latin America",
+                              "North Africa- Middle East",
+                              "Western Europe- North America",
+                              "Eastern Asia",
+                              "South Eastern Asia",
+                              "Southern Asia",
+                              "The Pacific",
+                              "The Caribbean")
+
 viz1 <- ggplot(cs, aes(x=social_support, 
                y = cspart,
                color = region)) + 
@@ -179,10 +203,9 @@ viz2 <- ggplot(cs, aes(x=v2x_partipdem,
                color = region)) + 
   geom_point() +
   geom_smooth(method = 'lm', aes(group = 1)) +
-  labs(x = "Participation in Democracy",
-       y = "Civil Society Participation",
-       color = "Region") +
-  theme(legend.position = "bottom")
+  labs(x = str_wrap("Participation in Democracy",25),
+       y = "Civil Society Participation") + 
+  theme(legend.position = "none")
 
 # A scatterplot to show the relationship between civil society participation 
 # and civil society index by region
@@ -192,14 +215,26 @@ viz3 <- ggplot(cs, aes(x=cs_index,
   geom_point() +
   geom_smooth(method = 'lm', aes(group = 1)) + 
   labs(x = "Civil Society Index",
-       y = "Civil Society Participation") +
-  theme(legend.position = "none")
+       y = "Civil Society Participation", 
+       color = "Region") +
+  theme(legend.position = "right") + 
+  scale_color_discrete(labels = c("Sub-Saharan Africa",
+                              str_wrap("Eastern European- Post Soviet Union", 20),
+                              "Latin America",
+                              str_wrap("North Africa- Middle East", 13),
+                              str_wrap("Western Europe- North America", 15),
+                              "Eastern Asia",
+                              "South Eastern Asia",
+                              "Southern Asia",
+                              "The Pacific",
+                              "The Caribbean"))
 
 ## Note that when rendered these three are too squished to be read. 
 ## might be better to just do them all on their own?
 viz1 + viz2 + viz3 + 
   plot_annotation(title = 
-                  "Civil Society Participation vs. Hypothesized Key Predictors by Region", caption = "Blue lines represent the best fit line for the respective plots.")
+  "Civil Society Participation vs. Hypothesized Key Predictors by Region",
+  caption = "Blue lines represent the best fit line for the respective plots.")
 ```
 ## Model Choice 
 Our research question regards which predictors are the most important in predicting civil society participation. We further edited this question to focus on 2019, specifically, to make our analysis more feasible. 
