@@ -297,7 +297,8 @@ coef_r <-coef(ridge_mod)
 ridge_feature_estimate <- ridge_mod %>% tidy() %>%
   select(term, estimate)
 ridge_feature_estimate_ordered <- ridge_feature_estimate %>% 
-  arrange(desc(abs(estimate)))
+  arrange(desc(abs(estimate))) # %>%
+  # mutate(term = c())
 print(ridge_feature_estimate_ordered)
 ```
 Ridge does not eliminate variables, so all variables are still listed here. It does minimize the estimate of less influential variables, though. In order of most to least important, the top 10 predictors identified by ridge regression are: civil society index, participation in democracy, social support, region (specifically the Pacific, Latin America, Eastern Europe Post Soviet Union), freedom to make life choices, government corruption index, followed by region (the Carribean). It is interesting to note that all region variables, excluding Eastern Europe North America, social support, and freedom to make life choices are associated with a negative estimate of affect on civil society participation. 
@@ -330,7 +331,8 @@ coef_l <-coef(lasso_mod)
 lasso_feature_estimate <- lasso_mod %>% tidy() %>%
   select(term, estimate)
 lasso_feature_estimate_ordered <- lasso_feature_estimate %>% 
-  arrange(desc(abs(estimate)))
+  arrange(desc(abs(estimate))) #%>%
+  # mutate(term = c())
 
 print(lasso_feature_estimate_ordered)
 ```
