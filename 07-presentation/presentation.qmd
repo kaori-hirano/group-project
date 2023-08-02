@@ -20,6 +20,56 @@ library(broom)
 library(tree)
 library(tibble)
 ```
+```{r merge-datasets}
+wh_2023 <- read_excel("/cloud/project/data/wh_2023.xls")
+load("/cloud/project/data/vdemdata-master/data/vdem.RData")
+## load the original datasets
+
+need_vdem=c("country_name","year","v2csreprss",'e_civil_war',"e_pt_coup",
+            "v2x_partipdem","e_peaveduc","v2x_corr","v2x_cspart","v2xcs_ccsi",
+            'e_regionpol')
+vdem_use=vdem[,need_vdem]
+need_wh=c("Country name","year","Social support","Freedom to make life choices",
+          "Generosity","Life Ladder","Healthy life expectancy at birth",
+          "Log GDP per capita")
+wh_use=wh_2023[,need_wh]
+## only select the portions where we need to need for our project
+
+colnames(wh_use)[1] <- "country_name"
+## change col name for eaier merge
+
+total=merge(vdem_use, wh_use, by = c("country_name", "year"),
+            all.x=TRUE,
+            all.y=TRUE) 
+##merge data
+```
+  
+```{r clean-data}
+#| message: false
+#| warning: false
+# Select the time range from 2019 only 
+total_2019 <- total[total$year == 2019,]
+
+#replace missing values in each numeric column with median value of column
+total_2019 <- total_2019 %>% 
+  mutate(across(where(is.numeric),~replace_na(.,median(.,na.rm=TRUE))))
+
+# removing coup and civil war because it was all NA or 0 for 2019
+total_2019 <- total_2019 %>% select(-one_of("civil_war", "coup"))
+
+# changes names to shorter and easier to type/remember forms
+cs <- total_2019 %>% rename(csrepress = v2csreprss, civil_war = e_civil_war, 
+                           coup = e_pt_coup,
+                           edu = e_peaveduc, corr = v2x_corr, 
+                           cspart = v2x_cspart, 
+                           cs_index = v2xcs_ccsi, 
+                           social_support = 'Social support', 
+                           choices = 'Freedom to make life choices', 
+                           gen = Generosity,
+                           region = e_regionpol,
+                           happ = "Life Ladder", 
+                           lifee = "Healthy life expectancy at birth", 
+                           gdp = "Log GDP per capita")
 
 ```{r import-data}
 # import data
