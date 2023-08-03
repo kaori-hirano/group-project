@@ -19,6 +19,60 @@ library(Matrix)
 library(broom)
 library(tree)
 library(tibble)
+install.packages("plotly")
+library(plotly)
+library(rempsyc)
+```
+```{r merge-datasets}
+wh_2023 <- read_excel("/cloud/project/data/wh_2023.xls")
+load("/cloud/project/data/vdemdata-master/data/vdem.RData")
+## load the original datasets
+
+need_vdem=c("country_name","year","v2csreprss",'e_civil_war',"e_pt_coup",
+            "v2x_partipdem","e_peaveduc","v2x_corr","v2x_cspart","v2xcs_ccsi",
+            'e_regionpol')
+vdem_use=vdem[,need_vdem]
+need_wh=c("Country name","year","Social support","Freedom to make life choices",
+          "Generosity","Life Ladder","Healthy life expectancy at birth",
+          "Log GDP per capita")
+wh_use=wh_2023[,need_wh]
+## only select the portions where we need to need for our project
+
+colnames(wh_use)[1] <- "country_name"
+## change col name for eaier merge
+
+total=merge(vdem_use, wh_use, by = c("country_name", "year"),
+            all.x=TRUE,
+            all.y=TRUE) 
+##merge data
+```
+  
+```{r clean-data}
+#| message: false
+#| warning: false
+# Select the time range from 2019 only 
+total_2019 <- total[total$year == 2019,]
+
+#replace missing values in each numeric column with median value of column
+total_2019 <- total_2019 %>% 
+  mutate(across(where(is.numeric),~replace_na(.,median(.,na.rm=TRUE))))
+
+# removing coup and civil war because it was all NA or 0 for 2019
+total_2019 <- total_2019 %>% select(-one_of("civil_war", "coup"))
+
+# changes names to shorter and easier to type/remember forms
+cs <- total_2019 %>% rename(csrepress = v2csreprss, civil_war = e_civil_war, 
+                           coup = e_pt_coup,
+                           edu = e_peaveduc, corr = v2x_corr, 
+                           cspart = v2x_cspart, 
+                           cs_index = v2xcs_ccsi, 
+                           social_support = 'Social support', 
+                           choices = 'Freedom to make life choices', 
+                           gen = Generosity,
+                           region = e_regionpol,
+                           happ = "Life Ladder", 
+                           lifee = "Healthy life expectancy at birth", 
+                           gdp = "Log GDP per capita")
 ```
 
 ```{r import-data}
@@ -289,6 +343,34 @@ lasso_feature_estimate_ordered <- lasso_feature_estimate %>%
 print(lasso_feature_estimate_ordered)
 ```
 ## Tree Methods
+```{r tree_method}
+plot_tree <- function(model){
+  require(ggdendro)
+  # extract necessary information from tree object so that it is ggplotable
+  tree_data <- dendro_data(model)
+  # create a data frame with the split *values* which dendro_data() doesn't extract
+  frame <- model$frame %>%
+    rownames_to_column(var = "split") %>%
+    mutate(splits = as.data.frame(splits)) %>% 
+    unnest(cols = c(splits)) %>% 
+    filter(var != "<leaf>") %>% 
+    select(cutleft)
+  
+  # add the splits information in, which dendro_data() misses
+  tree_data$labels <- tree_data$labels %>% 
+    bind_cols(frame) %>% 
+    mutate(label = paste0(as.character(label), cutleft),
+           label = format_tree_labels(label, attr(model, "xlevels")))
+      
+  ggplot(segment(tree_data)) +
+    geom_segment(aes(x = x, y = y, xend = xend, yend = yend)) +
+    geom_text(data = label(tree_data), 
+              aes(x = x, y = y, label = label), vjust = -0.5, size = 3) +
+    geom_text(data = leaf_label(tree_data), 
+              aes(x = x, y = y, label = label), vjust = 1.5, size = 2) +
+    theme_dendro()
+}
+```
 
 ## Single Decision Tree
 - Visualize importance and relationships between variables and outcome
