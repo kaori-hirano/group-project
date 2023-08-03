@@ -19,11 +19,12 @@ suppressPackageStartupMessages(library(glmnet)) # for ridge, Lasso
 suppressPackageStartupMessages(library(randomForest))
 suppressPackageStartupMessages(library(caret))
 library(Matrix)
-library(broom)
-library(tree)
-library(tibble)
-suppressPackageStartupMessages(library(plotly))
-library(rempsyc)## for drawing scientific tables
+library(broom) 
+library(tree) # tree methods
+library(tibble) # formats tables
+library(ridge) # allows for pvals from ridge
+library(plotly)
+library(rempsyc) # for drawing scientific tables
 ##pkgs <- c("flextable", "broom", "report", "effectsize")
 ##install_if_not_installed(pkgs)
 ```
@@ -164,12 +165,62 @@ csp <- ggplot(cs, aes(x=as.factor(region),
                               "The Pacific",
                               "The Caribbean"))
 csp
-
 ```
 Note: This histogram is to show that the reference level for the Region variable, Sub-Saharan Africa is along the same median level for Civil Society Participation variable as the majority of other regions. This means that when we interpret the coefficient of the different Regions, the metric/coefficient is reflecting how different certain regions are, in terms of Civil Society Participation, compared to Sub-Saharan Africa and similar regions. 
 
-# Methodology
-We plot the expected most important variables in our hypothesis against the outcome to see whether there is a complex relationship or a linear one between them. The method $lm$ for the best fit line was not specified as we wanted to understand the type of relationship that may be present. We are also interested in how strong the relationship is. There is a strong and more linear relationship between civil society participation and civil society index than between the outcome variables and the other two chosen variables. The other two relationships are not as linear and more complicated, as visualized below. This information may help us interpret our models later on. 
+# Methodology1=
+We also plotted the distribution of different important social variables in our hypothesis against regions to see whether there are any strong correlation between our predictors and regions. This helped us visualize any effect of region on the outcome and the effect of various predictors on region. After the visualization, it is hard to point out a consistent and clear trend among the regions. There are no regions that score consistently high or low across all three of these chosen social participation related variables. 
+
+```{r social-support-viz}
+# A box plot to show the relationship between region and social support
+social <- ggplot(cs, aes(x=as.factor(region), 
+               y = social_support,
+               group = as.factor(region))) + 
+  geom_boxplot() + 
+  labs(x = "",
+       y = "Social Support",
+       color = "Region",
+       title = 'Social Support by Region') + 
+  # Rotate x-axis labels by 90 degrees to the left
+  theme(axis.text.x = element_text(angle = 45, hjust = 0.9), 
+        legend.position = "none")
+social       
+```
+
+```{r civil-society-index-plot}
+# A box plot to show the relationship between region and Civil Society Index
+csi <- ggplot(cs, aes(x=as.factor(region), 
+               y = cs_index, 
+               group = as.factor(region))) + 
+  geom_boxplot() + 
+  labs(x = "",
+       y = "Civil Society Index",
+       color = "Regions",
+       title = 'Civil Society Index by Region') + 
+  # Rotate x-axis labels by 90 degrees to the left
+  theme(axis.text.x = element_text(angle = 45, hjust = 0.9), 
+        legend.position = "none") 
+csi
+```
+
+```{r democracy-viz}
+# A box plot to show the relationship between region
+# and participation in democracy
+democracy <- ggplot(cs, aes(x = as.factor(region), 
+               y = v2x_partipdem, 
+               group = as.factor(region))) + 
+  geom_boxplot() + 
+  labs(x = "Regions",
+       y = "Participation in Democracy",
+       color = "Regions", 
+       title= 'Participation in Democracy by Region') + 
+  # Rotate x-axis labels by 90 degrees to the left
+  theme(axis.text.x = element_text(angle = 45, hjust = 0.9), 
+        legend.position = "none")
+democracy
+```
+
+We also plotted the expected most important variables in our hypothesis against the outcome to see whether there is a complex relationship or a linear one between them. The method $lm$ for the best fit line was not specified as we wanted to understand the type of relationship that may be present. We are also interested in how strong the relationship is. There is a strong and more linear relationship between civil society participation and civil society index than between the outcome variables and the other two chosen variables. The other two relationships are not as linear and more complicated, as visualized below. This information may help us interpret our models later on. 
 
 ```{r variable-visualization}
 #| warning: false
@@ -296,13 +347,31 @@ ridge_mod <- glmnet(x, y, alpha = 0, lambda = bestlam_r, scale = TRUE)
 # saves coefficients
 coef_r <-coef(ridge_mod)
 
+# fits linear ridge model
+library(ridge)
+lin_ridge <- linearRidge(cspart ~ . -year -country_name, data = cs[train,])
+pvals_ridge <- pvals(lin_ridge)
+```
+
+```{r table-ridge}
+# NEED TO ADD P VALUES TO TABLE
 # prints important coefficients as a table
 ridge_feature_estimate <- ridge_mod %>% tidy() %>%
   select(term, estimate)
+# remove intercept
+ridge_feature_estimate <- ridge_feature_estimate[-1,]
+# add 
+ridge_feature_estimate <- ridge_feature_estimate %>% add_column()
 ridge_feature_estimate_ordered <- ridge_feature_estimate %>% 
+
+  arrange(desc(abs(pval)))
+print(ridge_feature_estimate_ordered)
+
   arrange(desc(abs(estimate))) # %>%
   # mutate(term = c())
 #print(ridge_feature_estimate_ordered)
+  
+## WE NEED TO CHANGE THE ROUNDING 
 ridge_feature_estimate_ordered_table=ridge_feature_estimate_ordered%>% 
   mutate(term = c('Intercept',
                   "Civil Society Index",
@@ -354,6 +423,14 @@ lasso_mod <- glmnet(x, y, lambda = bestlam_l, scale = TRUE)
 # saves coefficients
 coef_l <-coef(lasso_mod)
 
+# fits model with only important variables to get p vals
+lasso_p <- lm(cspart ~ cs_index + v2x_partipdem + social_support + region + 
+                 lifee, cs[train,])
+lasso_p <- glm(cspart ~ cs_index + v2x_partipdem + social_support + region + 
+                 lifee, cs[train,], family = 'gaussian')
+summary(lasso_p)
+
+# NEED TO ADD P VALUES 
 # prints important coefficients as a table
 lasso_feature_estimate <- lasso_mod %>% tidy() %>%
   select(term, estimate)
@@ -361,6 +438,7 @@ lasso_feature_estimate_ordered <- lasso_feature_estimate %>%
   arrange(desc(abs(estimate))) #%>%
   # mutate(term = c())
 
+## NOTE REMOVE THE INTERCEPT IN THE TABLE AND ADD P
 lasso_feature_estimate_ordered_table=lasso_feature_estimate_ordered%>% 
   mutate(term = c("Civil Society Index",
                   'Intercept',
@@ -583,6 +661,7 @@ f_feature_importance_ordered <- rf_feature_importance %>%
                      "Generosity")) %>% 
   arrange(desc(abs(rf_importance_scores)))
 # Print the result
+## NEED TO MAKE THE DECIMAL LESS BECAUSE WE HAVE TOO MANY .00s
 nice_table(f_feature_importance_ordered)
 
 ```
@@ -642,6 +721,7 @@ model_comp <- tibble('Model' = name,
                      'R-Squared' = value)
 
 # prints table
+## NEED TO FIX ROUNDING ERROR WITH MSE and R2 BECAUSE IT LOOKS LIKE THERES NO DIFFERENCE
 nice_table(model_comp)
 ```
 The model that performs on the test set in terms of minimizing error the best is random forests, as seen by the lowest MSE. Random forests also has the highest R-squared meaning it accounts for the most change in the predictor relative to the other models, as pictured above. This led us to conclude that random forests was the best performing model when predicting civil society participation from the data provided. 

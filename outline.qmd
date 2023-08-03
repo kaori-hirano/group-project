@@ -32,7 +32,7 @@ Based on Jens Steffek and Maria Paola Ferretti's publication of "Accountability 
 ## Data Information
 Data is attributed to the Varieties of Democracy (V-Dem) Project (https://doi.org/10.23696/vdemds20) which provides a multidimensional perspective on democracy beyond elections by considering measures including electoral, participatory, egalitarian, deliberative, and liberal principles in data collection and the Sustainable Development Solutions Network which aggregates data from the Gallup World Poll on happiness, GDP per capita, social support, healthy life expectancy, freedom, generosity, and corruption (https://worldhappiness.report/ed/2023/). Further information on the measures used in V-Dem specifically is found in the V-Dem codebook, found here: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3802627. Measures for the happiness data were found in the 2023 statistical appendix, found here https://happiness-report.s3.amazonaws.com/2023/WHR+23_Statistical_Appendix.pdf These datasets are collected yearly, with vdem having data dating back hundreds of years (since 1789) while the happiness index dataset has been collected since 2019. We specifically used data from 2019. The vdem group collects the data themselves. The world happiness index has information from a variety of sources, including gallup. Many elements of the datasets are created from multiple or different variables, such as civil society index which is defined by several factors, including number of civil society organizations and the length such civil society organizations exist. Explanations for how data categories are created and calculated are clearly laid out in the respective codebooks or statistical appendixes. Each row represents a country in the year of 2019, with the relevant data associated with it from the vdem and happiness index datasets.
   
-Our choices of variables reflect our understanding of civil society and the factors that make it stronger or weaker. Things that bring people together, such as generosity, and things that may bring people apart, such as corruption, we expect to have an effect on participation in civil society, which is why they are included. Civil society repression effort is included because we expect higher repression efforts to have an effect on participation in general, likely negative. This is considered in the civil society index, but will be used in preliminary analysis for better understanding and exploration of the topic. Social support we expect to have a positive relationship with civil society participation because people will be connected with each other, and the same applies to generosity, with the opposite logic applying to presence of war and coups. Civil society index is included because we expect a stronger civil society to have a stronger participation rate, as with education because schools and teaching organizations often are a large part of civil society. The civil society index takes into account the entry/exit of civil society organizations (CSOs), the repression of civil society, and the participatory environment, which is the types and amount of CSOs available. Government corruption is included because this may dissuade people from participating in civil society or weaken civil society by underfunding it making people less likely to engage in it. Additionally, participation in democracy is used because it measures the active level of citizen participation which considers suffrage, direct democracy, engagement with civil society organizations, and subnational elected bodies. Additionally, we chose three more social variables from the happiness dataset that we thought would relate to civil society participation: life ladder, longevity, and GDP per capita. Happiness is measured by the life ladder, which is a scale from 0-10 which represents the worst to best possible life and takes the average of all scores in a country. Longevity is the life expectancy at birth for a person in this year. Finally, is GDP, which is log GDP per capita, GDP calcuated at constant 22018 international dollar prices. These three were added because we suspect that a society with longer life spans, higher happiness overall, and more money would be associated with people having more ability to spend time participating in civil society. 
+Our choices of variables reflect our understanding of civil society and the factors that make it stronger or weaker. Things that bring people together, such as generosity, and things that may bring people apart, such as corruption, we expect to have an effect on participation in civil society, which is why they are included. Civil society repression effort is included because we expect higher repression efforts to have an effect on participation in general, likely negative. This is considered in the civil society index, but will be used in preliminary analysis for better understanding and exploration of the topic. Social support we expect to have a positive relationship with civil society participation because people will be connected with each other, and the same applies to generosity, withthe opposite logic applying to presence of war and coups. Civil society index is included because we expect a stronger civil society to have a stronger participation rate, as with education because schools and teaching organizations often are a large part of civil society. The civil society index takes into account the entry/exitof civil society organizations (CSOs), the repression of civil society, and the participatory environment, which is the types and amount of CSOs available. Government corruption is included because this may dissuade people from participating in civil society or weaken civil society by underfunding it making people less likely to engage in it. Additionally, participation in democracy is used because it measures the active level of citizen participation which considers suffrage, direct democracy, engagement with civil society organizations, and subnational elected bodies. Additionally, we chose three more social variables from the happiness dataset that we thought would relate to civil society participation: life ladder, longevity, and GDP per capita. Happiness is measured by the life ladder, which is a scale from 0-10 which represents the worst to best possible life and takes the average of all scores in a country. Longevity is the life expectancy at birth for a person in this year. Finally, is GDP, which is log GDP per capita, GDP calcuated at constant 22018 international dollar prices. These three were added because we suspect that a society with longer life spans, higher happiness overall, and more money would be associated with people having more ability to spend time participating in civil society. 
 
 ## Data Cleaning and Wrangling 
 As for data wrangling, no variables were significantly altered from the original dataset. The only variable change that was made is changing the regions from numbers (1-10) to the region names. NAs were dealt with by replacing the NA with the median of that column in 2019. This is not the best method of dealing with NAs but we reduced the window we drew the median from to just 2019 instead of the entire dataset to reduce the possibility of skewing the data by incorporating information that may not fit into the context of the rest of the 2019 data. Further, NA values were replaced with the median over a mean to ensure we do not skew the data considering that most of the variables were not normally distributed. Variables were scaled when used in the Lasso and ridge regression models. As seen in the summary statistics, there were wide distributions between predictors, making scaling necessary for best accuracy. Note that scaling is not necessary in tree models, which is why it was not scaled there. Scaling changes the interpretation of the results, so rather than one unit of the variable having the listed effect on the outcome it becomes one standard deviation of the variable having the listed effect on the outcome. 
@@ -214,6 +214,7 @@ democracy
 We also plotted the expected most important variables in our hypothesis against the outcome to see whether there is a complex relationship or a linear one between them. The method $lm$ for the best fit line was not specified as we wanted to understand the type of relationship that may be present. We are also interested in how strong the relationship is. There is a strong and more linear relationship between civil society participation and civil society index than between the outcome variables and the other two chosen variables. The other two relationships are not as linear and more complicated, as visualized below. This information may help us interpret our models later on. 
 
 ```{r variable-visualization}
+#| warning: false
 #| message: false
 # A scatter plot to show the relationship between civil society participation 
 # and social support
@@ -222,7 +223,7 @@ viz1 <- ggplot(cs, aes(x=social_support,
   geom_jitter() +
   geom_smooth() +
   labs(x = "Social support",
-       y = "Civil society participation",
+       y = "Participation in democracy",
        color = "Regions")
 
 # A scatterplot to show the relationship between civil society participation 
@@ -231,8 +232,8 @@ viz2 <- ggplot(cs, aes(x=cspart,
                y = v2x_partipdem)) + 
   geom_point() +
   geom_smooth() +
-  labs(x = "Participation in Democracy",
-       y = "Civil society participation")
+  labs(x = "Civil society participation",
+       y = "Participation in democracy")
 
 # A scatterplot to show the relationship between civil society participation 
 # and civil society index
@@ -243,6 +244,8 @@ viz3 <- ggplot(cs, aes(x=cs_index,
   labs(x = "Civil society index",
        y = "Civil society participation")
 
+## Note that when rendered these three are too squished to be read. 
+## might be better to just do them all on their own?
 viz1 + viz2 + viz3 + 
   plot_annotation(title = 
                   "Civil Society Participation vs. Social Predictors")
@@ -501,7 +504,7 @@ rf_feature_names <- colnames(cs[,c(3:6, 8:15)])
 
 # importance scores
 rf_importance_scores <- rf_cs$importance[, 1]
-?importance
+
 # combine feature names and importance scores
 rf_feature_importance <- tibble(Feature = rf_feature_names, 
                                 '% Increase MSE' = rf_importance_scores)
