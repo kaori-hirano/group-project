@@ -165,11 +165,10 @@ csp <- ggplot(cs, aes(x=as.factor(region),
                               "The Pacific",
                               "The Caribbean"))
 csp
-
 ```
 Note: This histogram is to show that the reference level for the Region variable, Sub-Saharan Africa is along the same median level for Civil Society Participation variable as the majority of other regions. This means that when we interpret the coefficient of the different Regions, the metric/coefficient is reflecting how different certain regions are, in terms of Civil Society Participation, compared to Sub-Saharan Africa and similar regions. 
 
-# Methodology
+# Methodology1=
 We also plotted the distribution of different important social variables in our hypothesis against regions to see whether there are any strong correlation between our predictors and regions. This helped us visualize any effect of region on the outcome and the effect of various predictors on region. After the visualization, it is hard to point out a consistent and clear trend among the regions. There are no regions that score consistently high or low across all three of these chosen social participation related variables. 
 
 ```{r social-support-viz}
@@ -353,7 +352,9 @@ library(ridge)
 lin_ridge <- linearRidge(cspart ~ . -year -country_name, data = cs[train,])
 pvals_ridge <- pvals(lin_ridge)
 ```
+
 ```{r table-ridge}
+# NEED TO ADD P VALUES TO TABLE
 # prints important coefficients as a table
 ridge_feature_estimate <- ridge_mod %>% tidy() %>%
   select(term, estimate)
@@ -421,6 +422,14 @@ lasso_mod <- glmnet(x, y, lambda = bestlam_l, scale = TRUE)
 # saves coefficients
 coef_l <-coef(lasso_mod)
 
+# fits model with only important variables to get p vals
+lasso_p <- lm(cspart ~ cs_index + v2x_partipdem + social_support + region + 
+                 lifee, cs[train,])
+lasso_p <- glm(cspart ~ cs_index + v2x_partipdem + social_support + region + 
+                 lifee, cs[train,], family = 'gaussian')
+summary(lasso_p)
+
+# NEED TO ADD P VALUES 
 # prints important coefficients as a table
 lasso_feature_estimate <- lasso_mod %>% tidy() %>%
   select(term, estimate)
@@ -428,6 +437,7 @@ lasso_feature_estimate_ordered <- lasso_feature_estimate %>%
   arrange(desc(abs(estimate))) #%>%
   # mutate(term = c())
 
+## NOTE REMOVE THE INTERCEPT IN THE TABLE AND ADD P
 lasso_feature_estimate_ordered_table=lasso_feature_estimate_ordered%>% 
   mutate(term = c("Civil Society Index",
                   'Intercept',
