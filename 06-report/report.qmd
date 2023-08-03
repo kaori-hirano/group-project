@@ -168,7 +168,7 @@ csp
 ```
 Note: This histogram is to show that the reference level for the Region variable, Sub-Saharan Africa is along the same median level for Civil Society Participation variable as the majority of other regions. This means that when we interpret the coefficient of the different Regions, the metric/coefficient is reflecting how different certain regions are, in terms of Civil Society Participation, compared to Sub-Saharan Africa and similar regions. 
 
-# Methodology1=
+# Methodology
 We also plotted the distribution of different important social variables in our hypothesis against regions to see whether there are any strong correlation between our predictors and regions. This helped us visualize any effect of region on the outcome and the effect of various predictors on region. After the visualization, it is hard to point out a consistent and clear trend among the regions. There are no regions that score consistently high or low across all three of these chosen social participation related variables. 
 
 ```{r social-support-viz}
@@ -293,7 +293,7 @@ viz1 + viz2 + viz3 +
 ## Model Choice 
 Our research question regards which predictors are the most important in predicting civil society participation. We further edited this question to focus on 2019, specifically, to make our analysis more feasible. 
 
-Our outcome variable is a numerical variable. We chose to use regression to identify the most important predictors of civil society participation in 2019. Lasso will eliminate non-influential variables, while ridge will shrink them to a smaller value, both of which minimize the presence of noninfluential predictors. We will do both models to test which of our chosen variables are important in predicting civil society participation. To optimize our model performance, the optimal lambda will be determined using 10-fold cross validation. 
+Our outcome variable is a numerical variable. We chose to use regression to identify the most important predictors of civil society participation in 2019. Lasso will eliminate non-influential variables, while ridge will shrink them to a smaller value, both of which minimize the presence of non-influential predictors. We will do both models to test which of our chosen variables are important in predicting civil society participation. To optimize our model performance, the optimal lambda will be determined using 10-fold cross validation. 
 
 We also used tree models to further understand the most important variables. This is because, as shown in our data visualizations, there are not only linear relationships between the predictors and the outcome variable. So, doing a different type of modelling might help us shed light on the relationship between our predictors and the outcome variable civil society participation. 
 
@@ -397,7 +397,7 @@ ridge_feature_estimate_ordered_table=ridge_feature_estimate_ordered%>%
                      )) 
 nice_table(ridge_feature_estimate_ordered_table)
 ```
-Ridge does not eliminate variables, so all variables are still listed here. It does minimize the estimate of less influential variables, though. In order of most to least important, the top 10 predictors identified by ridge regression are: civil society index, participation in democracy, social support, region (specifically the Pacific, Latin America, Eastern Europe Post Soviet Union), freedom to make life choices, government corruption index, followed by region (the Carribean). It is interesting to note that all region variables, excluding Eastern Europe North America, social support, and freedom to make life choices are associated with a negative estimate of affect on civil society participation. 
+Ridge does not eliminate variables, so all variables are still listed here. It does minimize the estimate of less influential variables, though. In order of most to least important, the top 10 predictors identified by ridge regression are: civil society index, participation in democracy, social support, freedom to make life choices, government corruption index, followed by region (the Caribbean). It is interesting to note that all region variables, excluding Eastern Europe North America, social support, and freedom to make life choices are associated with a negative estimate of affect on civil society participation compared to the baseline level of Sub-Saharan Africa. This means that the civil society participitation of most regions, except Eastern Europe North America, is lower than that of Sub-Saharan Africa. 
 
 ### Lasso Regression
 ```{r lasso-regression}
