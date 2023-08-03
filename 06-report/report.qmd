@@ -397,7 +397,7 @@ ridge_feature_estimate_ordered_table=ridge_feature_estimate_ordered%>%
                      )) 
 nice_table(ridge_feature_estimate_ordered_table)
 ```
-Ridge does not eliminate variables, so all variables are still listed here. It does minimize the estimate of less influential variables, though. In order of most to least important, the top 10 predictors identified by ridge regression are: civil society index, participation in democracy, social support, freedom to make life choices, government corruption index, followed by region (the Caribbean). It is interesting to note that all region variables, excluding Eastern Europe North America, social support, and freedom to make life choices are associated with a negative estimate of affect on civil society participation compared to the baseline level of Sub-Saharan Africa. This means that the civil society participitation of most regions, except Eastern Europe North America, is lower than that of Sub-Saharan Africa. 
+Ridge does not eliminate variables, so all variables are still listed here. It does minimize the estimate of less influential variables, though. In order of most to least important, the top 10 predictors identified by ridge regression are: civil society index, participation in democracy, social support, freedom to make life choices, government corruption index, followed by region (the Caribbean). It is interesting to note that all region variables, excluding Eastern Europe North America, social support, and freedom to make life choices are associated with a negative estimate of affect on civil society participation compared to the baseline level of Sub-Saharan Africa. This means that the civil society participation of most regions, except Eastern Europe North America, is lower than that of Sub-Saharan Africa. 
 
 ### Lasso Regression
 ```{r lasso-regression}
@@ -456,7 +456,7 @@ lasso_feature_estimate_ordered_table=lasso_feature_estimate_ordered%>%
 nice_table(lasso_feature_estimate_ordered_table)
 
 ```
-Lasso identified participation in democracy, social support, region, and life expectancy to be the most influential variables. The model found that Latin America, Eastern Europe and Post Soviet Union, the Pacific, and North Africa and Middle East were significantly different than the remaining regions. The remaining regions, Sub Saharan Africa, Western Europe and North America, Eastern Asia, Southeastern Asia, Southern Asia, and the Caribbean, were not significantly different than each other in terms of effect on civil society participation. This model also associates significant region variables, life expectancy, and social support with a negative effect on civil society participation. 
+Lasso identified participation in democracy, social support, region, and life expectancy to be the most influential variables. The model found that Latin America, Eastern Europe and Post Soviet Union, the Pacific, and North Africa and Middle East were significantly different than the baseline Sub-Saharan Africa. The other regions, Sub Saharan Africa, Western Europe and North America, Eastern Asia, Southeastern Asia, Southern Asia, and the Caribbean, were considered to be similar enough to be categorized as one group together in terms of base level of civil society participation. This model also associates significant variables - life expectancy, and social support - with a negative effect on civil society participation. 
 
 ## Tree Methods
 ```{r plot-tree, echo=FALSE}
