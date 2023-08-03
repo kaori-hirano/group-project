@@ -19,7 +19,6 @@ library(Matrix)
 library(broom)
 library(tree)
 library(tibble)
-install.packages("plotly")
 library(plotly)
 library(rempsyc)
 ```
@@ -254,7 +253,9 @@ talk about the relationships present, the right two being somewhat linear but so
 tried transforming social support but we didn't find a way to make it more linear
 :::
 
-## Inference and Modeling: Regression
+:::{.notes}
+need to add the proper tables with the p values and nice formatting 
+:::
 ```{r test-train-split, echo = FALSE}
 # 70, 30 test train split
 set.seed(145)
@@ -272,12 +273,12 @@ x <- model.matrix(cspart ~ csrepress+v2x_partipdem+edu+corr+cs_index+
                   data = cs)[, -1]
 y <- cs$cspart
 ```
+::::{.columns}
 
-## Ridge
+:::{.column width=50%}
+Ridge
 - Minimizes the effect of non-influential variables
 - hypertuning lambda with CV
-- Civil society index, participation in democracy, social support, region, freedom to make life choices were important
-- Education, generosity, life expectancy, less so
 ```{r ridge-regression}
 # set seed for reproducibility
 set.seed(129)
@@ -308,7 +309,10 @@ ridge_feature_estimate_ordered <- ridge_feature_estimate %>%
   arrange(desc(abs(estimate)))
 print(ridge_feature_estimate_ordered)
 ``` 
-## Lasso
+:::
+
+:::{.column width=50%}
+Lasso 
 - Zeros out non-influential variables
 - hypertuning of lambda from CV
 ```{r lasso-regression}
@@ -342,8 +346,45 @@ lasso_feature_estimate_ordered <- lasso_feature_estimate %>%
 
 print(lasso_feature_estimate_ordered)
 ```
+:::
+
+
+::::
+
+
 ## Tree Methods
 ```{r tree_method}
+# code is attributed to LACOL summer course
+# instructors and ISLR authors
+format_tree_labels <- function(labels, levels) {
+  sapply(labels, \(x) if(grepl(":", x)) clean_col(x, levels) else clean_lt(x))
+} 
+
+# replace letter positions with actual level labels
+clean_col <- function(x, levels){
+  # split the label into label and levels
+  x <- str_split_1(x, ":")
+  # make new temp objects for the two components
+  var <- x[1]
+  levs_ids <- x[2]
+  # get levels for correct variable
+  levs <- levels[[var]]
+  # get level ids for *relevant* levels
+  levs_ids <- str_split_1(levs_ids, "") 
+  levs_ids <- sapply(levs_ids, \(x) which(letters == x))
+  # cut down levs to only the required levels
+  levs <- levs[levs_ids]
+  # paste everything together and return (immplicitly)
+  paste0(var, ": ", paste0(levs, collapse = ", "))
+}
+
+# space out labels that include only "<"
+clean_lt <- function(x){
+  # split on <, then recombine with spaces before and after <
+  x <- str_split_1(x, "<")
+  paste0(x, collapse = " < ")
+}
+
 plot_tree <- function(model){
   require(ggdendro)
   # extract necessary information from tree object so that it is ggplotable
@@ -370,18 +411,13 @@ plot_tree <- function(model){
               aes(x = x, y = y, label = label), vjust = 1.5, size = 2) +
     theme_dendro()
 }
+
 ```
+::::{.columns}
 
-## Single Decision Tree
-- Visualize importance and relationships between variables and outcome
-- Greedy method--may be less generalizable
-- CV for number of terminal nodes
+:::{.column width=50%}
+Single Decision Tree
 ```{r tree-method}
-# accesses tree plot
-install.packages('here')
-library(here)
-plot_tree <- here::here("project/scripts/tree_plot.R")
-
 # sets set for reproducibility
 set.seed(247) 
 
@@ -396,7 +432,7 @@ cv_train <- cv.tree(tree_train)
 prune_train <- prune.tree(tree_train, best = 8)
 
 # plots pruned tree
-plot_tree(prune_train) + 
+treePlot <- plot_tree(prune_train) + 
   labs(title = "Pruned Tree Plot",
        caption = 'Regions 1, 2, 3, 7, and 9 represent Eastern Europe & Post
        Soviet Union, Latin America, North Africa and Middle East, South Eastern 
@@ -414,12 +450,22 @@ mse <- mean((tree_pred_tuned - y_test)^2)
 ```
 :::{.notes}
 The single decision tree plots the relationship between the most important predictors and the outcome. We can see that civil society index is the most influential as it is the topmost node of the tree. From there, participation in democracy and regions 1, 2, 3, 7, and 9, which represent Eastern Europe & Post Soviet Union, Latin America, North Africa and Middle East, South Eastern Asia, and the Pacific, were also identified as the most influential predictors in this model when predicting civil society participation. 
-:::
 
-## Random Forests
+tree
+- Visualize importance and relationships between variables and outcome
+- Greedy method--may be less generalizable
+- CV for number of terminal nodes
+
+
+random
 - Relative variable importances
 - CV for number of considered parameters
 - More accurate than tree methods
+:::
+:::
+
+:::{.column width=50%}
+Random Forests
 ```{r random-forests}
 # sets seed for reproducibility
 set.seed(286)
@@ -453,6 +499,10 @@ rf_mse <- mean((yhat_rf - y_test)^2)
 importances_cs <- importance(rf_cs) %>% 
   as_tibble(rownames = "Variable")
 ```
+:::
+
+
+::::
 
 ## Model Comparison
 - Random forests was the most effective model of for the data
@@ -497,6 +547,8 @@ model_comp <- tibble('Model' = name,
 model_comp
 ```
 
+## NOTE WE SHOULD ADD THE MSE MODEL COMPARISON PART INTO CONCLUSION very briefly, 
+## it just won't fit on the results section slides
 ## Conclusions & Future Work
 :::{.incremental}
 - Civil society index, participation in democracy, and region are the most important predictors of civil society participation in 2019
