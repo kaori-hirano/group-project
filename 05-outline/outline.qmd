@@ -501,7 +501,7 @@ rf_feature_names <- colnames(cs[,c(3:6, 8:15)])
 
 # importance scores
 rf_importance_scores <- rf_cs$importance[, 1]
-
+?importance
 # combine feature names and importance scores
 rf_feature_importance <- tibble(Feature = rf_feature_names, 
                                 '% Increase MSE' = rf_importance_scores)

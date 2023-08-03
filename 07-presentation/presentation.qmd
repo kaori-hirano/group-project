@@ -144,16 +144,14 @@ with useful tips
 - Each group member should speak for an equal amount of time
 - You can separate sections with section slides but do not have to
 
-## Hypothesis
-- The presence of more social cohesive factors--such as region, presence of war, social support, and civil society index--will have strong influences on civil society participation
-- Specific focus on 2019 because it is pre-covid 
-
 ## Introduction to Topic and Motivation
 :::{.incremental}
 - Curious about how civil society interacts with society overall
 - What is civil society? 
 - Political and Social perspective
 - Relevance to our daily lives and interests
+- The presence of more social cohesive factors--such as region, presence of war, social support, and civil society index--will have strong influences on civil society participation
+- Specific focus on 2019 because it is pre-covid 
 :::
 
 We are curious about how the civil society participation and societies are mutually affected, so our research question is determining the most essential factors in predicting civil society participation. We hypothesized that characteristics regarding social cohesion--such as region, presence of war, social support, and civil society index--will have large influences on civil society participation rates. The reason we choose to do the happiness dataset and the civil society datasets is because we wish to stand in a broader perspective, seeing the general relationship and taking each national society as a whole, to determine what might be effective for the creation of a civil society. The World Happiness Index gives us social events in a quantitative way and the VDEM provides us with a bunch of indexes measuring the stability of a society from various perspectives. 2019 is the most recent data set we have that is not reflecting social changes due to COVID-19, which is why we chose 2019 specifically over another year. This might be more representative of the social conditions before the pandemic year. 
@@ -191,41 +189,11 @@ note that variables were scaled because of the wide range (0-1 vs 1-10 etc)
 
 ## Highlights from EDA 2: Social Predictors
 ```{r variable-visualization}
-#| message: false
-# A scatter plot to show the relationship between civil society participation 
-# and social support
-viz1 <- ggplot(cs, aes(x=social_support, 
-               y = v2x_partipdem)) + 
-  geom_jitter() +
-  geom_smooth() +
-  labs(x = "Social support",
-       y = "Civil society participation",
-       color = "Regions")
 
-# A scatterplot to show the relationship between civil society participation 
-# and participation in democracy
-viz2 <- ggplot(cs, aes(x=cspart, 
-               y = v2x_partipdem)) + 
-  geom_point() +
-  geom_smooth() +
-  labs(x = "Participation in Democracy",
-       y = "Civil society participation")
-
-# A scatterplot to show the relationship between civil society participation 
-# and civil society index
-viz3 <- ggplot(cs, aes(x=cs_index, 
-               y = cspart)) + 
-  geom_point() +
-  geom_smooth() +
-  labs(x = "Civil society index",
-       y = "Civil society participation")
-
-viz1 + viz2 + viz3 + 
-  plot_annotation(title = 
-                  "Civil Society Participation vs. Social Predictors")
 ```
 - Social support has a complex relationship 
 - Participation in democracy and civil society index appear more linear
+- mention any trends by region (not sure what there is)
 
 ::: {.notes}
 talk about the relationships present, the right two being somewhat linear but social support has a more complex relationship, just something we needed to keep in mind
@@ -250,6 +218,7 @@ x <- model.matrix(cspart ~ csrepress+v2x_partipdem+edu+corr+cs_index+
                   data = cs)[, -1]
 y <- cs$cspart
 ```
+
 ## Ridge
 - Minimizes the effect of non-influential variables
 - hypertuning lambda with CV
