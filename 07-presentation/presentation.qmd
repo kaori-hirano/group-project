@@ -19,6 +19,9 @@ library(Matrix)
 library(broom)
 library(tree)
 library(tibble)
+install.packages("plotly")
+library(plotly)
+library(rempsyc)
 ```
 ```{r merge-datasets}
 wh_2023 <- read_excel("/cloud/project/data/wh_2023.xls")
@@ -70,6 +73,7 @@ cs <- total_2019 %>% rename(csrepress = v2csreprss, civil_war = e_civil_war,
                            happ = "Life Ladder", 
                            lifee = "Healthy life expectancy at birth", 
                            gdp = "Log GDP per capita")
+```
 
 ```{r import-data}
 # import data
@@ -370,6 +374,34 @@ lasso_feature_estimate_ordered <- lasso_feature_estimate %>%
 print(lasso_feature_estimate_ordered)
 ```
 ## Tree Methods
+```{r tree_method}
+plot_tree <- function(model){
+  require(ggdendro)
+  # extract necessary information from tree object so that it is ggplotable
+  tree_data <- dendro_data(model)
+  # create a data frame with the split *values* which dendro_data() doesn't extract
+  frame <- model$frame %>%
+    rownames_to_column(var = "split") %>%
+    mutate(splits = as.data.frame(splits)) %>% 
+    unnest(cols = c(splits)) %>% 
+    filter(var != "<leaf>") %>% 
+    select(cutleft)
+  
+  # add the splits information in, which dendro_data() misses
+  tree_data$labels <- tree_data$labels %>% 
+    bind_cols(frame) %>% 
+    mutate(label = paste0(as.character(label), cutleft),
+           label = format_tree_labels(label, attr(model, "xlevels")))
+      
+  ggplot(segment(tree_data)) +
+    geom_segment(aes(x = x, y = y, xend = xend, yend = yend)) +
+    geom_text(data = label(tree_data), 
+              aes(x = x, y = y, label = label), vjust = -0.5, size = 3) +
+    geom_text(data = leaf_label(tree_data), 
+              aes(x = x, y = y, label = label), vjust = 1.5, size = 2) +
+    theme_dendro()
+}
+```
 
 ## Single Decision Tree
 - Visualize importance and relationships between variables and outcome
