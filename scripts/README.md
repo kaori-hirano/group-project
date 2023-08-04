@@ -1,3 +1,3 @@
 # Scripts
 
-This folder contains code scripts for the CMPU 280 final project.
+This folder contains code scripts for the Applied Machine Learning final project.
