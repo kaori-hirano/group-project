@@ -228,7 +228,7 @@ note that variables were scaled because of the wide range (0-1 vs 1-10 etc)
 
 ## Highlights from EDA 1: By Region
 :::{.incremental}
-```{r variable-visualization}
+```{r variable-visualization-1}
 #| warning: false
 #| message: false
 # A scatter plot to show the relationship between civil society participation 
@@ -265,7 +265,9 @@ viz2 <- ggplot(cs, aes(x=v2x_partipdem,
   geom_smooth(method = 'lm', aes(group = 1)) +
   labs(x = str_wrap("Participation in Democracy",25),
        y = "Civil Society Participation") + 
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom") +
+  theme(legend.key.size = unit(.2, 'cm'), legend.title = element_text(size=11),
+        legend.text = element_text(size=11))
 
 # A scatterplot to show the relationship between civil society participation 
 # and civil society index by region
@@ -293,8 +295,7 @@ viz3 <- ggplot(cs, aes(x=cs_index,
 ## might be better to just do them all on their own?
 viz1 + viz2 + viz3 + 
   plot_annotation(title = 
-  "Civil Society Participation vs. Hypothesized Key Predictors by Region",
-  caption = "Blue lines represent the best fit line for the respective plots.")
+  "Civil Society Participation vs. Hypothesized Key Predictors by Region")
 ```
 :::
 

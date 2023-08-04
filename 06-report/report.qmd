@@ -273,7 +273,7 @@ viz3 <- ggplot(cs, aes(x=cs_index,
   labs(x = "Civil Society Index",
        y = "Civil Society Participation", 
        color = "Region") +
-  theme(legend.position = "right") + 
+  theme(legend.position = "bottom") + 
   scale_color_discrete(labels = c("Sub-Saharan Africa",
                               str_wrap("Eastern European- Post Soviet Union", 20),
                               "Latin America",
@@ -284,17 +284,18 @@ viz3 <- ggplot(cs, aes(x=cs_index,
                               "Southern Asia",
                               "The Pacific",
                               "The Caribbean")) +
-  theme(plot.title = element_text(size=22))
+  theme(plot.title = element_text(size=22)) +
+  theme(legend.key.size = unit(.2, 'cm'), legend.title = element_text(size=7),
+        legend.text = element_text(size=7))
 
 ## Note that when rendered these three are too squished to be read. 
 ## might be better to just do them all on their own?
-viz1 + viz2 + viz3 + 
-  plot_annotation(title = 
-  "Civil Society Participation vs. Hypothesized Key Predictors by Region",
-  caption = "Blue lines represent the best fit line for the respective plots.")
 
-viz1 + viz2 + viz3 + guide_area() + 
-  plot_layout(guides = 'collect')
+viz1 + viz2 + 
+  plot_annotation(title = 
+  "Civil Society Participation vs. Hypothesized Key Predictors by Region")
+viz3 + plot_annotation(caption = "Blue lines represent the best fit line for the 
+                       respective plots.") 
 ```
 ## Model Choice 
 Our research question regards which predictors are the most important in predicting civil society participation. We further edited this question to focus on 2019, specifically, to make our analysis more feasible. 
