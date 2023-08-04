@@ -199,18 +199,15 @@ with useful tips
 
 ## Introduction to Topic and Motivation
 :::{.incremental}
-- Curious about how civil society interacts with society overall
-- What is civil society? 
+- Learn about civil society's place in our overall society and relate to our lives
+- Civil Society is...
 - Political and Social perspective
-- Relevance to our daily lives and interests
 - The presence of more social cohesive factors--such as region, presence of war, social support, and civil society index--will have strong influences on civil society participation
 - Specific focus on 2019 because it is pre-covid 
 :::
-
-We are curious about how the civil society participation and societies are mutually affected, so our research question is determining the most essential factors in predicting civil society participation. We hypothesized that characteristics regarding social cohesion--such as region, presence of war, social support, and civil society index--will have large influences on civil society participation rates. The reason we choose to do the happiness dataset and the civil society datasets is because we wish to stand in a broader perspective, seeing the general relationship and taking each national society as a whole, to determine what might be effective for the creation of a civil society. The World Happiness Index gives us social events in a quantitative way and the VDEM provides us with a bunch of indexes measuring the stability of a society from various perspectives. 2019 is the most recent data set we have that is not reflecting social changes due to COVID-19, which is why we chose 2019 specifically over another year. This might be more representative of the social conditions before the pandemic year. 
-
-Based on Jens Steffek and Maria Paola Ferretti's publication of "Accountability or “Good Decisions”? The Competing Goals of Civil Society Participation in International Governance" on 07 Jan 2009, "(civil society participation) may either enhance the democratic accountability of intergovernmental organisations and regimes, or the epistemic quality of rules and decisions made within them." They pointed out the direct cause and effect relationship between civil society participation and the shape of societies. To examine this, we chose to look at the question from both a social and political lens. 
-
+:::{.notes}
+be sure to expand on why we chose it briefly and what civil society is
+:::
 
 
 ## Introduction to Data
@@ -231,7 +228,74 @@ note that variables were scaled because of the wide range (0-1 vs 1-10 etc)
 
 ## Highlights from EDA 1: By Region
 :::{.incremental}
-- 
+```{r variable-visualization}
+#| warning: false
+#| message: false
+# A scatter plot to show the relationship between civil society participation 
+# and social support by region
+
+# Reformat the legend
+# Custom labels for color legend with text wrapping
+custom_labels <-            c("Sub-Saharan Africa",
+                              "Eastern European- Post Soviet Union",
+                              "Latin America",
+                              "North Africa- Middle East",
+                              "Western Europe- North America",
+                              "Eastern Asia",
+                              "South Eastern Asia",
+                              "Southern Asia",
+                              "The Pacific",
+                              "The Caribbean")
+
+viz1 <- ggplot(cs, aes(x=social_support, 
+               y = cspart,
+               color = region)) + 
+  geom_jitter() +
+  geom_smooth(method = 'lm', aes(group = 1)) + 
+  labs(x = "Social Support",
+       y = "Civil Society Participation") +
+  theme(legend.position = "none")
+
+# A scatterplot to show the relationship between civil society participation 
+# and participation in democracy by region
+viz2 <- ggplot(cs, aes(x=v2x_partipdem, 
+               y = cspart,
+               color = region)) + 
+  geom_point() +
+  geom_smooth(method = 'lm', aes(group = 1)) +
+  labs(x = str_wrap("Participation in Democracy",25),
+       y = "Civil Society Participation") + 
+  theme(legend.position = "bottom")
+
+# A scatterplot to show the relationship between civil society participation 
+# and civil society index by region
+viz3 <- ggplot(cs, aes(x=cs_index, 
+               y = cspart,
+               color = region)) + 
+  geom_point() +
+  geom_smooth(method = 'lm', aes(group = 1)) + 
+  labs(x = "Civil Society Index",
+       y = "Civil Society Participation", 
+       color = "Region") +
+  theme(legend.position = "none") + 
+  scale_color_discrete(labels = c("Sub-Saharan Africa",
+                              str_wrap("Eastern European- Post Soviet Union", 20),
+                              "Latin America",
+                              str_wrap("North Africa- Middle East", 13),
+                              str_wrap("Western Europe- North America", 15),
+                              "Eastern Asia",
+                              "South Eastern Asia",
+                              "Southern Asia",
+                              "The Pacific",
+                              "The Caribbean"))
+
+## Note that when rendered these three are too squished to be read. 
+## might be better to just do them all on their own?
+viz1 + viz2 + viz3 + 
+  plot_annotation(title = 
+  "Civil Society Participation vs. Hypothesized Key Predictors by Region",
+  caption = "Blue lines represent the best fit line for the respective plots.")
+```
 :::
 
 ::: {.notes}
@@ -447,6 +511,8 @@ y_test <- y[test]
 
 # gets mse for pruned tree
 mse <- mean((tree_pred_tuned - y_test)^2)
+
+treePlot
 ```
 :::{.notes}
 The single decision tree plots the relationship between the most important predictors and the outcome. We can see that civil society index is the most influential as it is the topmost node of the tree. From there, participation in democracy and regions 1, 2, 3, 7, and 9, which represent Eastern Europe & Post Soviet Union, Latin America, North Africa and Middle East, South Eastern Asia, and the Pacific, were also identified as the most influential predictors in this model when predicting civil society participation. 
@@ -498,9 +564,10 @@ rf_mse <- mean((yhat_rf - y_test)^2)
 # importances
 importances_cs <- importance(rf_cs) %>% 
   as_tibble(rownames = "Variable")
+
+importances_cs
 ```
 :::
-
 
 ::::
 
@@ -542,18 +609,19 @@ compare_data=tibble(name,mse_all,value)
 model_comp <- tibble('Model' = name, 
                      'MSE' = mse_all,
                      'R-Squared' = value)
-
+```
+## Conclusions & Future Work
+:::{.incremental}
+- Civil society index, participation in democracy, and region
+- Random forests was our most effective model
+```{r table}
 # prints table
 model_comp
 ```
-
-## NOTE WE SHOULD ADD THE MSE MODEL COMPARISON PART INTO CONCLUSION very briefly, 
-## it just won't fit on the results section slides
-## Conclusions & Future Work
-:::{.incremental}
-- Civil society index, participation in democracy, and region are the most important predictors of civil society participation in 2019
-- Life expectancy, civil society repression, and social support may also play a lesser role
 - Mostly supports our hypothesis
-- Invites further research into how the key predictors interact with each other and the outcome
-- Going beyond 2019 because of limitations and predictive power
+- Further research: interactions, beyond 2019
+:::
+:::{.notes}
+reflection on limitations is 5 points so be sure to really hit on that
+be sure to expand the points!!
 :::

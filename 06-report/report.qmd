@@ -259,7 +259,7 @@ viz2 <- ggplot(cs, aes(x=v2x_partipdem,
   geom_smooth(method = 'lm', aes(group = 1)) +
   labs(x = str_wrap("Participation in Democracy",25),
        y = "Civil Society Participation") + 
-  theme(legend.position = "none")
+  theme(legend.position = "bottom")
 
 # A scatterplot to show the relationship between civil society participation 
 # and civil society index by region
@@ -271,7 +271,7 @@ viz3 <- ggplot(cs, aes(x=cs_index,
   labs(x = "Civil Society Index",
        y = "Civil Society Participation", 
        color = "Region") +
-  theme(legend.position = "right") + 
+  theme(legend.position = "none") + 
   scale_color_discrete(labels = c("Sub-Saharan Africa",
                               str_wrap("Eastern European- Post Soviet Union", 20),
                               "Latin America",
