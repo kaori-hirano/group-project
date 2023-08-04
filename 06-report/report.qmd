@@ -8,8 +8,9 @@ execute:
   message: false
   warning: false
   eval: true
+  echo: false
 ---
-```{r load-packages, echo = FALSE}
+```{r load-packages}
 library(readr)
 library(readxl)
 suppressPackageStartupMessages(library(tidyverse))
@@ -139,6 +140,7 @@ levels(cs$region) <- c('SubSaharanAfrica',
 # Because of the scale differences, we do need to scale variables
 
 # Visualize the outcome variable to see how it is distributed
+# WE NEED TO MAKE THIS LOOK NICE!!
 summary(cs$cspart)
 
 # A box plot to show the relationship between region and 
@@ -435,6 +437,8 @@ lasso_p <- lm(cspart ~ cs_index + v2x_partipdem + social_support + region +
                  lifee, cs[train,])
 lasso_p <- glm(cspart ~ cs_index + v2x_partipdem + social_support + region + 
                  lifee, cs[train,], family = 'gaussian')
+
+# THIS SHOWS YOU THE PVALS
 summary(lasso_p)
 
 # NEED TO ADD P VALUES 
