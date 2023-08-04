@@ -23,7 +23,7 @@ clean_col <- function(x, levels){
   levs_ids <- sapply(levs_ids, \(x) which(letters == x))
   # cut down levs to only the required levels
   levs <- levs[levs_ids]
-  # paste everything together and return (immplicitly)
+  # paste everything together and return (implicitly)
   paste0(var, ": ", paste0(levs, collapse = ", "))
 }
 
