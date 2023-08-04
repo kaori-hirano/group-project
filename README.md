@@ -1,16 +1,5 @@
-Applied Machine Learning Group Project: \[Project Template\]
-================
-Group \[4\]: \[Kaori Hirano, Alicia Nguyen, James Xia\]
-
-This document renders to a *Markdown* file (and in particular, the
-Github flavor of Markdown). On your computer, it may not look very nice,
-with minimal formatting. Once rendered as such, added, committed, and
-pushed to Github, however it becomes visible as an html in your repo. In
-this document, you should briefly describe the goal of the project. You
-should also describe what is contained in your repo (files, data, etc)
-and what their purpose is. Your goal is to help someone recreate your
-project if they want to. *You should delete this preamble once you
-update this file for the first time.*
+# Applied Machine Learning Group Project: Template
+Group 4: Kaori Hirano, Alicia Nguyen, James Xia
 
 # This is a heading
 
