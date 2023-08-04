@@ -1,6 +1,6 @@
-Applied Machine Learning Group Project: \[TITLE HERE\]
+Applied Machine Learning Group Project: \[Project Template\]
 ================
-Group \[Number\]: \[NAMES HERE\]
+Group \[4\]: \[Kaori Hirano, Alicia Nguyen, James Xia\]
 
 This document renders to a *Markdown* file (and in particular, the
 Github flavor of Markdown). On your computer, it may not look very nice,
