@@ -110,113 +110,27 @@ levels(cs$region) <- c('SubSaharanAfrica',
                     'TheCarribean')
 ```
 
-# Intro to Slides with Quarto (Delete This Section for Final Presentation!)
-
-## New Slides {.smaller}
-
--   `#` in the text editor creates a *section* header slide, with text in the centered in the middle of the slide
--   `##` in the text editor creates a *new slide*: the text next to the `##` is the title of the slide
--   Note also (which you can only see in the `.qmd`) that the `{.smaller}` code next to a slide title makes the text of that slide smaller (compare the text size of this slide to the text size in the next slide)
-
-## Bulleted Lists
-
--   You can use `-` in the text editor to make bulleted lists
--   If you want to have bullet points appear click-by-click, you can use the **incremental** div:
-
-```         
-:::{.incremental}
-- these bullet points
-- will appear click by click
-:::
-```
-
-## Slide with Columns
-
-::: columns
-::: {.column width="50%"}
-Column 1
-:::
-
-::: {.column width="50%"}
-Column 2
-:::
-:::
-
-## Bulleted Lists Click-By-Click Example
+## Research Motivation Introduction
 
 ::: incremental
--   these bullet points
--   will appear click-by-click
-:::
-
-## Embedding R Code
-
--   Embedding R code works just like in regular Quarto, using R chunks
-
-```{r}
-#| echo: true
-mtcars
-```
-
-## Visualization
-
-```{r}
-#| echo: true
-library(tidyverse)
-ggplot(mtcars, aes(x = mpg, y = wt)) +
-  geom_point()
-```
-
-## Customization
-
--   You can change the default aesthetic of your slide show by changing the *theme* by using the `theme` YAML option (you have to add it in the `revealjs` section, beneath `embed-resources`)
--   See [here](https://quarto.org/docs/presentations/revealjs/themes.html) for the themes you can use (and adapt - you can also make your own if you want, see the instructions in the linked page)
--   Theme names are put in "quotes"
-
-## Resources
-
--   You find Quarto revealjs documentation [here](https://quarto.org/docs/presentations/revealjs/)
--   Meghan Hall also has a [page](https://meghan.rbind.io/blog/quarto-slides/) with useful tips
-
-# Presentation Template
-
-## Note
-
--   You do not have to use this format exactly!
--   Presentations should be roughly 7 minutes
--   Each group member should speak for an equal amount of time
--   You can separate sections with section slides but do not have to
-
-## Topic Introduction and Research Motivation
-
-::: incremental
--   Learn about civil society's place in our overall society and relate to our lives
--   Civil Society is...
--   Political and Social perspective
--   The presence of more social cohesive factors--such as region, presence of war, social support, and civil society index--will have strong influences on civil society participation
--   Specific focus on 2019 because it is pre-Covid
-:::
-
-::: notes
-be sure to expand on why we chose it briefly and what civil society is
+-   Definition: Civil society is the "third sector" of society, distinct from government and business, and including family and the private sphere.
+-   Research Question: What are the most essential social and political factors in predicting civil society participation?
+-   Hypothesis: Social cohesive factors - such as social support, and civil society index - are strongly associated with civil society participation
+-   Time focus: 2019, the most recent pre-COVID year
 :::
 
 ## Introduction to Data
 
 ::: incremental
--   Data is from the VDEM Group and the World Happiness Index
--   We selected variables we thought would relate to civil society, such as social support and GDP
--   NAs were replaced with the median value
--   Region was modified to a factor with regional names
--   Variables were scaled for Lasso and Ridge regression models
--   Civil war and coup were dropped because there were no instances in 2019
+-   Data source: The VDEM Group and World Happiness Index (2019 data)
+-   Variable criteria: Most related to civil society (i.e. social support and GDP)
+-   Null values were replaced with median values (data is skewed)
+-   Variables were scaled for Lasso and Ridge regression
+-   Region was converted to a factor with region names
+-   Civil wars and coups were dropped due to NA values
 :::
 
-::: notes
-list some variables when talking about how we chose them say why NAs were replaced with median briefly note that variables were scaled because of the wide range (0-1 vs 1-10 etc)
-:::
-
-## Highlights from EDA 1: By Region
+## Exploratory Data Analysis
 
 ::: incremental
 ```{r variable-visualization-1}
@@ -238,15 +152,6 @@ custom_labels <-            c("Sub-Saharan Africa",
                               "The Pacific",
                               "The Caribbean")
 
-viz1 <- ggplot(cs, aes(x=social_support, 
-               y = cspart,
-               color = region)) + 
-  geom_jitter() +
-  geom_smooth(method = 'lm', aes(group = 1)) + 
-  labs(x = "Social Support",
-       y = "Civil Society Participation") +
-  theme(legend.position = "none")
-
 # A scatterplot to show the relationship between civil society participation 
 # and participation in democracy by region
 viz2 <- ggplot(cs, aes(x=v2x_partipdem, 
@@ -255,7 +160,8 @@ viz2 <- ggplot(cs, aes(x=v2x_partipdem,
   geom_point() +
   geom_smooth(method = 'lm', aes(group = 1)) +
   labs(x = str_wrap("Participation in Democracy",25),
-       y = "Civil Society Participation") + 
+       y = "Civil Society Participation",
+       color = "") + 
   theme(legend.position = "bottom") +
   theme(legend.key.size = unit(.2, 'cm'), legend.title = element_text(size=11),
         legend.text = element_text(size=11))
@@ -268,8 +174,8 @@ viz3 <- ggplot(cs, aes(x=cs_index,
   geom_point() +
   geom_smooth(method = 'lm', aes(group = 1)) + 
   labs(x = "Civil Society Index",
-       y = "Civil Society Participation", 
-       color = "Region") +
+       y = str_wrap("Civil Society Participation", 13), 
+       color = "") +
   theme(legend.position = "none") + 
   scale_color_discrete(labels = c("Sub-Saharan Africa",
                               str_wrap("Eastern European- Post Soviet Union", 20),
@@ -284,64 +190,47 @@ viz3 <- ggplot(cs, aes(x=cs_index,
 
 ## Note that when rendered these three are too squished to be read. 
 ## might be better to just do them all on their own?
-viz1 + viz2 + viz3 + 
+viz3 / viz2 +
   plot_annotation(title = 
   "Civil Society Participation vs. Hypothesized Key Predictors by Region")
 ```
 :::
 
-::: notes
-list some variables when talking about how we chose them say why NAs were replaced with median briefly note that variables were scaled because of the wide range (0-1 vs 1-10 etc)
+## Data Exploration Highlights
+
+::: incremental
+-   Understanding 3 hypothetically most significant predictors vs. outcome (Civil society participation)
+-   Strongest relationship: Civil society index vs. Civil society participation
+-   Linear relationships: Civil society index & Participation in Democracy vs. Civil society participation
+-   No linear relationship: Social support vs. Civil society participation
+-   There are no significant regional differences in predictor or outcome variables
 :::
 
-## Highlights from EDA 2: Social Predictors
+## Regression Models
 
-```{r variable-visualization}
-
-```
-
--   Social support has a complex relationship
--   Participation in democracy and civil society index appear more linear
--   mention any trends by region (not sure what there is)
-
-::: notes
-talk about the relationships present, the right two being somewhat linear but social support has a more complex relationship, just something we needed to keep in mind tried transforming social support but we didn't find a way to make it more linear
-:::
-
-::: notes
-need to add the proper tables with the p values and nice formatting
-:::
-
-```{r test-train-split, echo = FALSE}
+```{r test-train-split}
 # 70, 30 test train split
 set.seed(145)
 train <- sample(c(TRUE, FALSE), nrow(cs), replace = TRUE, prob=c(.7,.3))
 test <- (!train)
 val <- test
-```
 
 ## Regression
-
-```{r matrix-creation, echo=FALSE}
 # create x and y for glmnet
 set.seed(129)
 x <- model.matrix(cspart ~ csrepress+v2x_partipdem+edu+corr+cs_index+
-                           social_support+choices+gen+region+lifee+happ+gdp, 
+                           social_support+choices+gen+region+lifee+happ+gdp,
                   data = cs)[, -1]
 y <- cs$cspart
-```
 
-::: columns
-::: {.column width="50%"}
-Ridge - Minimizes the effect of non-influential variables - hypertuning lambda with CV
 
-```{r ridge-regression}
+### Ridge Regression
 # set seed for reproducibility
 set.seed(129)
 
 # cross validation for best l
-cv_r <- cv.glmnet(x[train,], y[train], alpha = 0, 
-                  # scale the x values 
+cv_r <- cv.glmnet(x[train,], y[train], alpha = 0,
+                  # scale the x values
                   lambda = 10^seq(10, -2, length = 100), scale = TRUE)
 
 # saving optimal lambda
@@ -358,19 +247,59 @@ ridge_mod <- glmnet(x, y, alpha = 0, lambda = bestlam_r, scale = TRUE)
 # saves coefficients
 coef_r <-coef(ridge_mod)
 
+# fits linear ridge model
+library(ridge)
+lin_ridge <- linearRidge(cspart ~ . -year -country_name, data = cs[train,])
+pvals_ridge <- pvals(lin_ridge)
+pval_table_ridge=as.data.frame(pvals_ridge$pval)
+pval_table_ridge=as.data.frame(rowMeans(pval_table_ridge))
+#nice_table(pval_table_ridge)
+
+#| tbl-cap: Ridge result table
 # prints important coefficients as a table
 ridge_feature_estimate <- ridge_mod %>% tidy() %>%
   select(term, estimate)
-ridge_feature_estimate_ordered <- ridge_feature_estimate %>% 
-  arrange(desc(abs(estimate)))
-print(ridge_feature_estimate_ordered)
-```
-:::
+# remove intercept
+ridge_feature_estimate <- ridge_feature_estimate[-1,]
+# add
+ridge_feature_estimate <- ridge_feature_estimate %>% add_column()
+# ridge_feature_estimate_ordered <- ridge_feature_estimate %>%
+#   arrange(desc(abs(pval)))
+row.names(pval_table_ridge)=c(1:nrow(pval_table_ridge))
+ridge_feature_estimate=merge(ridge_feature_estimate, pval_table_ridge,by='row.names',
+            all.x=TRUE)
+ridge_feature_estimate_ordered=ridge_feature_estimate%>%
+  arrange(desc(abs(estimate))) # %>%
+  # mutate(term = c())
 
-::: {.column width="50%"}
-Lasso - Zeros out non-influential variables - hypertuning of lambda from CV
+#print(ridge_feature_estimate_ordered)
+ridge_feature_estimate_ordered_table=ridge_feature_estimate_ordered%>%
+  mutate(term = c(
+                  "Civil Society Index",
+                  "Democracy Participation",
+                     "Social Support",
+                      "The Pacific",
+                    "Latin America",
+                    "Eastern European- Post Soviet Union",
+                    'Freedom to make life choices',
+                    "Gov Corruption Index",
+                    "The Caribbean",
+                    "North Africa- Middle East",
+                    "Eastern Asia",
+                    "Southern Asia",
+                    "Western Europe- North America",
+                    "Log GDP/capita",
+                    "life ladder",
+                     "Civil Society Repression",
+                     "Generosity",
+                     "South Eastern Asia",
+                  "Education",
+                     "Healthy life expectancy at birth"
+                     ))
+colnames(ridge_feature_estimate_ordered_table)[3] <- "Estimate"
+colnames(ridge_feature_estimate_ordered_table)[4] <- "p-values"
+ridge_feature_estimate_ordered_table= ridge_feature_estimate_ordered_table[,-c(1)]
 
-```{r lasso-regression}
 # set seed for reproducibility
 set.seed(18)
  
@@ -393,13 +322,70 @@ lasso_mod <- glmnet(x, y, lambda = bestlam_l, scale = TRUE)
 # saves coefficients
 coef_l <-coef(lasso_mod)
 
+# fits model with only important variables to get p vals
+lasso_p <- lm(cspart ~ cs_index + v2x_partipdem + social_support + region +
+                 lifee, cs[train,])
+lasso_p <- glm(cspart ~ cs_index + v2x_partipdem + social_support + region +
+                 lifee, cs[train,], family = 'gaussian')
+
+all_lasso=summary(lasso_p)
+p_lasso= data.frame(all_lasso$coefficients[,4])
+
+# This show us the p-values
+# summary(lasso_p)
+
 # prints important coefficients as a table
 lasso_feature_estimate <- lasso_mod %>% tidy() %>%
   select(term, estimate)
-lasso_feature_estimate_ordered <- lasso_feature_estimate %>% 
-  arrange(desc(abs(estimate)))
+row.names(p_lasso)=c(1:nrow(p_lasso))
+lasso_feature_estimate=merge(lasso_feature_estimate, p_lasso,by='row.names',
+            all.x=TRUE)
+lasso_feature_estimate_ordered <- lasso_feature_estimate %>%
+  arrange(desc(abs(estimate))) #%>%
+  # mutate(term = c())
 
-print(lasso_feature_estimate_ordered)
+lasso_feature_estimate_ordered_table=lasso_feature_estimate_ordered%>%
+  mutate(term = c("Civil Society Index",
+                  'Intercept',
+                  "Democracy Participation",
+                     "Social Support",
+                  "Latin America",
+                  "Eastern European- Post Soviet Union",
+                      "The Pacific",
+                   "North Africa- Middle East",
+                    "Healthy life expectancy at birth"
+                     ))
+
+#print(lasso_feature_estimate_ordered)
+colnames(lasso_feature_estimate_ordered_table)[3] <- "Estimate"
+colnames(lasso_feature_estimate_ordered_table)[4] <- "p-values"
+lasso_feature_estimate_ordered_table= lasso_feature_estimate_ordered_table[,-c(1)]
+```
+
+::: columns
+::: {.column width="50%"}
+<div>
+
+Ridge - Minimizes the effect of non-influential variables
+
+(optimal lambda with CV)
+
+</div>
+
+```{r ridge-regression}
+#| tbl-cap: Ridge result table
+nice_table(ridge_feature_estimate_ordered_table)
+```
+:::
+
+::: {.column width="50%"}
+Lasso - Zeros out non-influential variables
+
+(optimal lambda from CV)
+
+```{r lasso-regression}
+#| tbl-cap: Lasso result table
+nice_table(lasso_feature_estimate_ordered_table)
 ```
 :::
 :::
@@ -467,151 +453,184 @@ plot_tree <- function(model){
 
 ```
 
-::: columns
-::: {.column width="50%"}
-Single Decision Tree
+-   ::: columns
+    ::: {.column width="50%"}
+    Single Decision Tree
 
-```{r tree-method}
-# sets set for reproducibility
-set.seed(247) 
+    ```{r tree}
+    # sets set for reproducibility
+    set.seed(247)
 
-# creates tree on training data
-tree_train <- tree(cspart ~ . -year -country_name, cs_num,
-    subset = train)
+    # creates tree on training data
+    tree_train <- tree(cspart ~ . -year -country_name, cs_num,
+        subset = train)
 
-# cross validation of tree
-cv_train <- cv.tree(tree_train)
+    # cross validation of tree
+    cv_train <- cv.tree(tree_train)
 
-# pruning to 8 nodes per CV results
-prune_train <- prune.tree(tree_train, best = 8)
+    # pruning to 8 nodes per CV results
+    prune_train <- prune.tree(tree_train, best = 8)
 
-# plots pruned tree
-treePlot <- plot_tree(prune_train) + 
-  labs(title = "Pruned Tree Plot",
-       caption = 'Regions 1, 2, 3, 7, and 9 represent Eastern Europe & Post
-       Soviet Union, Latin America, North Africa and Middle East, South Eastern 
-       Asia, and the Pacific') + 
-  # Center the plot title
-  theme(plot.title = element_text(hjust = 0.4))
+    # plots pruned tree
+    plot_tree(prune_train) +
+      labs(title = "Pruned Tree Plot",
+           caption = 'Regions 1, 2, 3, 7, and 9 represent Eastern Europe & Post
+           Soviet Union, Latin America, North Africa and Middle East, South Eastern
+           Asia, and the Pacific') +
+      # Center the plot title
+      theme(plot.title = element_text(hjust = 0.4))
 
-# gets predictions and test values for mse
-tree_pred_tuned <- predict(prune_train, cs_num[test,],
-    type = "vector")
-y_test <- y[test]
+    # gets predictions and test values for mse
+    tree_pred_tuned <- predict(prune_train, cs_num[test,],
+        type = "vector")
 
-# gets mse for pruned tree
-mse <- mean((tree_pred_tuned - y_test)^2)
+    y_test <- y[test]
 
-treePlot
-```
+    # gets mse for pruned tree
+    mse <- mean((tree_pred_tuned - y_test)^2)
+    ```
 
-::: notes
-The single decision tree plots the relationship between the most important predictors and the outcome. We can see that civil society index is the most influential as it is the topmost node of the tree. From there, participation in democracy and regions 1, 2, 3, 7, and 9, which represent Eastern Europe & Post Soviet Union, Latin America, North Africa and Middle East, South Eastern Asia, and the Pacific, were also identified as the most influential predictors in this model when predicting civil society participation.
+    ::: notes
+    We can see that civil society index is the most influential as it is the topmost node of the tree. From there, participation in democracy and regions 1, 2, 3, 7, and 9, which represent Eastern Europe & Post Soviet Union, Latin America, North Africa and Middle East, South Eastern Asia, and the Pacific, were also identified as the most influential predictors in this model when predicting civil society participation.
 
-tree - Visualize importance and relationships between variables and outcome - Greedy method--may be less generalizable - CV for number of terminal nodes
+    tree - Visualize importance and relationships between variables and outcome - Greedy method--may be less generalizable - CV for number of terminal nodes
 
-random - Relative variable importances - CV for number of considered parameters - More accurate than tree methods
-:::
-:::
+    random - Relative variable importances - CV for number of considered parameters - More accurate than tree methods
+    :::
+    :::
 
-::: {.column width="50%"}
-Random Forests
+    ::: {.column width="50%"}
+    <div>
 
-```{r random-forests}
-# sets seed for reproducibility
-set.seed(286)
+    Random Forests
 
-# sets cv parameters
-train_control <- trainControl(method="cv", number = 5)
+    ```{r random-forests}
+    #| tbl-cap: Tree importance scores
+    # sets seed for reproducibility
+    set.seed(286)
 
-# gets grid for mtry
-tune_grid <- expand.grid(mtry = 3:12)
+    # sets cv parameters
+    train_control <- trainControl(method="cv", number = 5)
 
-# does training
-best_forest <- train(cspart ~ . -year -country_name, data = cs[train,], 
-                     trControl = train_control, 
-                     method="rf", 
-                     tuneGrid = tune_grid,
-                     verbose = FALSE)
+    # gets grid for mtry
+    tune_grid <- expand.grid(mtry = 3:12)
 
-# gets test for y
-y_test <- y[test]
+    # does training
+    best_forest <- train(cspart ~ . -year -country_name, data = cs[train,],
+                         trControl = train_control,
+                         method="rf",
+                         tuneGrid = tune_grid,
+                         verbose = FALSE)
 
-# predictions for test set with optimal mtry of 9
-rf_cs <- randomForest(cspart ~ . -year -country_name, data = cs[train,], 
-                       mtry = 9, importance = TRUE)
+    # gets test for y
+    y_test <- y[test]
 
-yhat_rf <- predict(rf_cs, newdata = cs[test,])
+    # predictions for test set with optimal mtry of 9
+    rf_cs <- randomForest(cspart ~ . -year -country_name, data = cs[train,],
+                           mtry = 9, importance = TRUE)
 
-# calculates MSE
-rf_mse <- mean((yhat_rf - y_test)^2)
+    yhat_rf <- predict(rf_cs, newdata = cs[test,])
 
-# importances
-importances_cs <- importance(rf_cs) %>% 
-  as_tibble(rownames = "Variable")
+    # calculates MSE
+    rf_mse <- mean((yhat_rf - y_test)^2)
 
-importances_cs
-```
-:::
-:::
+    # importances
+    importances_cs <- importance(rf_cs) %>%
+      as_tibble(rownames = "Variable")
 
-## Model Comparison
+    # plot 1
+    p1_rf <- importances_cs %>%
+      arrange(`%IncMSE`) %>%
+      mutate(Variable = factor(Variable, levels = Variable)) %>%
+      ggplot(aes(x = `%IncMSE`, y = Variable)) +
+      geom_col(alpha = 0.5) + scale_y_discrete(
+              labels = rev(c("Civil Society Index",
+                             "Democracy Participation",
+                             "Gov Corruption Index",
+                             "Region",
+                             "Civil Society Repression",
+                             "Life Expectancy",
+                             "Social Support",
+                             "Education",
+                             "Log GDP/capita",
+                             "Happiness Level",
+                             "Generosity",
+                             "Choice Freedom"))) +
+      labs(title = str_wrap("Variable Importances 1", 13),
+           y = "Variables",
+           x = str_wrap("% Increase in MSE", 11)) +
+      theme_classic()
 
--   Random forests was the most effective model of for the data
--   Lowest MSE and highest R2
+    # plot 2
+    p2_rf <- importances_cs %>%
+      arrange(IncNodePurity) %>%
+      mutate(Variable = factor(Variable, levels = Variable)) %>%
+      ggplot(aes(x = IncNodePurity, y = Variable)) +
+      geom_col(alpha = 0.5) + scale_y_discrete(
+              labels = rev(c("Civil Society Index",
+                             "Democracy Participation",
+                             "Civil Society Repression",
+                             "Region",
+                             "Gov Corruption Index",
+                             "Life Expectancy",
+                             "Education",
+                             "Social Support",
+                             "Choice Freedom",
+                             "Happiness Level",
+                             "Log GDP/capita",
+                             "Generosity"))) +
+      labs(title = str_wrap("Variable Importances 2", 13),
+           x = str_wrap("Increase in Node Impurity", 13)) +
+      theme_classic() +
+      theme(axis.title.y = element_blank())
 
-```{r model-comp}
-#| warning: false
-# note: I think we are planning to cut this because
-# interpretation-wise it doesn't add much that the MSE doesn't
-# already cover. 
+    # side by side
+    p1_rf + p2_rf
 
-# putting together data of predicted, actual, and model type
-dataplot <- data.frame(true_value = c(y[test], y[test], y[test], y[test]))
-dataplot$model_type <- c(rep("Lasso", length(lasso_pred)), rep("Ridge Model", 
-            length(ridge_pred)), rep("Tree Model", length(tree_pred_tuned)), 
-            rep('Random Forests', length(yhat_rf)))
-dataplot$predictions <- c(lasso_pred, ridge_pred, tree_pred_tuned, yhat_rf)
+    # prints table of most important variables
+    # feature names minus year, country, cspart
+    rf_feature_names <- colnames(cs[,c(3:6, 8:15)])
 
-# function giving us R2
-r2 <- function(predicted, y) {
-  #find SST and SSE
-  sst <- sum((y - mean(y))^2)
-  sse <- sum((predicted - y)^2)
-  #find R-Squared
-  rsq <- 1 - sse/sst
-}
+    # importance scores
+    rf_importance_scores <- rf_cs$importance[, 1]
 
-# setting up values for graph
-name=c("Tree","Random Forest", "Lasso","Ridge")
-mse_all=c(mse, rf_mse, lasso_mse, ridge_mse)
-value=c(r2(tree_pred_tuned, y[test]), r2(yhat_rf, y[test]), 
-        r2(lasso_pred, y[test]), r2(ridge_pred, y[test]))
+    # combine feature names and importance scores
+    rf_feature_importance <- tibble(Feature = rf_feature_names,
+                                    'Importance Scores' = rf_importance_scores)
 
-# putting into table
-compare_data=tibble(name,mse_all,value)
+    # get desc order for ease of interpretation
+    f_feature_importance_ordered <- rf_feature_importance %>%
+      mutate(Feature = c("Democracy Participation",
+                         "Civil Society Index",
+                         "Civil Society Repression",
+                         "Gov Corruption Index",
+                         "Region",
+                         "Life Expectancy",
+                         "Education",
+                         "Social Support",
+                         "Log GDP/capita",
+                         "Happiness Level",
+                         "Choice Freedom",
+                         "Generosity")) %>%
+      arrange(desc(abs(rf_importance_scores)))
+    ```
 
-# table of scores because differences may be hard to tell from graph
-model_comp <- tibble('Model' = name, 
-                     'MSE' = mse_all,
-                     'R-Squared' = value)
-```
+    </div>
+    :::
+
+    -   Random forests was the most effective model
+
+        -   Lowest MSE: 0.00787
+
+        -   Highest r-squared: 0.88152
+    :::
 
 ## Conclusions & Future Work
 
 ::: incremental
--   Civil society index, participation in democracy, and region
--   Random forests was our most effective model
-
-```{r table}
-# prints table
-model_comp
-```
-
--   Mostly supports our hypothesis
--   Further research: interactions, beyond 2019
-:::
-
-::: notes
-reflection on limitations is 5 points so be sure to really hit on that be sure to expand the points!!
+-   Random forests was the most effective model
+-   Most important variables: Civil society index, Participation in democracy
+-   The results are mostly consistent with our hypothesis
+-   Limitations: Non-linear relationships, variable interactions
+-   Further research: Variable interactions, time-series analysis, lack of regional specificity
 :::

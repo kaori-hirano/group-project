@@ -145,7 +145,6 @@ levels(cs$region) <- c('SubSaharanAfrica',
 # Because of the scale differences, we do need to scale variables
 
 # Visualize the outcome variable to see how it is distributed
-# WE NEED TO MAKE THIS LOOK NICE!!
 summary(cs$cspart)
 
 # A box plot to show the relationship between region and
@@ -179,7 +178,7 @@ This histogram is to show that the reference level for the Region, Sub-Saharan A
 
 ## Preliminary Data Exploration 
 
-We plotted the expected most important variables in our hypothesis against the outcome to see whether there is a complex relationship or a linear one. The method $lm$ for the best fit line was not specified as we wanted to understand the type of relationship that may be present. We are also interested in how strong the relationship is. There is a strong and more linear relationship between civil society participation and civil society index than between the outcome variables and the other two chosen variables. The other two relationships are not as linear and more complicated, as visualized below. This information may help us interpret our models later on.
+We plotted the expected most important variables in our hypothesis against the outcome to see whether there is a complex relationship or a linear one. The method $lm$ for the best fit line was specified as we wanted to see whether the data points fit this linear type of relationship. We are also interested in how strong the relationship is. There is a strong and more linear relationship between civil society participation and civil society index than between the outcome variables and the other two chosen variables. The other two relationships are not as linear and more complicated, as visualized below. This information may help us interpret our models later on.
 
 ```{r variable-visualization}
 #| warning: false
@@ -701,8 +700,13 @@ model_comp <- tibble('Model' = name,
                      'MSE' = mse_all,
                      'r-squared' = value)
 
+# function to edit number of decimal places
+fun <- function(x) {
+  formatC(x, format = "f", digits = 5)
+}
+
 # prints table
-nice_table(model_comp)
+nice_table(model_comp, col.format.custom = 2:3, format.custom = "fun")
 ```
 The model that performs on the test set in terms of minimizing error the best is random forests, with the lowest MSE. Random forests also has the highest R-squared meaning it accounts for the most change in the predictor relative to the other models, as pictured above. We then conclude that random forests was the best performing model when predicting civil society participation from the data provided.
 
