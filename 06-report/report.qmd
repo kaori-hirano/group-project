@@ -654,9 +654,6 @@ The random forests model identifies civil society index and participation in dem
 ## Comparing Models
 ```{r, echo = FALSE}
 #| warning: false
-# note: I think we are planning to cut this because
-# interpretation-wise it doesn't add much that the MSE doesn't
-# already cover.
 
 # putting together data of predicted, actual, and model type
 dataplot <- data.frame(true_value = c(y[test], y[test], y[test], y[test]))
