@@ -10,10 +10,6 @@ execute:
   eval: true
   echo: false
 ---
-<<<<<<< HEAD
-
-=======
->>>>>>> 7ca411f5c83d2e8708797930805eee4cf50d11c0
 ```{r load-packages}
 library(readr)
 library(readxl)
@@ -266,11 +262,7 @@ Our research question regards which predictors are the most important in predict
  
 Our outcome variable is a numerical variable. We chose to use regression to identify the most important predictors of civil society participation in 2019. Lasso will eliminate non-influential variables, while ridge will shrink them to a smaller value, both of which minimize the presence of non-influential predictors. We will do both models to test which of our chosen variables are important in predicting civil society participation. To optimize our model performance, the optimal lambda will be determined using 10-fold cross validation.
 
-<<<<<<< HEAD
 We also used tree models to further understand the most important variables. This is because, as shown in our data visualizations, there are not only linear relationships between the predictors and the outcome variable. Doing a different type of modelling might help us better understand the relationship between our predictors and the outcome variable civil society participation.
-=======
-We also used tree models to further understand the most important variables. This is because, as shown in our data visualizations, there are not only linear relationships between the predictors and the outcome variable. Doing a different type of modelling might help us better understand the relationship between our predictors and the outcome variable civil society participation. 
->>>>>>> 7ca411f5c83d2e8708797930805eee4cf50d11c0
 
 We initially chose a single decision tree to give a base understanding of the main predictors visually. However, because single decision trees are not the best in terms of prediction compared to other tree models, we also used a random forests model. Random forests allows us to see a relative ranking of the most important variables and their relationships to each other in our model. The hyperparameters (terminal nodes for the single decision tree and number of variables considered for random forests) will be chosen by 5-fold cross validation to minimize error.
 
@@ -280,7 +272,6 @@ If the topmost important variables produced by our machine learning models are c
 
 The best performing model was random forests, which had the highest R-squared value and the lowest MSE on the test set. Across all models, civil society index, participation in democracy, and region were identified as the most influential in predicting civil society participation. Other important variables identified by a non-majority include social support, life expectancy, and civil society repression. The specific results for each model and comparison between the model types are listed below.
 
-## Test Train Split
 ```{r test-train-split}
 # 70, 30 test train split
 set.seed(145)
@@ -288,6 +279,7 @@ train <- sample(c(TRUE, FALSE), nrow(cs), replace = TRUE, prob=c(.7,.3))
 test <- (!train)
 val <- test
 ```
+
 
 ## Regression
 ```{r matrix-creation}
@@ -411,12 +403,6 @@ lasso_p <- lm(cspart ~ cs_index + v2x_partipdem + social_support + region +
                  lifee, cs[train,])
 lasso_p <- glm(cspart ~ cs_index + v2x_partipdem + social_support + region +
                  lifee, cs[train,], family = 'gaussian')
-<<<<<<< HEAD
-=======
-
-# THIS SHOWS YOU THE PVALS
-summary(lasso_p)
->>>>>>> 7ca411f5c83d2e8708797930805eee4cf50d11c0
 
 all_lasso=summary(lasso_p)
 p_lasso= data.frame(all_lasso$coefficients[,4])
@@ -601,9 +587,9 @@ p1_rf <- importances_cs %>%
                          "Happiness Level",
                          "Generosity",
                          "Choice Freedom"))) +
-  labs(title = "Variable Importances 1",
+  labs(title = str_wrap("Variable Importances 1", 13),
        y = "Variables",
-       x = "% Increase in MSE") +
+       x = str_wrap("% Increase in MSE", 11)) +
   theme_classic()
 
 # plot 2
@@ -624,8 +610,8 @@ p2_rf <- importances_cs %>%
                          "Happiness Level",
                          "Log GDP/capita",
                          "Generosity"))) +
-  labs(title = "Variable Importances 2",
-       x = "Increase in Node Impurity") +
+  labs(title = str_wrap("Variable Importances 2", 13),
+       x = str_wrap("Increase in Node Impurity", 13)) +
   theme_classic() +
   theme(axis.title.y = element_blank())
 
@@ -700,7 +686,7 @@ compare_data=tibble(name,mse_all,value)
 #plotting R2
 p1=ggplot(compare_data, aes(x=name, y=value))+
   geom_col()+ coord_cartesian(ylim=c(0.8,.9))+
-  labs(x="Model",y="R2",title = "Relative R-squared Comparison") +
+  labs(x="Model",y="R2",title = str_wrap("Relative R-squared Comparison", 18)) +
   theme_classic() +
   guides(x =  guide_axis(angle = 35))
 
@@ -716,7 +702,7 @@ p2=ggplot(compare_data, aes(x=name, y=mse_all))+
 # table of scores because differences may be hard to tell from graph
 model_comp <- tibble('Model' = name,
                      'MSE' = mse_all,
-                     'R-Squared' = value)
+                     'r-squared' = value)
 
 # prints table
 nice_table(model_comp)
@@ -724,13 +710,6 @@ nice_table(model_comp)
 The model that performs on the test set in terms of minimizing error the best is random forests, with the lowest MSE. Random forests also has the highest R-squared meaning it accounts for the most change in the predictor relative to the other models, as pictured above. We then conclude that random forests was the best performing model when predicting civil society participation from the data provided.
 
 # Discussion
-<<<<<<< HEAD
-=======
-## Summary of What We Learned
-  Our research question regarded predictors of civil society participation. We hypothesized characteristics regarding social cohesion--such as region, presence of war, social support, and civil society index--will have large effects on civil society participation rates. The results of our data analysis partially supported our hypothesis, with the most important predictors identified being civil society index, region, and participation in democracy, which were seen across all models, and social support, average life expectancy, and civil society repression which was found by a minority of the models run. However, social support was shown to have a negative effect on civil society participation in 2019, which we did not expect.
-  
-  Civil society index and participation in democracy were the top two predictors in all models, with region, social support, and civil society repression being identified as top predictors by some of the models. Civil society index had a positive impact on civil society participation, meaning that as elements of civil society increased so as to increase the civil society index, such as increasing the number of civil society organizations, the civil society participation would also increase. This makes sense because a higher civil society index means that there are likely more and better opportunities for people to engage in civil society, therefore increasing participation. Additionally, we must note that when considering the make-up of the civil society participation variable and the civil society index variable both consider the same piece of information in CSO Participatory Environment, which is the best description of people in civil society organizations. Both of these variables also consider three other factors, but do have an element that is in common, meaning that the relationship between the two will be in part because they share some of the same information. That said, we are unable to determine at the present how much is based on that shared information out of the entire information contained in civil society index. In future research, we would want to examine how the different aspects of civil society index (explained in the codebook) relate to civil society participation. If we were to redo this, we would consider not including this predictor because of the overlap in data, which we didn't consider to be significant given that it was one of 4 pieces of information considered. Similarly, as participation in democracy increases, so does participation in civil society. Many civil society organizations have roles in politics, so as there is more political behavior more people likely will also engage in civil society. Further study into the relationship between civil society and participation in democracy is warranted to learn more about how these two processes interact with and influence each other. 
->>>>>>> 7ca411f5c83d2e8708797930805eee4cf50d11c0
 
 Our research question is focused on predictors of civil society participation. We hypothesized characteristics associated with social cohesion such as region, presence of war, social support, and civil society index will have large effects on civil society participation rates. The results of our data analysis partially supported our hypothesis, with the most important predictors identified being civil society index, region, and participation in democracy, which were seen across all models, and social support, average life expectancy, and civil society repression which was found by a minority of the models run. However, social support was shown to have a negative effect on civil society participation in 2019, which we did not expect.
 
