@@ -6,6 +6,7 @@ format:
     embed-resources: true
     theme: "serif" 
 ---
+
 ```{r load-packages, echo = FALSE}
 library(readr)
 library(readxl)
@@ -22,6 +23,7 @@ library(tibble)
 library(plotly)
 library(rempsyc)
 ```
+
 ```{r merge-datasets}
 wh_2023 <- read_excel("/cloud/project/data/wh_2023.xls")
 load("/cloud/project/data/vdemdata-master/data/vdem.RData")
@@ -45,7 +47,7 @@ total=merge(vdem_use, wh_use, by = c("country_name", "year"),
             all.y=TRUE) 
 ##merge data
 ```
-  
+
 ```{r clean-data}
 #| message: false
 #| warning: false
@@ -112,51 +114,44 @@ levels(cs$region) <- c('SubSaharanAfrica',
 
 ## New Slides {.smaller}
 
-- `#` in the text editor creates a *section* header slide, with text in the 
-centered in the middle of the slide
-- `##` in the text editor creates a *new slide*: the text next to the `##` 
-is the title of the slide
-- Note also (which you can only see in the `.qmd`) that the `{.smaller}`
-code next to a slide title makes the text of that slide smaller (compare the
-text size of this slide to the text size in the next slide)
+-   `#` in the text editor creates a *section* header slide, with text in the centered in the middle of the slide
+-   `##` in the text editor creates a *new slide*: the text next to the `##` is the title of the slide
+-   Note also (which you can only see in the `.qmd`) that the `{.smaller}` code next to a slide title makes the text of that slide smaller (compare the text size of this slide to the text size in the next slide)
 
-## Bulleted Lists 
+## Bulleted Lists
 
-- You can use `-` in the text editor to make bulleted lists
-- If you want to have bullet points appear click-by-click, you can 
-use the **incremental** div:
-```
+-   You can use `-` in the text editor to make bulleted lists
+-   If you want to have bullet points appear click-by-click, you can use the **incremental** div:
+
+```         
 :::{.incremental}
 - these bullet points
 - will appear click by click
 :::
 ```
 
-## Slide with Columns 
+## Slide with Columns
 
-::::{.columns}
-
-:::{.column width=50%}
+::: columns
+::: {.column width="50%"}
 Column 1
 :::
 
-:::{.column width=50%}
+::: {.column width="50%"}
 Column 2
 :::
-
-
-::::
+:::
 
 ## Bulleted Lists Click-By-Click Example
 
-:::{.incremental}
-- these bullet points
-- will appear click-by-click
+::: incremental
+-   these bullet points
+-   will appear click-by-click
 :::
 
 ## Embedding R Code
 
-- Embedding R code works just like in regular Quarto, using R chunks
+-   Embedding R code works just like in regular Quarto, using R chunks
 
 ```{r}
 #| echo: true
@@ -174,60 +169,56 @@ ggplot(mtcars, aes(x = mpg, y = wt)) +
 
 ## Customization
 
-- You can change the default aesthetic of your slide show by 
-changing the *theme* by using the `theme` YAML option (you have to add it 
-in the `revealjs` section, beneath `embed-resources`)
-- See [here](https://quarto.org/docs/presentations/revealjs/themes.html) for 
-the themes you can use (and adapt - you can also make your own if
-you want, see the instructions in the linked page)
-- Theme names are put in "quotes"
+-   You can change the default aesthetic of your slide show by changing the *theme* by using the `theme` YAML option (you have to add it in the `revealjs` section, beneath `embed-resources`)
+-   See [here](https://quarto.org/docs/presentations/revealjs/themes.html) for the themes you can use (and adapt - you can also make your own if you want, see the instructions in the linked page)
+-   Theme names are put in "quotes"
 
 ## Resources
 
-- You find Quarto revealjs documentation [here](https://quarto.org/docs/presentations/revealjs/)
-- Meghan Hall also has a [page](https://meghan.rbind.io/blog/quarto-slides/) 
-with useful tips
+-   You find Quarto revealjs documentation [here](https://quarto.org/docs/presentations/revealjs/)
+-   Meghan Hall also has a [page](https://meghan.rbind.io/blog/quarto-slides/) with useful tips
 
 # Presentation Template
 
 ## Note
 
-- You do not have to use this format exactly!
-- Presentations should be roughly 7 minutes
-- Each group member should speak for an equal amount of time
-- You can separate sections with section slides but do not have to
+-   You do not have to use this format exactly!
+-   Presentations should be roughly 7 minutes
+-   Each group member should speak for an equal amount of time
+-   You can separate sections with section slides but do not have to
 
-## Introduction to Topic and Motivation
-:::{.incremental}
-- Learn about civil society's place in our overall society and relate to our lives
-- Civil Society is...
-- Political and Social perspective
-- The presence of more social cohesive factors--such as region, presence of war, social support, and civil society index--will have strong influences on civil society participation
-- Specific focus on 2019 because it is pre-covid 
+## Topic Introduction and Research Motivation
+
+::: incremental
+-   Learn about civil society's place in our overall society and relate to our lives
+-   Civil Society is...
+-   Political and Social perspective
+-   The presence of more social cohesive factors--such as region, presence of war, social support, and civil society index--will have strong influences on civil society participation
+-   Specific focus on 2019 because it is pre-Covid
 :::
-:::{.notes}
+
+::: notes
 be sure to expand on why we chose it briefly and what civil society is
 :::
 
-
 ## Introduction to Data
-:::{.incremental}
-- Data is from the VDEM Group and the World Happiness Index
-- We selected variables we thought would relate to civil society, such as social support and GDP
-- NAs were replaced with the median value 
-- Region was modified to a factor with regional names
-- Variables were scaled for regression models
-- Civil war and coup were dropped because there were no instances in 2019
+
+::: incremental
+-   Data is from the VDEM Group and the World Happiness Index
+-   We selected variables we thought would relate to civil society, such as social support and GDP
+-   NAs were replaced with the median value
+-   Region was modified to a factor with regional names
+-   Variables were scaled for Lasso and Ridge regression models
+-   Civil war and coup were dropped because there were no instances in 2019
 :::
 
-::: {.notes}
-list some variables when talking about how we chose them
-say why NAs were replaced with median briefly
-note that variables were scaled because of the wide range (0-1 vs 1-10 etc)
+::: notes
+list some variables when talking about how we chose them say why NAs were replaced with median briefly note that variables were scaled because of the wide range (0-1 vs 1-10 etc)
 :::
 
 ## Highlights from EDA 1: By Region
-:::{.incremental}
+
+::: incremental
 ```{r variable-visualization-1}
 #| warning: false
 #| message: false
@@ -299,28 +290,28 @@ viz1 + viz2 + viz3 +
 ```
 :::
 
-::: {.notes}
-list some variables when talking about how we chose them
-say why NAs were replaced with median briefly
-note that variables were scaled because of the wide range (0-1 vs 1-10 etc)
+::: notes
+list some variables when talking about how we chose them say why NAs were replaced with median briefly note that variables were scaled because of the wide range (0-1 vs 1-10 etc)
 :::
 
 ## Highlights from EDA 2: Social Predictors
+
 ```{r variable-visualization}
 
 ```
-- Social support has a complex relationship 
-- Participation in democracy and civil society index appear more linear
-- mention any trends by region (not sure what there is)
 
-::: {.notes}
-talk about the relationships present, the right two being somewhat linear but social support has a more complex relationship, just something we needed to keep in mind
-tried transforming social support but we didn't find a way to make it more linear
+-   Social support has a complex relationship
+-   Participation in democracy and civil society index appear more linear
+-   mention any trends by region (not sure what there is)
+
+::: notes
+talk about the relationships present, the right two being somewhat linear but social support has a more complex relationship, just something we needed to keep in mind tried transforming social support but we didn't find a way to make it more linear
 :::
 
-:::{.notes}
-need to add the proper tables with the p values and nice formatting 
+::: notes
+need to add the proper tables with the p values and nice formatting
 :::
+
 ```{r test-train-split, echo = FALSE}
 # 70, 30 test train split
 set.seed(145)
@@ -330,6 +321,7 @@ val <- test
 ```
 
 ## Regression
+
 ```{r matrix-creation, echo=FALSE}
 # create x and y for glmnet
 set.seed(129)
@@ -338,12 +330,11 @@ x <- model.matrix(cspart ~ csrepress+v2x_partipdem+edu+corr+cs_index+
                   data = cs)[, -1]
 y <- cs$cspart
 ```
-::::{.columns}
 
-:::{.column width=50%}
-Ridge
-- Minimizes the effect of non-influential variables
-- hypertuning lambda with CV
+::: columns
+::: {.column width="50%"}
+Ridge - Minimizes the effect of non-influential variables - hypertuning lambda with CV
+
 ```{r ridge-regression}
 # set seed for reproducibility
 set.seed(129)
@@ -373,13 +364,12 @@ ridge_feature_estimate <- ridge_mod %>% tidy() %>%
 ridge_feature_estimate_ordered <- ridge_feature_estimate %>% 
   arrange(desc(abs(estimate)))
 print(ridge_feature_estimate_ordered)
-``` 
+```
 :::
 
-:::{.column width=50%}
-Lasso 
-- Zeros out non-influential variables
-- hypertuning of lambda from CV
+::: {.column width="50%"}
+Lasso - Zeros out non-influential variables - hypertuning of lambda from CV
+
 ```{r lasso-regression}
 # set seed for reproducibility
 set.seed(18)
@@ -412,12 +402,10 @@ lasso_feature_estimate_ordered <- lasso_feature_estimate %>%
 print(lasso_feature_estimate_ordered)
 ```
 :::
-
-
-::::
-
+:::
 
 ## Tree Methods
+
 ```{r tree_method}
 # code is attributed to LACOL summer course
 # instructors and ISLR authors
@@ -478,10 +466,11 @@ plot_tree <- function(model){
 }
 
 ```
-::::{.columns}
 
-:::{.column width=50%}
+::: columns
+::: {.column width="50%"}
 Single Decision Tree
+
 ```{r tree-method}
 # sets set for reproducibility
 set.seed(247) 
@@ -515,24 +504,19 @@ mse <- mean((tree_pred_tuned - y_test)^2)
 
 treePlot
 ```
-:::{.notes}
-The single decision tree plots the relationship between the most important predictors and the outcome. We can see that civil society index is the most influential as it is the topmost node of the tree. From there, participation in democracy and regions 1, 2, 3, 7, and 9, which represent Eastern Europe & Post Soviet Union, Latin America, North Africa and Middle East, South Eastern Asia, and the Pacific, were also identified as the most influential predictors in this model when predicting civil society participation. 
 
-tree
-- Visualize importance and relationships between variables and outcome
-- Greedy method--may be less generalizable
-- CV for number of terminal nodes
+::: notes
+The single decision tree plots the relationship between the most important predictors and the outcome. We can see that civil society index is the most influential as it is the topmost node of the tree. From there, participation in democracy and regions 1, 2, 3, 7, and 9, which represent Eastern Europe & Post Soviet Union, Latin America, North Africa and Middle East, South Eastern Asia, and the Pacific, were also identified as the most influential predictors in this model when predicting civil society participation.
 
+tree - Visualize importance and relationships between variables and outcome - Greedy method--may be less generalizable - CV for number of terminal nodes
 
-random
-- Relative variable importances
-- CV for number of considered parameters
-- More accurate than tree methods
+random - Relative variable importances - CV for number of considered parameters - More accurate than tree methods
 :::
 :::
 
-:::{.column width=50%}
+::: {.column width="50%"}
 Random Forests
+
 ```{r random-forests}
 # sets seed for reproducibility
 set.seed(286)
@@ -569,12 +553,13 @@ importances_cs <- importance(rf_cs) %>%
 importances_cs
 ```
 :::
-
-::::
+:::
 
 ## Model Comparison
-- Random forests was the most effective model of for the data
-- Lowest MSE and highest R2
+
+-   Random forests was the most effective model of for the data
+-   Lowest MSE and highest R2
+
 ```{r model-comp}
 #| warning: false
 # note: I think we are planning to cut this because
@@ -611,18 +596,22 @@ model_comp <- tibble('Model' = name,
                      'MSE' = mse_all,
                      'R-Squared' = value)
 ```
+
 ## Conclusions & Future Work
-:::{.incremental}
-- Civil society index, participation in democracy, and region
-- Random forests was our most effective model
+
+::: incremental
+-   Civil society index, participation in democracy, and region
+-   Random forests was our most effective model
+
 ```{r table}
 # prints table
 model_comp
 ```
-- Mostly supports our hypothesis
-- Further research: interactions, beyond 2019
+
+-   Mostly supports our hypothesis
+-   Further research: interactions, beyond 2019
 :::
-:::{.notes}
-reflection on limitations is 5 points so be sure to really hit on that
-be sure to expand the points!!
+
+::: notes
+reflection on limitations is 5 points so be sure to really hit on that be sure to expand the points!!
 :::
